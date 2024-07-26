@@ -1,33 +1,36 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const eventSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: true,
   },
   description: {
     type: String,
-    required: true
+    required: true,
   },
   location: {
     type: String,
-    required: true
+    required: true,
   },
   startDate: {
     type: Date,
-    required: true
+    required: true,
   },
   endDate: {
     type: Date,
-    required: true
+    required: true,
   },
-  img: {
+  time: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
+  image: {
+    type: String,
+    required: true,
+  },
 });
 
 const Event = mongoose.model("Event", eventSchema);
 
-export default Event;
-
+module.exports = Event;
