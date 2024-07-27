@@ -10,7 +10,6 @@ const getAllEvents = async (req, res) => {
 };
 
 const getEventById = async (req, res) => {
-  console.log("this is tring");
   try {
     const event = await Event.findById(req.params.id);
     if (!event) {
