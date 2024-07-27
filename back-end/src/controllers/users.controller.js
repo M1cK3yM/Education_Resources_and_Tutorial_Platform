@@ -9,31 +9,16 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-const createStudent = async (req, res) =>  {
-  const student = new User({
+const createUser = async (req, res) =>  {
+  const user = new User({
     name: req.body.name,
     email: req.body.email,
-    role: "STUDENT",
+    role: req.body.role,
   })
 
   try {
-    const newStudent = await student.save();
-    res.status(201).json(newStudent);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-}
-
-const createMentors = async (req, res) => {
-  const mentors = new User({
-    name: req.body.name,
-    email: req.body.email,
-    role: "MENTOR",
-  })
-
-  try {
-    const newMentor = await mentors.save();
-    res.status(201).json(newMentor);
+    const newUser = await user.save();
+    res.status(201).json(newUser);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -51,13 +36,13 @@ const getUserById = async (req, res) => {
   }
 }
 
-const getStudents = async (req, res) => {
+const getUserByRole = async (req, res) => {
   try {
-    const student = await User.find({role: "STUDENT"});
-    if(!student) {
+    const users = await User.find({ role: req.params.role });
+    if(!users) {
     return res.status(404).json({ message: 'There is no regestered students' });
   }
-    res.json(student);
+    res.json(users);
   } catch {
     res.status(500).json(
       {message: err.message}
@@ -65,10 +50,43 @@ const getStudents = async (req, res) => {
   }
 }
 
+const updateProfile = async (req, res) => {
+  if (
+    req.body.name ||
+    req.body.profile ||
+    req.body.mobile 
+  ) {
+    const user = await User.findByIdAndUpdate( req.params.id, req.body, {
+      new: true
+    });
+    if(!user) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+    res.json(user);
+  } else {
+    res.status(400).json({ message: "No updated field provided" })
+  }
+}
+
+const deleteAccount = async (req, res) => {
+  try {
+    const user = User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      res.status(404).json({ message: "User Not found"});
+    }
+
+    res.status(200).json({message: "User Deleted Successfully"})
+    
+  } catch (err) {
+    res.status(500).json({message: err.message});
+  }
+}
+
 module.exports = {
   getAllUsers,
-  createStudent,
   getUserById,
-  getStudents,
-  createMentors
+  updateProfile,
+  deleteAccount,
+  createUser,
+  getUserByRole
 }
