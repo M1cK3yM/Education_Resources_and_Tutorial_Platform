@@ -9,7 +9,7 @@ app.use(express.json());
 connectDB();
 
 // Use the event routes
-app.use("/", eventRoutes);
+app.use("/api/events", eventRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
