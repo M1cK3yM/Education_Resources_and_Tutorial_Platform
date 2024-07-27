@@ -21,10 +21,6 @@ const newsSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
- category: {
-    type: Date,
-    required: true,
-  },
  tags: {
     type: String,
     required: true,
