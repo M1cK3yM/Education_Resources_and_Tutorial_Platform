@@ -40,4 +40,6 @@ Welcome to the Education Resources and Tutorial Platform! This platform is desig
 - Tutorials section
 - Forum
 - Blog
-  
+
+
+
