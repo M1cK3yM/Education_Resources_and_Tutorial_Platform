@@ -1,6 +1,7 @@
 const express = require("express");
 const connectDB = require("./database");
 const eventRoutes = require("./src/routes/eventRoute");
+const userRoutes = require("./src/routes/user.route");
 
 const app = express();
 app.use(express.json());
@@ -9,7 +10,8 @@ app.use(express.json());
 connectDB();
 
 // Use the event routes
-app.use("/", eventRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/users", userRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

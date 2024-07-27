@@ -9,6 +9,19 @@ const getAllEvents = async (req, res) => {
   }
 };
 
+const getEventById = async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+    res.status(200).json(event);
+    console.log(req.params.id);
+  } catch {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 const createEvent = async (req, res) => {
   const event = new Event({
     title: req.body.title,
@@ -27,7 +40,45 @@ const createEvent = async (req, res) => {
   }
 };
 
+const updateEvent = async (req, res) => {
+  if (
+    req.body.title ||
+    req.body.description ||
+    req.body.location ||
+    req.body.startDate ||
+    req.body.endDate ||
+    req.body.time ||
+    req.body.image
+  ) {
+    const event = await Event.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+    res.json(event);
+  } else {
+    res.status(400).json({ message: "No updated field provided" });
+  }
+};
+
+const deleteEvent = async (req, res) => {
+  console.log("Deleting event by the id : ", req.params.id);
+  try {
+    const event = await Event.findByIdAndDelete(req.params.id);
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
+    res.status(200).json({ message: "Event deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   getAllEvents,
   createEvent,
+  getEventById,
+  updateEvent,
+  deleteEvent,
 };
