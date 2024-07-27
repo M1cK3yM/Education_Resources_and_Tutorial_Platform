@@ -1,10 +1,5 @@
 const mongoose = require("mongoose");
 
-const Role = Object.freeze({
-  ADMIN: 0,
-  MENTOR: 1,
-  STUDENT: 2
-})
 const usersSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -19,15 +14,16 @@ const usersSchema = new mongoose.Schema({
     required: true
   },
   mobile: {
-    type: number,
+    type: Number,
     required: false
 },
   role: {
-    type: Role,
+    type: String,
+    enum: ['ADMIN', 'STUDENT', 'MENTOR'],
     required: true
   }
 });
 
-const users = mongoose.model('users', usersSchema);
+const User = mongoose.model('users', usersSchema);
 
-export default users;
+module.exports = User 
