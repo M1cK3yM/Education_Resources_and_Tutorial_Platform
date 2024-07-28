@@ -1,5 +1,5 @@
 const Resource = require("../models/resource.model");
-const Event = require("../models/resource.model");
+
 
 const getAllResource = async (req, res) => {
   try {
@@ -10,9 +10,9 @@ const getAllResource = async (req, res) => {
   }
 };
 
-const getEventByTitle = async (req, res) => {
+const getResourceById = async (req, res) => {
   try {
-    const event = await Event.findByTitle(req.params.id);
+    const resource = await Resource.findById(req.params.id);
     if (!resource) {
       return res.status(404).json({ message: "Resource not found" });
     }
@@ -65,10 +65,10 @@ const updateResource = async (req, res) => {
   }
 };
 
-const deleteEvent = async (req, res) => {
+const deleteResource = async (req, res) => {
   console.log("Deleting resource by the id : ", req.params.id);
   try {
-    const event = await Event.findByIdAndDelete(req.params.id);
+    const resource = await Resource.findByIdAndDelete(req.params.id);
     if (!resource) {
       return res.status(404).json({ message: "resource not found" });
     }
