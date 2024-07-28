@@ -4,48 +4,32 @@ const universitySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    unique: true, 
+    unique: true,
+  },
+  description: {
+    type: String,
+    required: true,
   },
   location: {
-    city: {
-      type: String,
-      required: true,
-    },
-    state: {
-      type: String,
-      required: true,
-    },
-    country: {
-      type: String,
-      required: true,
-    },
+    type: String,
+    required: true,
   },
-  establishedYear: {
+  founded: {
     type: Number,
     required: true,
   },
-  programs: [
-    {
-      name: {
-        type: String,
-        required: true,
-      },
-      degree: {
-        type: String,
-        required: true,
-        enum: ["Bachelor's", "Master's", "Doctorate"],
-      },
-      duration: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
-  website: {
+  type: {
     type: String,
     required: true,
-    match: /^(http|https):\/\/[^\s$.?#].[^\s]*$/i, // URL format validation
+    enum: ["public", "private", "community college"],
   },
+ 
+  resources: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Resource",
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,
@@ -54,12 +38,6 @@ const universitySchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-});
-
-// Update `updatedAt` before saving the document
-universitySchema.pre('save', function (next) {
-  this.updatedAt = Date.now();
-  next();
 });
 
 const University = mongoose.model("University", universitySchema);
