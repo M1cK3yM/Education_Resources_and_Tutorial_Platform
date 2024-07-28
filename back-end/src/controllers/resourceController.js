@@ -50,7 +50,7 @@ const updateResource = async (req, res) => {
     req.body.url ||
     req.body.tags ||
     req.body.createdBy ||
-    req.body.updatedAt||
+    req.body.createdAt||
     req.body.updatedAt
   ) {
     const resource = await Resource.findByIdAndUpdate(req.params.id, req.body, {

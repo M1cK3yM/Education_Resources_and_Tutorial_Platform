@@ -1,72 +1,88 @@
-const University = require("../models/University");
-const Resource = require("../models/Resource");
+const University = require("../models/universities.model");
 
-const UniversityController = {
-  getAllUniversities: async (req, res) => {
-    try {
-      const universities = await University.find({}).populate("resources");
-      res.status(200).json(universities);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
 
-  getUniversityById: async (req, res) => {
-    try {
-      const university = await University.findById(req.params.id).populate("resources");
-      if (!university) {
-        return res.status(404).json({ message: "University not found" });
-      }
-      res.status(200).json(university);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
 
-  createUniversity: async (req, res) => {
-    try {
-      const { name, description, location, founded, type } = req.body;
-      const university = new University({
-        name,
-        description,
-        location,
-        founded,
-        type,
-      });
-      await university.save();
-      res.status(201).json(university);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  },
-
-  updateUniversity: async (req, res) => {
-    try {
-      const university = await University.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true }
-      );
-      if (!university) {
-        return res.status(404).json({ message: "University not found" });
-      }
-      res.status(200).json(university);
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  },
-
-  deleteUniversity: async (req, res) => {
-    try {
-      const university = await University.findByIdAndDelete(req.params.id);
-      if (!university) {
-        return res.status(404).json({ message: "University not found" });
-      }
-      res.status(204).json();
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
-  },
+const getAllUniversities = async (req, res) => {
+  try {
+    const University = await University.find();
+    res.status(200).json(University);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
-module.exports = UniversityController;
+const getUniversitiesById = async (req, res) => {
+  try {
+    const universities = await universities.findById(req.params.id);
+    if (!universities) {
+      return res.status(404).json({ message: "Universities not found" });
+    }
+    res.status(200).json(universities);
+    console.log(req.params.universities);
+  } catch {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const createUniversity = async (req, res) => {
+  const universities = new universities({
+    name: req.body.name,
+    description: req.body.description,
+    location: req.body.location,
+    founded: req.body.founded,
+    type: req.body.type,
+    resources: req.body.resources,
+    createdAt: req.body.createdAt,
+    updatedAt: req.body.updatedAt,
+  });
+  try {
+    const newUniversities = await universities.save();
+    res.status(201).json(newUniversities);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+const updateUniversity = async (req, res) => {
+  if (
+    req.body.name ||
+    req.body.description ||
+    req.body.location ||
+    req.body.founded ||
+    req.body.type ||
+    req.body.resources ||
+    req.body.createdAt||
+    req.body.updatedAt
+  ) {
+    const universities = await University.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!universities) {
+      return res.status(404).json({ message: "universities not found" });
+    }
+    res.json(universities);
+  } else {
+    res.status(400).json({ message: "No updated field provided" });
+  }
+};
+
+const deleteUniversity= async (req, res) => {
+  console.log("Deleting  Universities by the id : ", req.params.id);
+  try {
+    const universities = await University.findByIdAndDelete(req.params.id);
+    if (!universities) {
+      return res.status(404).json({ message: "universities not found" });
+    }
+    res.status(200).json({ message: "universities deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = {
+  getAllUniversities,
+  createUniversity,
+  getUniversitiesById,
+  updateUniversity,
+  deleteUniversity,
+};
