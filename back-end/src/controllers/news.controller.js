@@ -26,11 +26,13 @@ const createNews = async (req, res) => {
   const news = new News({
     title: req.body.title,
     content: req.body.content,
+    author: req.body.author,
     publicationdate: req.body.publicationdate,
-    startDate: req.body.startDate,
+    updateddate: req.body.updateddate,
     endDate: req.body.endDate,
-    time: req.body.time,
+    tags: req.body.tags,
     image: req.body.image,
+    status: req.body.status,
   });
   try {
     const newNews = await news.save();
@@ -43,12 +45,13 @@ const createNews = async (req, res) => {
 const updateNews = async (req, res) => {
   if (
     req.body.title ||
-    req.body.description ||
-    req.body.location ||
-    req.body.startDate ||
-    req.body.endDate ||
-    req.body.time ||
-    req.body.image
+    req.body.content ||
+    req.body.author ||
+    req.body.publicationdate ||
+    req.body.updateddate ||
+    req.body.tags ||
+    req.body.image||
+    req.body.status||
   ) {
     const news = await News.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
