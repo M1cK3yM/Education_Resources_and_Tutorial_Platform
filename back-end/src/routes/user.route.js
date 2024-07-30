@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/users.controller");
+const { autherizeJwt, checkAdmin } = require("../middleware/auth.middleware");
 
-router.get("/", userController.getAllUsers);
-router.post("/", userController.createUser);
+router.get("/", autherizeJwt, checkAdmin, userController.getAllUsers);
+router.post("/register", userController.createUser);
+router.post("/login", userController.loginAccount);
 router.get("/:id", userController.getUserById);
 router.get("/role/:role", userController.getUserByRole);
 router.put("/:id", userController.updateProfile);
