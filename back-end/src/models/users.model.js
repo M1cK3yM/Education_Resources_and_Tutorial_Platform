@@ -4,19 +4,23 @@ const usersSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true
-  }, 
+  },
   profile: {
     type: String,
     required: false
   },
   email: {
-    type: String, 
+    type: String,
     required: true
   },
   mobile: {
     type: Number,
     required: false
-},
+  },
+  password: {
+    type: String,
+    required: true
+  },
   role: {
     type: String,
     enum: ["admin", "student", "mentor"],
