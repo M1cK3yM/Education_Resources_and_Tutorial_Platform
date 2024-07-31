@@ -3,17 +3,16 @@ const User = require("../models/users.model");
 
 const autherizeJwt = async (req, res, next) => {
   try {
-
-    const authHeader = req.header('Authorization');
+    const authHeader = req.header("Authorization");
 
     if (!authHeader) {
-      throw new Error('Authorization Header Not Found');
+      throw new Error("Authorization Header Not Found");
     }
 
-    const [authType, token] = authHeader.split(' ');
+    const [authType, token] = authHeader.split(" ");
 
-    if (authType !== 'Bearer' || !token) {
-      throw new Error('Invalid Authorization Header');
+    if (authType !== "Bearer" || !token) {
+      throw new Error("Invalid Authorization Header");
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -25,22 +24,29 @@ const autherizeJwt = async (req, res, next) => {
     }
 
     next();
-
   } catch (err) {
-    console.error('Authentication Error: ', err);
-    res.status(401).json({ message: "unauthorized" })
+    console.error("Authentication Error: ", err);
+    res.status(401).json({ message: "unauthorized" });
   }
-}
+};
 
 const checkAdmin = (req, res, next) => {
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({ message: "Forbidden: Admin only" })
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Forbidden: Admin only" });
   }
 
-  next()
-}
+  next();
+};
 
+const checkUser = (req, res, next) => {
+  if (req.body.role === "student" || req.body.role === "mentor") {
+    next();
+  } else {
+    return res.status(403).json({ message: "Forbidden: User only" });
+  }
+};
 module.exports = {
   autherizeJwt,
-  checkAdmin
-}
+  checkAdmin,
+  checkUser,
+};
