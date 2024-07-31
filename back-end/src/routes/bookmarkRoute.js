@@ -1,9 +1,10 @@
 const express = require("express");
 const bookmarkController = require("../controllers/bookmarkController");
 const router = express.Router();
+const authenticate = require("../middleware/eventMiddleWare");
 
-router.get("/bookmarks", bookmarkController.getBookmarks);
-router.post("/bookmarks", bookmarkController.addBookmark);
-router.delete("/bookmarks", bookmarkController.deleteBookmark);
+router.get("/", authenticate, bookmarkController.getBookmarks);
+router.post("/", authenticate, bookmarkController.addBookmark);
+router.delete("/", authenticate, bookmarkController.deleteBookmark);
 
 module.exports = router;
