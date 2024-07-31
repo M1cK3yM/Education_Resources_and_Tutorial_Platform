@@ -68,55 +68,74 @@ const getUserByRole = async (req, res) => {
 };
 
 const updateProfile = async (req, res) => {
-  if (req.body.name || req.body.profile || req.body.mobile) {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    if (!user) {
-      return res.status(404).json({ message: "Event not found" });
+  const { _id, role } = res.locals.user;
+  try {
+    if (role === "admin" || _id.toString() === req.body.id) {
+      if (req.body.name || req.body.profile || req.body.mobile) {
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+          new: true,
+        });
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+        res.json(user);
+      } else {
+        res.status(400).json({ message: "No updated field provided" });
+      }
+    } else {
+      return res.status(403).json({ message: "Forbidden: Unauthorized user" });
     }
-    res.json(user);
-  } else {
-    res.status(400).json({ message: "No updated field provided" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
 const deleteAccount = async (req, res) => {
-  try {
-    const user = User.findByIdAndDelete(req.params.id);
-    if (!user) {
-      res.status(404).json({ message: "User Not found" });
-    }
+  const { _id, role } = res.locals.user;
 
-    res.status(200).json({ message: "User Deleted Successfully" });
+  try {
+    if (role === "admin" || _id.toString() === req.body.id) {
+      const user = await User.findByIdAndDelete(req.params.id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.status(200).json({ message: "User Deleted Successfully" });
+    } else {
+      return res.status(403).json({ message: "Forbidden: Unauthorized user" });
+    }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
 const updatePassword = async (req, res) => {
-  const { id, oldPassword, newPassword } = req.body;
-
+  const { _id, role } = res.locals.user;
   try {
-    const user = await User.findById(id);
+    if (role === "admin" || _id.toString() === req.body.id) {
+      const { id, oldPassword, newPassword } = req.body;
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      const user = await User.findById(id);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const match = await bcrypt.compare(oldPassword, user.password);
+
+      if (!match) {
+        return res.status(401).json({ message: "Invalid password" });
+      }
+
+      const hashedPassword = bcrypt.hashSync(newPassword, 10);
+
+      user.password = hashedPassword;
+
+      await user.save();
+
+      res.status(200).json({ message: "Password updated successfully" });
+    } else {
+      return res.status(403).json({ message: "Forbidden: Unauthorized user" });
     }
-
-    const match = await bcrypt.compare(oldPassword, user.password);
-
-    if (!match) {
-      return res.status(401).json({ message: "Invalid password" });
-    }
-
-    const hashedPassword = bcrypt.hashSync(newPassword, 10);
-
-    user.password = hashedPassword;
-
-    await user.save();
-
-    res.status(200).json({ message: "Password updated successfully" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
