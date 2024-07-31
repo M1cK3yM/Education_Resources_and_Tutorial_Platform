@@ -2,9 +2,11 @@ const Bookmark = require("../models/bookmark.model");
 
 const addBookmark = async (req, res) => {
   const bookmark = new Bookmark({
-    userId: req.user._id,
+    // userId: req.user._id,
+    userId: req.body.userId,
     eventId: req.params.eventId,
   });
+
   try {
     const newBookmark = bookmark.save();
     res.status(201).json(newBookmark);
@@ -25,7 +27,8 @@ const getBookmarks = async (req, res) => {
 const deleteBookmark = async (req, res) => {
   try {
     const bookmark = await Bookmark.findOneAndDelete({
-      userId: req.user.id,
+      // userId: req.user.id,
+      userId: req.body.userId,
       eventId: req.params.eventId,
     });
     if (!bookmark) {

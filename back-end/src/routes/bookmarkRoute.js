@@ -4,7 +4,7 @@ const router = express.Router();
 const authenticate = require("../middleware/eventMiddleWare");
 
 router.get("/", authenticate, bookmarkController.getBookmarks);
-router.post("/", authenticate, bookmarkController.addBookmark);
+router.post("/:eventId", authenticate, bookmarkController.addBookmark);
 router.delete("/", authenticate, bookmarkController.deleteBookmark);
 
 module.exports = router;
