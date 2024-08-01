@@ -142,10 +142,42 @@ const logout = (_req, res) => {
   res.status(200).json({ message: "Logged out successfully" });
 };
 
+const refreshToken = async (req, res) => {
+  const { refreshToken } = req.cookies;
+  if (!refreshToken) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const accessToken = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: process.env.ACCESS_TOKEN_EXPIRY },
+    );
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      maxAge: 15 * 60 * 1000, // 15 minutes
+      sameSite: "strict",
+    });
+    return res.status(200).send("Access token refreshed");
+  } catch (err) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+};
+
 module.exports = {
   loginAccount,
   forgetPassword,
   resetPassword,
   registerUser,
   logout,
+  refreshToken,
 };

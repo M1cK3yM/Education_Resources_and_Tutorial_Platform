@@ -49,7 +49,7 @@ const getUser = async () => {
 const updateProfile = async (req, res) => {
   const { _id, role } = res.locals.user;
   try {
-    if (role === "admin" || _id.toString() === req.body.id) {
+    if (role === "admin" || _id.toString() === req.params.id) {
       if (req.body.name || req.body.profile || req.body.mobile) {
         const user = await User.findByIdAndUpdate(req.params.id, req.body, {
           new: true,
