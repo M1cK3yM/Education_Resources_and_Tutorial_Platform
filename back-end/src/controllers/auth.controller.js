@@ -15,17 +15,37 @@ const loginAccount = async (req, res) => {
       return res.status(404).json({ message: "Invalid Email or Password" });
     }
 
-    const jwtToken = jwt.sign(
+    const accessToken = jwt.sign(
       {
         id: user._id,
         role: user.role,
       },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: process.env.ACCESS_TOKEN_EXPIRY },
     );
 
+    const refreshToken = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+      },
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: process.env.REFRESH_TOKEN_EXPIRY },
+    );
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      sameSite: "strict",
+    });
+
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      maxAge: 15 * 60 * 1000, // 15 minutes
+      sameSite: "strict",
+    });
+
     return res.status(200).json({
-      token: jwtToken,
       message: "Logged in Successfully",
     });
   } catch (err) {
@@ -115,9 +135,17 @@ const registerUser = async (req, res) => {
   }
 };
 
+const logout = (_req, res) => {
+  res.clearCookie("refreshToken");
+  res.clearCookie("accessToken");
+  console.log("Logged out successfully");
+  res.status(200).json({ message: "Logged out successfully" });
+};
+
 module.exports = {
   loginAccount,
   forgetPassword,
   resetPassword,
   registerUser,
+  logout,
 };

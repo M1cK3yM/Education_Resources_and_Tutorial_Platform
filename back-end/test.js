@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const connectDB = require("./database");
+const cookieParser = require("cookie-parser");
 const eventRoutes = require("./src/routes/eventRoute");
 const userRoutes = require("./src/routes/user.route");
 const bookmarkRoutes = require("./src/routes/bookmarkRoute");
@@ -9,6 +10,7 @@ const adminRoutes = require("./src/routes/admin.route");
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 
 // Connect to MongoDB
 connectDB();
