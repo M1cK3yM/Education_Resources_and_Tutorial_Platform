@@ -1,9 +1,8 @@
 const Resource = require("../models/resource.model");
 
-
-const getAllResource = async (req, res) => {
+const getAllResource = async (_req, res) => {
   try {
-    const Resource = await Resource.find();
+    const resource = await Resource.find();
     res.status(200).json(resource);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -50,7 +49,7 @@ const updateResource = async (req, res) => {
     req.body.url ||
     req.body.tags ||
     req.body.createdBy ||
-    req.body.createdAt||
+    req.body.createdAt ||
     req.body.updatedAt
   ) {
     const resource = await Resource.findByIdAndUpdate(req.params.id, req.body, {
