@@ -1,8 +1,8 @@
 const News = require("../models/news.model");
 
-const getAllNews = async (req, res) => {
+const getAllNews = async (_req, res) => {
   try {
-    const News = await News.find();
+    const news = await News.find();
     res.status(200).json(news);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -50,8 +50,8 @@ const updateNews = async (req, res) => {
     req.body.publicationdate ||
     req.body.updateddate ||
     req.body.tags ||
-    req.body.image||
-    req.body.status||
+    req.body.image ||
+    req.body.status
   ) {
     const news = await News.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -85,3 +85,4 @@ module.exports = {
   updateNews,
   deleteNews,
 };
+
