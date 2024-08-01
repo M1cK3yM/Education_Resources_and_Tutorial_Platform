@@ -2,7 +2,6 @@ const Bookmark = require("../models/bookmark.model");
 
 const addBookmark = async (req, res) => {
   const bookmark = new Bookmark({
-    // userId: req.user._id,
     userId: req.body.userId,
     eventId: req.params.eventId,
   });
