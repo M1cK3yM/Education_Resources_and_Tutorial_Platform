@@ -1,46 +1,68 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/users.model");
 
-const autherizeJwt = async (req, res, next) => {
+const authorizeJwt = async (req, res, next) => {
   try {
-
-    const authHeader = req.header('Authorization');
+    const authHeader = req.header("Authorization");
 
     if (!authHeader) {
-      throw new Error('Authorization Header Not Found');
+      throw new Error("Authorization Header Not Found");
     }
 
-    const [authType, token] = authHeader.split(' ');
+    const [authType, token] = authHeader.split(" ");
 
-    if (authType !== 'Bearer' || !token) {
-      throw new Error('Invalid Authorization Header');
+    if (authType !== "Bearer" || !token) {
+      throw new Error("Invalid Authorization Header");
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
-    req.user = await User.findById(decoded.id);
+    res.locals.user = await User.findById(decoded.id);
 
-    if (!req.user) {
+    if (!res.locals.user) {
       return res.status(401).json({ message: "unauthorized" });
     }
 
     next();
-
   } catch (err) {
-    console.error('Authentication Error: ', err);
-    res.status(401).json({ message: "unauthorized" })
+    console.error("Authentication Error: ", err);
+    res.status(401).json({ message: "unauthorized" });
   }
-}
+};
 
-const checkAdmin = (req, res, next) => {
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({ message: "Forbidden: Admin only" })
+const isAdmin = (req, res, next) => {
+  if (res.locals.user.role !== "admin") {
+    return res.status(403).json({ message: "Forbidden: Admin only" });
   }
 
-  next()
-}
+  next();
+};
 
+const isUser = (req, res, next) => {
+  if (req.body.role === "student" || req.body.role === "mentor") {
+    next();
+  } else {
+    return res.status(403).json({ message: "Forbidden: User only" });
+  }
+};
+
+const checkAdmin = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user || user.role === "admin") {
+      return res.status(403).json({ message: "Invalid email or password " });
+    }
+
+    next();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 module.exports = {
-  autherizeJwt,
-  checkAdmin
-}
+  authorizeJwt,
+  isAdmin,
+  isUser,
+  checkAdmin,
+};
