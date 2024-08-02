@@ -1,10 +1,10 @@
 const express = require("express");
 const bookmarkController = require("../controllers/bookmarkController");
 const router = express.Router();
-const authenticate = require("../middleware/eventMiddleWare");
+const { authorizeJwt } = require("../middleware/auth.middleware");
 
-router.get("/", authenticate, bookmarkController.getBookmarks);
-router.post("/:eventId", authenticate, bookmarkController.addBookmark);
-router.delete("/", authenticate, bookmarkController.deleteBookmark);
+router.get("/", authorizeJwt, bookmarkController.getBookmarks);
+router.post("/:eventId", authorizeJwt, bookmarkController.addBookmark);
+router.delete("/", authorizeJwt, bookmarkController.deleteBookmark);
 
 module.exports = router;

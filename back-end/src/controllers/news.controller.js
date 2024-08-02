@@ -27,9 +27,8 @@ const createNews = async (req, res) => {
     title: req.body.title,
     content: req.body.content,
     author: req.body.author,
-    publicationdate: req.body.publicationdate,
+    publicationdate: req.body.publicationdate,    
     updateddate: req.body.updateddate,
-    endDate: req.body.endDate,
     tags: req.body.tags,
     image: req.body.image,
     status: req.body.status,
@@ -85,4 +84,3 @@ module.exports = {
   updateNews,
   deleteNews,
 };
-
