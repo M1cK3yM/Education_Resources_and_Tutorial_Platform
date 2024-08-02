@@ -8,7 +8,9 @@ const authorizeJwt = async (req, res, next) => {
     const authHeader = req.header("Authorization");
 
     if (!authHeader) {
-      return res.status(401).json({ message: "Authorization Header Not Found" });
+      return res
+        .status(401)
+        .json({ message: "Authorization Header Not Found" });
     }
 
     const [authType, token] = authHeader.split(" ");
@@ -41,14 +43,14 @@ const isAdmin = (req, res, next) => {
 // Middleware to check if the user is a student or mentor
 const isUser = (req, res, next) => {
   const allowedRoles = ["student", "mentor"];
-  if (!allowedRoles.includes(res.locals.user.role)) {
+  if (!allowedRoles.includes(req.body.role)) {
     return res.status(403).json({ message: "Forbidden: User only" });
   }
   next();
 };
 
 // Middleware to check if the user is not an admin (for user management operations)
-const checkNotAdmin = async (req, res, next) => {
+const checkAdmin = async (req, res, next) => {
   try {
     const { email } = req.body;
     const user = await User.findOne({ email });
@@ -71,8 +73,13 @@ const isResourceOwner = async (req, res, next) => {
     }
 
     // Assuming `createdBy` is a field in the Resource model representing the owner's user ID
-    if (resource.createdBy.toString() !== res.locals.user._id.toString() && res.locals.user.role !== "admin") {
-      return res.status(403).json({ message: "Forbidden: You do not own this resource" });
+    if (
+      resource.createdBy.toString() !== res.locals.user._id.toString() &&
+      res.locals.user.role !== "admin"
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Forbidden: You do not own this resource" });
     }
 
     next();
@@ -86,6 +93,6 @@ module.exports = {
   authorizeJwt,
   isAdmin,
   isUser,
-  checkNotAdmin,
-  isResourceOwner
+  checkAdmin,
+  isResourceOwner,
 };
