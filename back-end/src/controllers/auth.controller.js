@@ -8,6 +8,10 @@ const loginAccount = async (req, res) => {
   try {
     const user = await User.findOne({ email });
 
+    if (!user) {
+      return res.status(404).json({ message: "Invalid Email or Password" });
+    }
+
     console.log(user);
     const match = await bcrypt.compare(password, user.password);
 
