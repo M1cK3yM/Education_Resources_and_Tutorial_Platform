@@ -1,11 +1,22 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const UniversityController = require("../controllers/universitiesController");
+const { authorizeJwt, isAdmin } = require("../middleware/auth.middleware");
 
-const UniversityController = require('../controllers/UniversityController');
-router.get('/', UniversityController.getAllUniversities);
-router.get('/:id', UniversityController.getUniversityById);
-router.post('/', UniversityController.createUniversity);
-router.put('/:id', UniversityController.updateUniversity);
-router.delete('/:id', UniversityController.deleteUniversity);
+router.get("/", UniversityController.getAllUniversities);
+router.get("/:id", UniversityController.getUniversitiesById);
+router.post("/", authorizeJwt, isAdmin, UniversityController.createUniversity);
+router.put(
+  "/:id",
+  authorizeJwt,
+  isAdmin,
+  UniversityController.updateUniversity,
+);
+router.delete(
+  "/:id",
+  authorizeJwt,
+  isAdmin,
+  UniversityController.deleteUniversity,
+);
 
 module.exports = router;

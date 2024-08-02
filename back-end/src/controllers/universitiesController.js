@@ -1,7 +1,5 @@
 const University = require("../models/universities.model");
 
-
-
 const getAllUniversities = async (req, res) => {
   try {
     const University = await University.find();
@@ -13,7 +11,7 @@ const getAllUniversities = async (req, res) => {
 
 const getUniversitiesById = async (req, res) => {
   try {
-    const universities = await universities.findById(req.params.id);
+    const universities = await University.findById(req.params.id);
     if (!universities) {
       return res.status(404).json({ message: "Universities not found" });
     }
@@ -25,15 +23,15 @@ const getUniversitiesById = async (req, res) => {
 };
 
 const createUniversity = async (req, res) => {
-  const universities = new universities({
+  const universities = new University({
     name: req.body.name,
     description: req.body.description,
     location: req.body.location,
     founded: req.body.founded,
     type: req.body.type,
     resources: req.body.resources,
-    createdAt: req.body.createdAt,
-    updatedAt: req.body.updatedAt,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   });
   try {
     const newUniversities = await universities.save();
@@ -50,13 +48,19 @@ const updateUniversity = async (req, res) => {
     req.body.location ||
     req.body.founded ||
     req.body.type ||
-    req.body.resources ||
-    req.body.createdAt||
-    req.body.updatedAt
+    req.body.resources
   ) {
-    const universities = await University.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const updates = {
+      ...req.body,
+      updatedAt: new Date(),
+    };
+    const universities = await University.findByIdAndUpdate(
+      req.params.id,
+      updates,
+      {
+        new: true,
+      },
+    );
     if (!universities) {
       return res.status(404).json({ message: "universities not found" });
     }
@@ -66,7 +70,7 @@ const updateUniversity = async (req, res) => {
   }
 };
 
-const deleteUniversity= async (req, res) => {
+const deleteUniversity = async (req, res) => {
   console.log("Deleting  Universities by the id : ", req.params.id);
   try {
     const universities = await University.findByIdAndDelete(req.params.id);
