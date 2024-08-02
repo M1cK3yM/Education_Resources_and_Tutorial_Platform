@@ -2,7 +2,7 @@ const Bookmark = require("../models/bookmark.model");
 
 const addBookmark = async (req, res) => {
   const bookmark = new Bookmark({
-    userId: req.body.userId,
+    userId: res.locals.user._id,
     eventId: req.params.eventId,
   });
 
@@ -16,7 +16,7 @@ const addBookmark = async (req, res) => {
 
 const getBookmarks = async (req, res) => {
   try {
-    const bookmarks = await Bookmark.find({ userId: req.user.id });
+    const bookmarks = await Bookmark.find({ userId: res.locals.user._id });
     res.status(200).json(bookmarks);
   } catch (err) {
     res.status(500).json({ message: err.meassage });
@@ -26,8 +26,7 @@ const getBookmarks = async (req, res) => {
 const deleteBookmark = async (req, res) => {
   try {
     const bookmark = await Bookmark.findOneAndDelete({
-      // userId: req.user.id,
-      userId: req.body.userId,
+      userId: res.locals.user._id,
       eventId: req.params.eventId,
     });
     if (!bookmark) {
