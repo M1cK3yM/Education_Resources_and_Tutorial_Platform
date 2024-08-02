@@ -27,8 +27,8 @@ const createNews = async (req, res) => {
     title: req.body.title,
     content: req.body.content,
     author: req.body.author,
-    publicationdate: req.body.publicationdate,    
-    updateddate: req.body.updateddate,
+    publicationdate: new Date(),
+    updateddate: new Date(),
     tags: req.body.tags,
     image: req.body.image,
     status: req.body.status,
@@ -46,13 +46,15 @@ const updateNews = async (req, res) => {
     req.body.title ||
     req.body.content ||
     req.body.author ||
-    req.body.publicationdate ||
-    req.body.updateddate ||
     req.body.tags ||
     req.body.image ||
     req.body.status
   ) {
-    const news = await News.findByIdAndUpdate(req.params.id, req.body, {
+    const update = {
+      ...req.body,
+      updateddate: new Date(),
+    };
+    const news = await News.findByIdAndUpdate(req.params.id, update, {
       new: true,
     });
     if (!news) {
@@ -84,3 +86,4 @@ module.exports = {
   updateNews,
   deleteNews,
 };
+

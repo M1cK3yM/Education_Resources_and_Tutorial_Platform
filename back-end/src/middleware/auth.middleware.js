@@ -43,7 +43,7 @@ const isAdmin = (req, res, next) => {
 // Middleware to check if the user is a student or mentor
 const isUser = (req, res, next) => {
   const allowedRoles = ["student", "mentor"];
-  if (!allowedRoles.includes(res.locals.user.role)) {
+  if (!allowedRoles.includes(req.body.role)) {
     return res.status(403).json({ message: "Forbidden: User only" });
   }
   next();

@@ -15,6 +15,7 @@ connectDB();
 app.use("/api/events", routes.eventRoutes);
 app.use("/api/news", routes.newsRoutes);
 app.use("/api/resources", routes.resourceRoutes);
+app.use("/api/universities", routes.universitiesRoutes);
 app.use("/api/bookmarks", routes.bookmarkRoutes);
 app.use("/api/users", routes.userRoutes);
 app.use("/", routes.authRoutes);
