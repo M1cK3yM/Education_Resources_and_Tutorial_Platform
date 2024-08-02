@@ -2,8 +2,8 @@ const Resource = require("../models/resource.model");
 
 const getAllResource = async (_req, res) => {
   try {
-    const resource = await Resource.find();
-    res.status(200).json(resource);
+    const resources = await Resource.find();
+    res.status(200).json(resources);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -16,23 +16,13 @@ const getResourceById = async (req, res) => {
       return res.status(404).json({ message: "Resource not found" });
     }
     res.status(200).json(resource);
-    console.log(req.params.resource);
-  } catch {
+  } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
 
 const createResource = async (req, res) => {
-  const resource = new Resource({
-    title: req.body.title,
-    description: req.body.description,
-    type: req.body.type,
-    url: req.body.url,
-    tags: req.body.tags,
-    createdBy: req.body.createdBy,
-    createdAt: req.body.createdAt,
-    updatedAt: req.body.updatedAt,
-  });
+  const resource = new Resource(req.body);
   try {
     const newResource = await resource.save();
     res.status(201).json(newResource);
@@ -42,36 +32,24 @@ const createResource = async (req, res) => {
 };
 
 const updateResource = async (req, res) => {
-  if (
-    req.body.title ||
-    req.body.description ||
-    req.body.type ||
-    req.body.url ||
-    req.body.tags ||
-    req.body.createdBy ||
-    req.body.createdAt ||
-    req.body.updatedAt
-  ) {
-    const resource = await Resource.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+  try {
+    const resource = await Resource.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!resource) {
-      return res.status(404).json({ message: "resource not found" });
+      return res.status(404).json({ message: "Resource not found" });
     }
-    res.json(resource);
-  } else {
-    res.status(400).json({ message: "No updated field provided" });
+    res.status(200).json(resource);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 };
 
 const deleteResource = async (req, res) => {
-  console.log("Deleting resource by the id : ", req.params.id);
   try {
     const resource = await Resource.findByIdAndDelete(req.params.id);
     if (!resource) {
-      return res.status(404).json({ message: "resource not found" });
+      return res.status(404).json({ message: "Resource not found" });
     }
-    res.status(200).json({ message: "resource deleted successfully" });
+    res.status(200).json({ message: "Resource deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -82,5 +60,5 @@ module.exports = {
   createResource,
   getResourceById,
   updateResource,
-  deleteResource,
+  deleteResource
 };
