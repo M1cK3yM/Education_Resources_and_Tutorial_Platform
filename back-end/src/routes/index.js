@@ -5,6 +5,7 @@ const eventRoutes = require("./eventRoute");
 const newsRoutes = require("./news.route");
 const resourceRoutes = require("./resourceRoute");
 const userRoutes = require("./user.route");
+const rsvpRoutes = require("./rsvpRoute");
 
 module.exports = {
   adminRoutes,
@@ -14,4 +15,5 @@ module.exports = {
   newsRoutes,
   resourceRoutes,
   userRoutes,
+  rsvpRoutes,
 };
