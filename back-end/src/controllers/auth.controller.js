@@ -1,6 +1,16 @@
 const User = require("../models/users.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: process.env.SMTP_PORT,
+  auth: {
+    user: process.env.SMTP_USERNAME,
+    pass: process.env.SMTP_PASSWORD,
+  },
+});
 
 const loginAccount = async (req, res) => {
   const { email, password } = req.body;
@@ -120,14 +130,43 @@ const registerUser = async (req, res) => {
         message: "Email already in used",
       });
     } else {
-      bcrypt.hash(password, 10, (_err, hash) => {
-        User.create({ name, email, role, password: hash }).then((result) => {
-          return res.status(201).json({
-            message: "User Successfully Created",
-            result: result,
-          });
-        });
+      const token = jwt.sign(req.body, process.env.VERIFY_TOKEN, {
+        expiresIn: "1h",
       });
+      const link = `http://${process.env.HOST}:${process.env.PORT}/verify-email/${token}`;
+
+      transporter.sendMail(
+        {
+          from: process.env.SMTP_USERNAME,
+          to: email,
+          subject: "Verify your account",
+          text: `Please click on the following link to verify your account: ${link}`,
+          html: `<button style="background-color: #4CAF50;
+                              border: none;
+                              color: white;
+                              padding: 15px 32px; 
+                              text-align: center;
+                              text-decoration: none;
+                              display: inline-block; 
+                              font-size: 16px; 
+                              margin: 4px 2px;
+                              cursor: pointer;">
+                              <a href="${link}">Verify your account</a>
+              </button>`,
+        },
+        async (error, info) => {
+          if (error) {
+            return res.status(500).json({
+              message: "Error sending email",
+              error,
+            });
+          }
+          console.log("Email sent: " + info.response);
+          res.status(200).json({
+            message: "User verification email sent",
+          });
+        },
+      );
     }
   } catch (err) {
     console.log("unable to create user: " + err);
@@ -177,6 +216,32 @@ const refreshToken = async (req, res) => {
   }
 };
 
+const verifyEmail = async (req, res) => {
+  const token = req.params.token;
+
+  try {
+    jwt.verify(token, process.env.VERIFY_TOKEN, function (err, decoded) {
+      if (err) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
+
+      const { name, email, password, role } = decoded;
+
+      bcrypt.hash(password, 10, (_err, hash) => {
+        User.create({ name, email, role, password: hash }).then((result) => {
+          return res.status(201).json({
+            message: "User Successfully Created",
+            result: result,
+          });
+        });
+      });
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   loginAccount,
   forgetPassword,
@@ -184,4 +249,5 @@ module.exports = {
   registerUser,
   logout,
   refreshToken,
+  verifyEmail,
 };

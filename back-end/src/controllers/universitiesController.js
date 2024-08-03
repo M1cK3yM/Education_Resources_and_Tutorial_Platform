@@ -2,8 +2,8 @@ const University = require("../models/universities.model");
 
 const getAllUniversities = async (req, res) => {
   try {
-    const University = await University.find();
-    res.status(200).json(University);
+    const university = await University.find();
+    res.status(200).json(university);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -30,8 +30,7 @@ const createUniversity = async (req, res) => {
     founded: req.body.founded,
     type: req.body.type,
     resources: req.body.resources,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    logo: req.body.logo,
   });
   try {
     const newUniversities = await universities.save();
@@ -48,15 +47,12 @@ const updateUniversity = async (req, res) => {
     req.body.location ||
     req.body.founded ||
     req.body.type ||
-    req.body.resources
+    req.body.resources ||
+    req.body.logo
   ) {
-    const updates = {
-      ...req.body,
-      updatedAt: new Date(),
-    };
     const universities = await University.findByIdAndUpdate(
       req.params.id,
-      updates,
+      req.body,
       {
         new: true,
       },

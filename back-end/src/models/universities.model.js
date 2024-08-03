@@ -1,45 +1,46 @@
 const mongoose = require("mongoose");
 
-const universitySchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  location: {
-    type: String,
-    required: true,
-  },
-  founded: {
-    type: Number,
-    required: true,
-  },
-  type: {
-    type: String,
-    required: true,
-    enum: ["public", "private", "community college"],
-  },
- 
-  resources: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Resource",
+const universitySchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      unique: true,
     },
-  ],
-  createdAt: {
-    type: Date,
-    default: Date.now,
+    description: {
+      type: String,
+      required: true,
+    },
+    location: {
+      type: String,
+      required: true,
+    },
+    founded: {
+      type: Number,
+      required: true,
+    },
+    type: {
+      type: String,
+      required: true,
+      enum: ["public", "private", "community college"],
+    },
+    logo: {
+      type: String,
+      required: true,
+    },
+    resources: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Resource",
+      },
+    ],
   },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
+  {
+    timestamps: true,
   },
-});
+);
 
 const University = mongoose.model("University", universitySchema);
 
 module.exports = University;
+
