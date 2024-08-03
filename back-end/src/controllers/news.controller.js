@@ -27,8 +27,6 @@ const createNews = async (req, res) => {
     title: req.body.title,
     content: req.body.content,
     author: req.body.author,
-    publicationdate: new Date(),
-    updateddate: new Date(),
     tags: req.body.tags,
     image: req.body.image,
     status: req.body.status,
@@ -50,11 +48,7 @@ const updateNews = async (req, res) => {
     req.body.image ||
     req.body.status
   ) {
-    const update = {
-      ...req.body,
-      updateddate: new Date(),
-    };
-    const news = await News.findByIdAndUpdate(req.params.id, update, {
+    const news = await News.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
     if (!news) {
