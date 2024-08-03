@@ -6,6 +6,7 @@ const newsRoutes = require("./news.route");
 const resourceRoutes = require("./resourceRoute");
 const userRoutes = require("./user.route");
 const universitiesRoutes = require("./universitiesRoute");
+const ratingRoutes = require("./ratingRoute");
 
 module.exports = {
   adminRoutes,
@@ -16,4 +17,5 @@ module.exports = {
   resourceRoutes,
   userRoutes,
   universitiesRoutes,
+  ratingRoutes,
 };
