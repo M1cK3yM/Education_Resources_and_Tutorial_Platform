@@ -40,11 +40,7 @@ const deleteBookmark = async (req, res) => {
       (bookmark) =>
         bookmark.itemId.toString() === itemId && bookmark.itemType === itemType
     );
-    // user.bookmark = user.bookmark.filter(
-    //   (bookmark) =>
-    //     bookmark.itemId.toString() == itemId && bookmark.itemType == itemType
-    // );
-    if (bookmarkIndex) {
+    if (bookmarkIndex !== -1) {
       user.bookmark.splice(bookmarkIndex, 1);
       await user.save();
       res.status(200).json({
