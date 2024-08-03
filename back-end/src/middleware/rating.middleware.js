@@ -1,6 +1,6 @@
 const Event = require("../models/event.model");
 const Resource = require("../models/resource.model");
-const University = require("../models/university.model");
+const University = require("../models/universities.model");
 
 const checkItem = async (req, res, next) => {
   const allowedItems = ["event", "resource", "university"];
