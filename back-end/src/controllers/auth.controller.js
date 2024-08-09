@@ -78,12 +78,44 @@ const forgetPassword = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: "1h",
     });
 
     const link = `http://${process.env.HOST}:${process.env.PORT}/reset-password/${token}`;
 
+    transporter.sendMail(
+      {
+        from: process.env.SMTP_USERNAME,
+        to: email,
+        subject: "Reset your password",
+        html: `
+              <h2>Please click on the following link to reset your account</h2>
+              <button style="background-color: #325ca8;
+                              border: none;
+                              color: white;
+                              padding: 15px 32px; 
+                              text-align: center;
+                              text-decoration: none;
+                              display: inline-block; 
+                              font-size: 16px; 
+                              margin: 4px 2px;
+                              cursor: pointer;">
+                              <a href="${link}">Reset your password</a>
+              </button>`,
+      },
+      (error, info) => {
+        if (error) {
+          console.log(error);
+          res.status(500).json({ message: "Server error" });
+        } else {
+          console.log("Email sent: " + info.response);
+          res
+            .status(200)
+            .json({ message: "Password reset link sent to your email" });
+        }
+      },
+    );
     res.status(200).json({ message: "Password reset link sent to your email" });
 
     console.log(link);
@@ -98,7 +130,7 @@ const resetPassword = async (req, res) => {
   const { password } = req.body;
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
     const user = await User.findById(decoded.id);
 
@@ -140,8 +172,9 @@ const registerUser = async (req, res) => {
           from: process.env.SMTP_USERNAME,
           to: email,
           subject: "Verify your account",
-          text: `Please click on the following link to verify your account: ${link}`,
-          html: `<button style="background-color: #4CAF50;
+          html: `
+              <h2>Please click on the following link to verify your account</h2>
+              <button style="background-color: #325ca8;
                               border: none;
                               color: white;
                               padding: 15px 32px; 
@@ -156,9 +189,9 @@ const registerUser = async (req, res) => {
         },
         async (error, info) => {
           if (error) {
+            console.log(error);
             return res.status(500).json({
               message: "Error sending email",
-              error,
             });
           }
           console.log("Email sent: " + info.response);

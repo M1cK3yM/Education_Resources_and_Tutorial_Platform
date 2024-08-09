@@ -39,8 +39,13 @@ const usersSchema = new mongoose.Schema({
       },
     },
   ],
+  refreshToken: {
+    type: String,
+    required: false,
+  },
 });
 
 const User = mongoose.model("users", usersSchema);
 
 module.exports = User;
+

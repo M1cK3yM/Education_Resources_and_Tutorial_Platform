@@ -48,10 +48,15 @@ const getUser = async () => {
 
 const updateProfile = async (req, res) => {
   const { _id, role } = res.locals.user;
+  console.log(req.file);
   try {
     if (role === "admin" || _id.toString() === req.params.id) {
-      if (req.body.name || req.body.profile || req.body.mobile) {
-        const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      if (req.body.name || req.body.profile || req.body.mobile || req.file) {
+        const update = {
+          ...req.body,
+          profile: req.file.filename,
+        };
+        const user = await User.findByIdAndUpdate(req.params.id, update, {
           new: true,
         });
         if (!user) {

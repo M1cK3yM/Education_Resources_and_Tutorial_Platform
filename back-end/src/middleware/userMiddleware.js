@@ -3,6 +3,7 @@ const { check, validationResult } = require("express-validator");
 const validateCreateUser = [
   check("name").isString().withMessage("Name must be a string"),
   check("email").isEmail().withMessage("Invalid email format"),
+  check("password").isLength({ min: 8 }).withMessage("Password too short"),
   check("role")
     .isIn(["admin", "student", "mentor"])
     .withMessage("Role must be admin, student, or mentor"),
