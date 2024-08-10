@@ -21,6 +21,7 @@ app.use("/api/bookmarks", routes.bookmarkRoutes);
 app.use("/api/users", routes.userRoutes);
 app.use("/", routes.authRoutes);
 app.use("/admin", routes.adminRoutes);
+app.use("/api/events/rsvp", routes.rsvpRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
