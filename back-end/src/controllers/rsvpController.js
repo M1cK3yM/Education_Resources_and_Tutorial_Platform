@@ -24,7 +24,7 @@ const addRsvp = async (req, res) => {
       .json({ message: "RSVP added successfully", rsvp: event.rsvp });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
-    console.log(err.message);
+    console.error(err);
   }
 };
 
@@ -59,7 +59,7 @@ const deleteRsvp = async (req, res) => {
     return res.status(404).json({ message: "User not RSVPed" });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
-    console.log(err.message);
+    console.error(err);
   }
 };
 
