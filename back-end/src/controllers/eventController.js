@@ -5,7 +5,8 @@ const getAllEvents = async (req, res) => {
     const events = await Event.find();
     res.status(200).json(events);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: 'Server Error' });
+    console.error(err);
   }
 };
 
@@ -18,7 +19,8 @@ const getEventById = async (req, res) => {
     res.status(200).json(event);
     console.log(req.params.id);
   } catch {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: 'Server Error' });
+    console.error(err);
   }
 };
 
@@ -36,7 +38,8 @@ const createEvent = async (req, res) => {
     const newEvent = await event.save();
     res.status(201).json(newEvent);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({ message: 'Server Error' });
+    console.error(err);
   }
 };
 
@@ -71,7 +74,8 @@ const deleteEvent = async (req, res) => {
     }
     res.status(200).json({ message: "Event deleted successfully" });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: 'Server Error'});
+    console.error(err);
   }
 };
 
