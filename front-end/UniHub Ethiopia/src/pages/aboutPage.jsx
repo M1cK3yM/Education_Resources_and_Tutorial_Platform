@@ -1,6 +1,6 @@
 function AboutPage() {
   return (
-    <div>
+    <div className="pt-16">
       <h1>About Us</h1>
     </div>
   );

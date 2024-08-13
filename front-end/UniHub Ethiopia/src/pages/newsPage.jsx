@@ -1,6 +1,6 @@
 function NewsPage() {
   return (
-    <div>
+    <div className="pt-16">
       <h1>News</h1>
     </div>
   );

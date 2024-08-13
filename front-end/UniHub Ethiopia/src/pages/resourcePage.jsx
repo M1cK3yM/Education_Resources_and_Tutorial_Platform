@@ -1,6 +1,6 @@
 function ResourcePage() {
   return (
-    <div>
+    <div className="pt-16">
       <h1>Resources</h1>
     </div>
   );
