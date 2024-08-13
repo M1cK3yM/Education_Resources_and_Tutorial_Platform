@@ -12,7 +12,7 @@ function Navbar() {
         
         <ul className="flex space-x-4">
           <li>
-            <Link to="/" className="hover:text-accent">University</Link>
+            <Link to="/universities" className="hover:text-accent">University</Link>
           </li>
           <li>
             <Link to="/events" className="hover:text-accent">Events</Link>

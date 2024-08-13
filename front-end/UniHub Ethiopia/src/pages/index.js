@@ -4,6 +4,7 @@ import ResourcePage from "./resourcePage";
 import UserProfilePage from "./user.profile";
 import AboutPage from "./aboutPage";
 import NewsPage from "./newsPage";
+import HomePage from "./homePage";
 
 const Pages = {
   UniversityPage,
@@ -12,6 +13,7 @@ const Pages = {
   UserProfilePage,
   AboutPage,
   NewsPage,
+  HomePage,
 };
 
 export default Pages;

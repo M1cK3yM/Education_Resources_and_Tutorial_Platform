@@ -7,7 +7,8 @@ function App() {
     <Router>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Pages.UniversityPage />} />
+        <Route path="/" element={<Pages.HomePage />} />
+        <Route path="/universities" element={<Pages.UniversityPage />} />
         <Route path="/events" element={<Pages.EventsPage />} />
         <Route path="/resources" element={<Pages.ResourcePage />} />
         <Route path="/profile" element={<Pages.UserProfilePage />} />
