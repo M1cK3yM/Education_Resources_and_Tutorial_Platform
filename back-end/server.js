@@ -3,11 +3,19 @@ const express = require("express");
 const connectDB = require("./database");
 const cookieParser = require("cookie-parser");
 const routes = require("./src/routes");
+const cors = require("cors");
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
+const corsOptions = {
+  origin: "*",
+  methods: "GET,POST,PUT,DELETE",
+  allowesHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
 // Connect to MongoDB
 connectDB();
 
@@ -22,6 +30,9 @@ app.use("/api/users", routes.userRoutes);
 app.use("/", routes.authRoutes);
 app.use("/admin", routes.adminRoutes);
 app.use("/api/events/rsvp", routes.rsvpRoutes);
+
+//Serving uploaded file
+app.use("/uploads", express.static("uploads"));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
