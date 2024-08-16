@@ -30,8 +30,6 @@ const Homepage = () => {
             Search
           </Button>
         </div>
-
-        <LoginPage />
       </section>
     </main>
   );
