@@ -1,56 +1,48 @@
-/* src/components/EventPage.css */
+.event-section {
+  background-color: var(--background);
+  color: var(--foreground);
+  position: relative;
+  display: flex;
+}
 
-.event-page {
-    font-family: Arial, sans-serif;
-  }
-  
-  .banner {
-    background-image: url('src/assets/images/edwin-andrade-6liebVeAfrY-unsplash.jpg');
-    background-size: cover;
-    color: #fff;
-    text-align: center;
-    padding: 300px 20px;
-  }
-  
-  .events {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    padding: 20px;
-  }
-  
-  .event-card {
-    display: flex;
-    background: #333;
-    color: #fff;
-    overflow: hidden;
-    border-radius: 8px;
-  }
-  
-  .event-card img {
-    width: 200px;
-    height: auto;
-  }
-  
-  .event-info {
-    padding: 20px;
-  }
-  
-  .event-date {
-    color: #ffa500;
-  }
-  
-  .event-title {
-    font-size: 1.2em;
-    margin: 10px 0;
-  }
-  
-  .event-description {
-    margin-bottom: 20px;
-  }
-  
-  .event-link {
-    color: #ffa500;
-    text-decoration: none;
-  }
-  
+div {
+  display: block;
+}
+.section {
+  width: 100%;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+  position: relative;
+}
+
+.inner-section {
+  max-width: 60rem;
+  min-height: 50vh;
+  margin: 0 auto;
+  padding: 0rem 3rem;
+}
+
+.item-content {
+  justify-content: flex-start;
+}
+
+.item-list, .item-list1 {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.date {
+  font-size: 1rem;
+}
+.title {
+  font-size: 3rem;
+}
+.see-detail, .description{
+  font-size: 1.4rem;
+}
+
+.column1{
+  text-align: center;
+  padding-top: 20px;
+}
