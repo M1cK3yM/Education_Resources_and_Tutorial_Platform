@@ -1,10 +1,10 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Navbar from "@/components/navbar";
 import Pages from "./pages";
 
 function App() {
   return (
-    <Router>
+    <>
       <Navbar />
       <Routes>
         <Route path="/" element={<Pages.HomePage />} />
@@ -15,8 +15,9 @@ function App() {
         <Route path="/profile" element={<Pages.UserProfilePage />} />
         <Route path="/about" element={<Pages.AboutPage />} />
         <Route path="/news" element={<Pages.NewsPage />} />
+        <Route path="/verify" element={<Pages.VerifyPage />} />
       </Routes>
-    </Router>
+    </>
   );
 }
 

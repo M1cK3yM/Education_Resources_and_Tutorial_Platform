@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/users.controller");
-const { authorizeJwt, isUser } = require("../middleware/auth.middleware");
+const { authorizeJwt } = require("../middleware/auth.middleware");
 const multer = require("multer");
 const path = require("path");
 
@@ -35,7 +35,7 @@ router.post(
   validatePasswordUpdate,
   userController.updatePassword,
 );
-router.get("/", authorizeJwt, isUser, userController.getUser);
+router.get("/", authorizeJwt, userController.getUser);
 router.put(
   "/:id",
   authorizeJwt,

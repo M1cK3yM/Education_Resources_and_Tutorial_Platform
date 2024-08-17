@@ -50,16 +50,25 @@ const loginAccount = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-      sameSite: "strict",
+      sameSite: "Lax",
+      secure: false,
     });
 
     res.cookie("accessToken", accessToken, {
-      httpOnly: true,
       maxAge: 15 * 60 * 1000, // 15 minutes
-      sameSite: "strict",
+      sameSite: "Lax",
+      secure: false,
     });
 
     return res.status(200).json({
+      data: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        bookmark: user.bookmark,
+        profile: user.profile,
+      },
       message: "Logged in Successfully",
     });
   } catch (err) {
@@ -221,7 +230,7 @@ const logout = (_req, res) => {
 const refreshToken = async (req, res) => {
   const { refreshToken } = req.cookies;
   if (!refreshToken) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(403).json({ message: "Unauthorized" });
   }
   try {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
@@ -238,10 +247,12 @@ const refreshToken = async (req, res) => {
       { expiresIn: process.env.ACCESS_TOKEN_EXPIRY },
     );
 
+    res.clearCookie("accessToken");
+
     res.cookie("accessToken", accessToken, {
-      httpOnly: true,
       maxAge: 15 * 60 * 1000, // 15 minutes
-      sameSite: "strict",
+      sameSite: "Lax",
+      secure: false,
     });
     return res.status(200).send("Access token refreshed");
   } catch (err) {

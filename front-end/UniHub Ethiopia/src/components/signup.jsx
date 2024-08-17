@@ -19,13 +19,14 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 
-const LoginPage = () => {
+const SignupPage = () => {
   const [data, setData] = useState({
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
-  const { login } = useAuth();
+  const { register } = useAuth();
 
   const handleDataChange = (name) => (e) => {
     setData({
@@ -34,11 +35,24 @@ const LoginPage = () => {
     });
   };
 
-  const handleLogin = async () => await login(data);
+  const handleSignup = async () => {
+    if (data.password !== data.confirmPassword) {
+      // Handle password mismatch error
+      console.log("Password mismatch!");
+      return;
+    }
+    await register({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+      role: "student",
+    });
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Login</Button>
+        <Button>Sign Up</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -47,14 +61,23 @@ const LoginPage = () => {
         </DialogHeader>
         <Card className="mx-auto max-w-sm">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold">Login</CardTitle>
+            <CardTitle className="text-2xl font-bold">Sign Up</CardTitle>
             <CardDescription>
-              Enter your email and password to login to your account
+              Enter your details to create a new account
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="John Doe"
+                  required
+                  value={data.name}
+                  onChange={handleDataChange("name")}
+                />
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -75,8 +98,18 @@ const LoginPage = () => {
                   required
                 />
               </div>
-              <Button type="submit" className="w-full" onClick={handleLogin}>
-                Login
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password">Confirm Password</Label>
+                <Input
+                  id="confirm-password"
+                  type="password"
+                  value={data.confirmPassword}
+                  onChange={handleDataChange("confirmPassword")}
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full" onClick={handleSignup}>
+                Sign Up
               </Button>
             </div>
           </CardContent>
@@ -86,4 +119,4 @@ const LoginPage = () => {
   );
 };
 
-export { LoginPage };
+export { SignupPage };
