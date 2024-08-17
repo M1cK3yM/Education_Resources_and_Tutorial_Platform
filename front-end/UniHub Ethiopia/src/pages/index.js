@@ -1,5 +1,6 @@
 import UniversityPage from "./universityPage";
 import EventsPage from "./eventsPage";
+import EventDetailsPage from "./eventDetailsPage";
 import ResourcePage from "./resourcePage";
 import UserProfilePage from "./user.profile";
 import AboutPage from "./aboutPage";
@@ -14,6 +15,7 @@ const Pages = {
   AboutPage,
   NewsPage,
   HomePage,
+  EventDetailsPage,
 };
 
 export default Pages;

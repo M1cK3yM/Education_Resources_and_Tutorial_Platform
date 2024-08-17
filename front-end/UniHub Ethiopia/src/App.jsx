@@ -10,6 +10,7 @@ function App() {
         <Route path="/" element={<Pages.HomePage />} />
         <Route path="/universities" element={<Pages.UniversityPage />} />
         <Route path="/events" element={<Pages.EventsPage />} />
+        <Route path="events/:eventId" element={<Pages.EventDetailsPage />} />
         <Route path="/resources" element={<Pages.ResourcePage />} />
         <Route path="/profile" element={<Pages.UserProfilePage />} />
         <Route path="/about" element={<Pages.AboutPage />} />

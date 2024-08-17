@@ -1,6 +1,22 @@
-import "../styles/event.css";
-import EventCard from "../components/eventCard";
+import { useEffect, useState } from 'react';
+import EventCard from "../components/EventCard";
+
 function EventsPage() {
+  const [events, setEvents] = useState([]);
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/events");
+      const data = await response.json();
+      setEvents(data);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+
   return (
     <div>
       <div
@@ -20,28 +36,20 @@ function EventsPage() {
         </div>
       </div>
 
-      <EventCard
-        title="This is the Title of the Event"
-        date="Friday, August 23, 2024"
-        description="This is the description of the event that is going on for a while"
-        imageUrl="/src/assets/images/edwin-andrade-6liebVeAfrY-unsplash.jpg"
-        detailsUrl="See detail"
-      />
-      <EventCard
-        title="This is the Title of the Event"
-        date="Friday, August 23, 2024"
-        description="This is the description of the event that is going on for a while"
-        imageUrl="/src/assets/images/edwin-andrade-6liebVeAfrY-unsplash.jpg"
-        detailsUrl="See detail"
-      />
-      <EventCard
-        title="This is the Title of the Event"
-        date="Friday, August 23, 2024"
-        description="This is the description of the event that is going on for a while"
-        imageUrl="/src/assets/images/edwin-andrade-6liebVeAfrY-unsplash.jpg"
-        detailsUrl="See detail"
-      />
+      <ul>
+        {events.map((event) => (
+          <EventCard
+            key={event._id}
+            title={event.title}
+            date={`${event.startDate} - ${event.endDate}`}
+            description={event.description}
+            imageUrl={event.image ? `http://localhost:3000/uploads/${event.image}` : '/src/assets/images/edwin-andrade-6liebVeAfrY-unsplash.jpg'}
+            detailsUrl={`/events/${event._id}`}
+          />
+        ))}
+      </ul>
     </div>
   );
 }
+
 export default EventsPage;

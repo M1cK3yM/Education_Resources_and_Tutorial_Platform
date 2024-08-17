@@ -5,7 +5,7 @@ function EventCard({ title, date, description, imageUrl, detailsUrl }) {
           <p className="text-lg font-semibold">{date}</p>
           <h2 className="text-3xl  font-bold mt-2">{title}</h2>
           <p className="mt-4 text-lg">{description}</p>
-          <a href={detailsUrl} className="mt-8 inline-block  hover:underline font-bold">
+          <a href={detailsUrl} className="mt-8 inline-block  hover:underline font-bold text-xl">
             See Event Details
           </a>
         </div>
