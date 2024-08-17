@@ -14,6 +14,7 @@ function App() {
         <Route path="/profile" element={<Pages.UserProfilePage />} />
         <Route path="/about" element={<Pages.AboutPage />} />
         <Route path="/news" element={<Pages.NewsPage />} />
+        <Route path="/verify" element={<Pages.VerifyPage />} />
       </Routes>
     </>
   );

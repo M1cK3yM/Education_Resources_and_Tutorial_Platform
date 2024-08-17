@@ -39,7 +39,7 @@ const AuthProvider = ({ children }) => {
     await requestHandler(
       async () => await authApi.registerUser(data),
       setIsLoading,
-      () => console.log("verify your email"),
+      () => navigate("/verify"),
       (error) => console.log(error),
     );
   };
