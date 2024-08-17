@@ -32,7 +32,7 @@ const createUser = async (req, res) => {
   }
 };
 
-const getUser = async () => {
+const getUser = async (_req, res) => {
   const { _id, role } = res.locals.user;
 
   try {
