@@ -18,8 +18,10 @@ export function ThemeProvider({
 
   useEffect(() => {
     const root = window.document.documentElement;
+    const body = window.document.body;
 
     root.classList.remove("light", "dark");
+    body.classList.remove("rs-theme-light", "rs-theme-dark");
 
     if (theme === "system") {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
@@ -28,10 +30,12 @@ export function ThemeProvider({
         : "light";
 
       root.classList.add(systemTheme);
+      body.classList.add("rs-theme-" + systemTheme);
       return;
     }
 
     root.classList.add(theme);
+    body.classList.add("rs-theme-" + theme);
   }, [theme]);
 
   const value = {
