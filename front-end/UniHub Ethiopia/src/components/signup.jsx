@@ -108,7 +108,7 @@ const SignupPage = () => {
                   required
                 />
               </div>
-              <Button type="submit" className="w-full" onClick={handleSignup}>
+              <Button type="submit" className="" onClick={handleSignup}>
                 Sign Up
               </Button>
             </div>

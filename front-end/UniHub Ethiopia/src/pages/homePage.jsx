@@ -6,9 +6,9 @@ import Typewriter from "typewriter-effect";
 const Homepage = () => {
   return (
     <main className="flex min-h-screen flex-col items-center pt-20 w-full">
-      <section className="flex pt-16 w-full flex-col items-center">
+      <section className="flex mt-10 pt-16 w-full flex-col items-center">
         <h1
-          className=" text-5xl lg:text-6xl sm:text-2xl md:text-4xl font-bold flex"
+          className=" text-6xl font-bold block md:flex"
           style={{ fontFamily: "Montserrat" }}
         >
           Search For{" "}
@@ -23,8 +23,8 @@ const Homepage = () => {
           </span>
         </h1>
 
-        <div className="flex pt-5 mt-16 w-2/5 items-center h-36">
-          <Input className="h-10" type="text" placeholder="Search" />
+        <div className="flex pt-5 mt-8 w-3/4 lg:w-2/5 items-center h-16 min-w-80">
+          <Input className="h-12" type="text" placeholder="Search" />
           <Button className="ms-2 h-12" type="submit">
             Search
           </Button>
