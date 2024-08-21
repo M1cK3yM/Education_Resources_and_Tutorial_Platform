@@ -5,7 +5,7 @@ const getAllEvents = async (req, res) => {
     const events = await Event.find();
     res.status(200).json(events);
   } catch (err) {
-    res.status(500).json({ message: 'Server Error' });
+    res.status(500).json({ message: "Server Error" });
     console.error(err);
   }
 };
@@ -19,52 +19,60 @@ const getEventById = async (req, res) => {
     res.status(200).json(event);
     console.log(req.params.id);
   } catch {
-    res.status(500).json({ message: 'Server Error' });
+    res.status(500).json({ message: "Server Error" });
     console.error(err);
   }
 };
 
 const createEvent = async (req, res) => {
-  const event = new Event({
-    title: req.body.title,
-    description: req.body.description,
-    location: req.body.location,
-    startDate: req.body.startDate,
-    endDate: req.body.endDate,
-    time: req.body.time,
-    image: req.body.image,
-  });
   try {
+    const event = new Event({
+      title: req.body.title,
+      description: req.body.description,
+      location: req.body.location,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+      time: req.body.time,
+      image: req.file ? req.file.filename : null, // Store filename in the database
+    });
+
     const newEvent = await event.save();
     res.status(201).json(newEvent);
   } catch (err) {
-    res.status(400).json({ message: 'Server Error' });
+    res.status(400).json({ message: "Server Error" });
     console.error(err);
   }
 };
 
 const updateEvent = async (req, res) => {
-  if (
-    req.body.title ||
-    req.body.description ||
-    req.body.location ||
-    req.body.startDate ||
-    req.body.endDate ||
-    req.body.time ||
-    req.body.image
-  ) {
-    const event = await Event.findByIdAndUpdate(req.params.id, req.body, {
+  try {
+    const updateData = {
+      title: req.body.title,
+      description: req.body.description,
+      location: req.body.location,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+      time: req.body.time,
+    };
+
+    if (req.file) {
+      updateData.image = req.file.filename;
+    }
+
+    const event = await Event.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
     });
+
     if (!event) {
       return res.status(404).json({ message: "Event not found" });
     }
+
     res.json(event);
-  } else {
-    res.status(400).json({ message: "No updated field provided" });
+  } catch (err) {
+    res.status(500).json({ message: "Server Error" });
+    console.error(err);
   }
 };
-
 const deleteEvent = async (req, res) => {
   console.log("Deleting event by the id : ", req.params.id);
   try {
@@ -74,15 +82,15 @@ const deleteEvent = async (req, res) => {
     }
     res.status(200).json({ message: "Event deleted successfully" });
   } catch (err) {
-    res.status(500).json({ message: 'Server Error'});
+    res.status(500).json({ message: "Server Error" });
     console.error(err);
   }
 };
 
 module.exports = {
   getAllEvents,
-  createEvent,
+  createEvent: [upload.single("image"), createEvent],
   getEventById,
-  updateEvent,
+  updateEvent: [upload.single("image"), updateEvent],
   deleteEvent,
 };
