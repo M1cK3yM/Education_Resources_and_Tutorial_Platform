@@ -31,8 +31,7 @@ const createEvent = async (req, res) => {
       title: req.body.title,
       description: req.body.description,
       location: req.body.location,
-      startDate: req.body.startDate,
-      endDate: req.body.endDate,
+      date: req.body.date,
       time: req.body.time,
       image: req.file ? req.file.filename : null, // Store filename in the database
     });
@@ -51,8 +50,7 @@ const updateEvent = async (req, res) => {
       title: req.body.title,
       description: req.body.description,
       location: req.body.location,
-      startDate: req.body.startDate,
-      endDate: req.body.endDate,
+      date: req.body.date,
       time: req.body.time,
     };
 

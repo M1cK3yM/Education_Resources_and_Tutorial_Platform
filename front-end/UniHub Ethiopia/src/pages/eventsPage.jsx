@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import EventCard from "../components/EventCard";
 
 function EventsPage() {
@@ -41,9 +41,17 @@ function EventsPage() {
           <EventCard
             key={event._id}
             title={event.title}
-            date={`${event.startDate} - ${event.endDate}`}
+            date={
+              event.date
+                ? `${new Date(event.date).toLocaleDateString()}`
+                : "Date not available"
+            }
             description={event.description}
-            imageUrl={event.image ? `http://localhost:3000/uploads/${event.image}` : '/src/assets/images/edwin-andrade-6liebVeAfrY-unsplash.jpg'}
+            imageUrl={
+              event.image
+                ? `http://localhost:3000/uploads/${event.image}`
+                : "/src/assets/images/edwin-andrade-6liebVeAfrY-unsplash.jpg"
+            }
             detailsUrl={`/events/${event._id}`}
           />
         ))}
