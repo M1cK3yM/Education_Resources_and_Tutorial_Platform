@@ -1,4 +1,5 @@
 const Event = require("../models/event.model");
+const upload = require("../middleware/multerConfig");
 
 const getAllEvents = async (req, res) => {
   try {
