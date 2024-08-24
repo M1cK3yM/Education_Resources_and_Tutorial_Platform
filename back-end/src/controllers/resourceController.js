@@ -38,13 +38,13 @@ const createResource = async(req, res) => {
       createdBy: req.body.createdBy,
       createdAt: req.body.createdAt,
       tag: req.body.tag,
-      type: req.file ? req.file.filename : null,
+      type: req.body.type,
     });
     const newResource = await resource.save();
     res.status(201).json(newResource);
   }catch(err){
     res.status(400).json({message: 'server error'})
-    console.log(err.message)
+    console.error(err)
   }
 }
 
