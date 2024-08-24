@@ -5,10 +5,12 @@ export const requestHandler = async (api, setLoading, onSuccess, onError) => {
     const response = await api();
     if (response.status < 400) {
       onSuccess(response.data);
-      console.log(response.data);
+      return { success: true, data: response.data };
     }
   } catch (error) {
-    onError(error?.response?.data || "Something went wrong");
+    const errorMessage = error?.response?.data || "Something went wrong";
+    onError(errorMessage);
+    return { success: false, data: errorMessage };
   } finally {
     setLoading && setLoading(false);
   }

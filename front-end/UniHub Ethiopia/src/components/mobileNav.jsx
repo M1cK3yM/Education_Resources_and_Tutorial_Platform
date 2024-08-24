@@ -4,9 +4,23 @@ import { itemsConfig } from "@/api";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { LogOut } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import { LoginPage } from "./login";
+import { SignupPage } from "./signup";
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
+
+  const { user, logout } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -47,24 +61,55 @@ export default function MobileNav() {
           <span className="sr-only">Toggle Menu</span>
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="pr-0">
-        <Link
-          to="/"
-          className="mx-2 text-xl font-semibold my-12"
-          onClick={() => setOpen(false)}
-        >
-          UniHUb
-        </Link>
-        {itemsConfig.mainNav.map((item) => (
+      <SheetContent side="left" className=" flex flex-col justify-between ">
+        <div>
           <Link
-            key={item.name}
-            to={item.href}
-            className="hover:text-gray-300 block font-bold text-lg"
+            to="/"
+            className="mx-4 text-2xl font-bold my-32 text-gray-800 hover:text-indigo-600"
+            style={{ textDecoration: "none" }}
             onClick={() => setOpen(false)}
           >
-            {item.name}
+            UniHUb
           </Link>
-        ))}
+          <ScrollArea className="px-4 py-10">
+            <nav className="space-y-4">
+              {itemsConfig.mainNav.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.href}
+                  className="hover:text-gray-300 block font-bold text-lg"
+                  style={{ textDecoration: "none" }}
+                  onClick={() => setOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
+          </ScrollArea>
+        </div>
+
+        <div className="px-4 py-4">
+          {user ? (
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => {
+                setOpen(false);
+                handleLogout();
+              }}
+            >
+              <span className="mr-4">
+                <LogOut size={18} />
+              </span>
+              Logout
+            </Button>
+          ) : (
+            <div className="flex flex-col gap-4">
+              <LoginPage />
+              <SignupPage />
+            </div>
+          )}
+        </div>
       </SheetContent>
     </Sheet>
   );
