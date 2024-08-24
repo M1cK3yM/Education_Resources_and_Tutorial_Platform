@@ -91,7 +91,7 @@ const forgetPassword = async (req, res) => {
       expiresIn: "1h",
     });
 
-    const link = `http://${process.env.HOST}:${process.env.PORT}/reset-password/${token}`;
+    const link = `http://${process.env.HOST}:${process.env.CPORT}/reset-password/${token}`;
 
     transporter.sendMail(
       {
@@ -174,7 +174,8 @@ const registerUser = async (req, res) => {
       const token = jwt.sign(req.body, process.env.VERIFY_TOKEN, {
         expiresIn: "1h",
       });
-      const link = `http://${process.env.HOST}:${process.env.PORT}/verify-email/${token}`;
+      const link = `http://${process.env.HOST}:${process.env.CPORT}/verify/${token}`;
+      console.log(link);
 
       transporter.sendMail(
         {
@@ -264,12 +265,17 @@ const verifyEmail = async (req, res) => {
   const token = req.params.token;
 
   try {
-    jwt.verify(token, process.env.VERIFY_TOKEN, function (err, decoded) {
+    jwt.verify(token, process.env.VERIFY_TOKEN, async (err, decoded) => {
       if (err) {
         return res.status(401).json({ message: "Invalid token" });
       }
 
       const { name, email, password, role } = decoded;
+
+      const user = await User.findOne({ email });
+      if (user) {
+        return res.status(403).json({ message: "Email already in used" });
+      }
 
       bcrypt.hash(password, 10, (_err, hash) => {
         User.create({ name, email, role, password: hash }).then((result) => {

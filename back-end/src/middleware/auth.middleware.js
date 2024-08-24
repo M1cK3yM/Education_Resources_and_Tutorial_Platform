@@ -18,14 +18,19 @@ const authorizeJwt = async (req, res, next) => {
       return res.status(401).json({ message: "Invalid Authorization Header" });
     }
 
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    res.locals.user = await User.findById(decoded.id);
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
+      if (err) {
+        return res.status(401).json({ message: "Invalid token" });
+      }
 
-    if (!res.locals.user) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
+      res.locals.user = await User.findById(decoded.id);
 
-    next();
+      if (!res.locals.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      next();
+    });
   } catch (err) {
     console.error("Authentication Error: ", err);
     res.status(401).json({ message: "Unauthorized" });
