@@ -34,7 +34,7 @@ const EventDetailsPage = () => {
   const handleGetTicketsClick = () => {
     console.log("Is user authenticated?", isAuthenticated());
     if (!isAuthenticated()) {
-      alert("Please log in to get tickets.");
+      alert("Please login to Book Events.");
       navigate("/login");
     } else {
       window.location.href = "https://forms.gle/RLJcBTQn5ojCLk449";
@@ -78,7 +78,7 @@ const EventDetailsPage = () => {
         </div>
       </main>
 
-      <footer className="mt-12 py-12">
+      <section className="mt-12 py-12">
         <div className="container mx-auto flex flex-col md:flex-row items-center">
           <div className="md:w-1/3 mr-20">
             <img
@@ -91,18 +91,18 @@ const EventDetailsPage = () => {
           <div className="md:w-1/2 mt-8 md:mt-0 text-center md:text-left ml-10">
             <h2 className="text-3xl font-bold">MORE EVENTS AWAIT YOU!</h2>
             <p className="mt-4 w-2/3">
-              We can’t wait to connect with you during this year's events. See
+              We can’t wait to connect with you during this year’s events. See
               what else we’ve got going on in our 2024 schedule.
             </p>
             <a
-              href="#view-schedule"
+              href="localhost:5173/events"
               className="inline-block mt-8 bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-md text-lg font-bold"
             >
               VIEW 2024 SCHEDULE
             </a>
           </div>
         </div>
-      </footer>
+      </section>
     </div>
   );
 };
