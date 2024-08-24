@@ -25,7 +25,11 @@ function Navbar() {
   return (
     <nav className="absolute top-0 left-0 w-full bg-transparent text-foreground z-10">
       <div className="container mx-auto flex items-center justify-between py-4 px-6">
-        <Link to="/" className="mx-2 text-xl font-semibold hidden md:flex">
+        <Link
+          to="/"
+          className="mx-2 text-xl font-semibold hidden md:flex"
+          style={{ textDecoration: "none" }}
+        >
           UniHUB
         </Link>
         <MainNav />
@@ -41,15 +45,19 @@ function Navbar() {
                 />
                 <AvatarFallback>{user.name.toUpperCase()[0]}</AvatarFallback>
               </Avatar>
-              <Button onClick={handleLogout} variant="outline">
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className="hidden md:block"
+              >
                 Logout
               </Button>
             </>
           ) : (
-            <>
+            <div className="hidden gap-4 md:flex">
               <SignupPage />
               <LoginPage />
-            </>
+            </div>
           )}
           <ModeToggle />
         </div>

@@ -10,6 +10,8 @@ const AuthContext = createContext({
   login: async () => {},
   register: async () => {},
   logout: async () => {},
+  verifyUser: async () => {},
+  forgetPassword: async () => {},
   isAuthenticated: () => false,
 });
 
@@ -36,12 +38,14 @@ const AuthProvider = ({ children }) => {
   };
 
   const register = async (data) => {
-    await requestHandler(
+    const res = await requestHandler(
       async () => await authApi.registerUser(data),
       setIsLoading,
       () => navigate("/verify"),
       (error) => console.log(error),
     );
+
+    return res;
   };
 
   const logout = async () => {
@@ -51,6 +55,28 @@ const AuthProvider = ({ children }) => {
       () => {
         setUser(null);
         navigate("/");
+      },
+      (error) => console.log(error),
+    );
+  };
+
+  const verifyUser = async (token) => {
+    await requestHandler(
+      async () => await authApi.verifyUser(token),
+      setIsLoading,
+      () => {
+        setTimeout(() => navigate("/"), 3000);
+      },
+      () => navigate("*"),
+    );
+  };
+
+  const forgetPassword = async (data) => {
+    await requestHandler(
+      async () => await authApi.forgetPassword(data),
+      setIsLoading,
+      () => {
+        navigate("reset");
       },
       (error) => console.log(error),
     );
@@ -75,7 +101,15 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, register, logout, isAuthenticated }}
+      value={{
+        user,
+        login,
+        register,
+        logout,
+        isAuthenticated,
+        verifyUser,
+        forgetPassword,
+      }}
     >
       {isLoading ? <Loader size="md" center /> : children}
     </AuthContext.Provider>

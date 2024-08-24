@@ -1,13 +1,57 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Email } from "@rsuite/icons";
+import { useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { CircleCheckIcon } from "lucide-react";
 
 export default function Component() {
   const navigate = useNavigate();
+  const { token } = useParams();
+  const { verifyUser } = useAuth();
 
-  return (
+  useEffect(() => {
+    if (token) {
+      verifyUser(token);
+    }
+  }, [token]);
+
+  return token ? (
+    <div className="flex flex-col items-center justify-center h-screen bg-background">
+      <Card className="max-w-md w-full">
+        <CardHeader>
+          <div className="flex flex-col items-center justify-center gap-4">
+            <CircleCheckIcon className="text-green-500 size-12" />
+            <h2 className="text-2xl font-bold">Account Verified</h2>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground text-center">
+            Congratulations! Your account has been successfully verified. You
+            will be redirected to the login page in 5 seconds.
+          </p>
+        </CardContent>
+        <CardFooter>
+          <Button
+            className="w-full"
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            Continue
+          </Button>
+        </CardFooter>
+      </Card>
+    </div>
+  ) : (
     <div className="min-h-screen flex items-center justify-center ">
-      <div className="mx-auto max-w-xl bg-white dark:bg-gray-800 p-8 rounded-md shadow-md">
+      <div className="mx-auto max-w-xl p-8 rounded-md shadow-md dark:shadow-purple-500/20">
         <div className="flex items-center justify-center mb-6">
           <Email style={{ fontSize: "5em" }} />
         </div>

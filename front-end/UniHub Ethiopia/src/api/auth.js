@@ -16,4 +16,24 @@ const logoutUser = () => {
   return apiClient.get("/logout");
 };
 
-export { getUserData, loginUser, logoutUser, registerUser };
+const verifyUser = (token) => {
+  return apiClient.get("/verify-email/" + token);
+};
+
+const forgetPassword = (data) => {
+  return apiClient.post("/forget-password", data);
+};
+
+const resetPassword = (token, data) => {
+  return apiClient.post("/reset-password" + token, data);
+};
+
+export {
+  getUserData,
+  loginUser,
+  logoutUser,
+  registerUser,
+  verifyUser,
+  forgetPassword,
+  resetPassword,
+};

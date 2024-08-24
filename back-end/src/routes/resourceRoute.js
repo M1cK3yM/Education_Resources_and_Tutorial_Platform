@@ -16,11 +16,7 @@ const {
 router.use(authorizeJwt);
 
 router.get("/", authorizeJwt, isAdmin, resourceController.getAllResource);
-router.post(
-  "/",
-  authorizeJwt,
-  validateCreateResource,
-  resourceController.createResource,
+router.post("/", resourceController.createResource,
 );
 router.get("/:id", resourceController.getResourceById);
 router.put(

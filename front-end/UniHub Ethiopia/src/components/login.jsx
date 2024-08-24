@@ -18,6 +18,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useAuthDialog } from "@/context/AuthDialogContext";
+import { Link } from "react-router-dom";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const LoginPage = () => {
   const [data, setData] = useState({
@@ -26,6 +29,7 @@ const LoginPage = () => {
   });
 
   const { login } = useAuth();
+  const { isLoginOpen, toggleLogin, toggleSignup } = useAuthDialog();
 
   const handleDataChange = (name) => (e) => {
     setData({
@@ -36,7 +40,7 @@ const LoginPage = () => {
 
   const handleLogin = async () => await login(data);
   return (
-    <Dialog>
+    <Dialog onOpenChange={toggleLogin} open={isLoginOpen}>
       <DialogTrigger asChild>
         <Button variant="outline">Login</Button>
       </DialogTrigger>
@@ -74,6 +78,47 @@ const LoginPage = () => {
                   onChange={handleDataChange("password")}
                   required
                 />
+              </div>
+              <div className="flex items-center justify-between pb-2">
+                <div className="flex items-center">
+                  <Checkbox
+                    id="remember-me"
+                    name="remember-me"
+                    className="h-4 w-4 rounded"
+                  />
+                  <Label
+                    htmlFor="remember-me"
+                    className="ml-2 block text-sm text-muted-foreground"
+                  >
+                    Remember me
+                  </Label>
+                </div>
+                <div className="text-sm">
+                  <Link
+                    to="/forgot-password"
+                    className="font-medium text-blue-600"
+                    onClick={toggleLogin}
+                  >
+                    Forgot your password?
+                  </Link>
+                </div>
+              </div>
+              <div className="flex flex-row-reverse pb-2">
+                <div className="text-sm">
+                  <Link
+                    href="#"
+                    className="font-medium text-blue-600"
+                    onClick={() => {
+                      toggleLogin();
+                      toggleSignup();
+                    }}
+                  >
+                    Create Account
+                  </Link>
+                </div>
+                <div className="px-3">
+                  <Label>New to UniHUB ?</Label>
+                </div>
               </div>
               <Button type="submit" className="w-full" onClick={handleLogin}>
                 Login
