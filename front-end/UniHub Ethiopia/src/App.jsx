@@ -14,7 +14,9 @@ function App() {
         <Route path="/profile" element={<Pages.UserProfilePage />} />
         <Route path="/about" element={<Pages.AboutPage />} />
         <Route path="/news" element={<Pages.NewsPage />} />
-        <Route path="/verify" element={<Pages.VerifyPage />} />
+        <Route path="/verify/:token?" element={<Pages.VerifyPage />} />
+        <Route path="/forgot-password" element={<Pages.ForgetPasswordPage />} />
+        <Route path="*" element={<Pages.NotFoundPage />} />
       </Routes>
     </>
   );

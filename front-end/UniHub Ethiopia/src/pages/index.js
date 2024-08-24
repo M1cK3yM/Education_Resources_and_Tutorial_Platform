@@ -6,6 +6,8 @@ import AboutPage from "./aboutPage";
 import NewsPage from "./newsPage";
 import HomePage from "./homePage";
 import VerifyPage from "./verifyPage";
+import NotFoundPage from "./404Page";
+import ForgetPasswordPage from "./forgetPasswordPage";
 
 const Pages = {
   UniversityPage,
@@ -16,6 +18,8 @@ const Pages = {
   NewsPage,
   HomePage,
   VerifyPage,
+  NotFoundPage,
+  ForgetPasswordPage,
 };
 
 export default Pages;

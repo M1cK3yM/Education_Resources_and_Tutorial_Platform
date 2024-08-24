@@ -6,6 +6,7 @@ import { CustomProvider } from "rsuite";
 import { ThemeProvider } from "@/components/themeProvider";
 import "../app/globals.css";
 import { AuthProvider } from "./context/AuthContext.jsx";
+import { AuthDialogProvider } from "./context/AuthDialogContext.jsx";
 import { BrowserRouter } from "react-router-dom";
 
 createRoot(document.getElementById("root")).render(
@@ -14,7 +15,9 @@ createRoot(document.getElementById("root")).render(
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <BrowserRouter>
           <AuthProvider>
-            <App />
+            <AuthDialogProvider>
+              <App />
+            </AuthDialogProvider>
           </AuthProvider>
         </BrowserRouter>
       </ThemeProvider>
