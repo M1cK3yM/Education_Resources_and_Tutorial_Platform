@@ -1,5 +1,6 @@
 import UniversityPage from "./universityPage";
 import EventsPage from "./eventsPage";
+import EventDetailsPage from "./eventDetailsPage";
 import ResourcePage from "./resourcePage";
 import UserProfilePage from "./user.profile";
 import AboutPage from "./aboutPage";
@@ -20,6 +21,7 @@ const Pages = {
   VerifyPage,
   NotFoundPage,
   ForgetPasswordPage,
+  EventDetailsPage,
 };
 
 export default Pages;
