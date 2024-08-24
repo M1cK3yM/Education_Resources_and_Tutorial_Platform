@@ -21,15 +21,32 @@ const getResourceById = async (req, res) => {
   }
 };
 
-const createResource = async (req, res) => {
-  const resource = new Resource(req.body);
-  try {
+// const createResource = async (req, res) => {
+//   const resource = new Resource(req.body);
+//   try {
+//     const newResource = await resource.save();
+//     res.status(201).json(newResource);
+//   } catch (err) {
+//     res.status(400).json({ message: err.message });
+//   }
+// };
+const createResource = async(req, res) => {
+  try{
+    const resource = new Resource({
+      title: req.body.title,
+      description: req.body.description,
+      createdBy: req.body.createdBy,
+      createdAt: req.body.createdAt,
+      tag: req.body.tag,
+      type: req.file ? req.file.filename : null,
+    });
     const newResource = await resource.save();
     res.status(201).json(newResource);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+  }catch(err){
+    res.status(400).json({message: 'server error'})
+    console.log(err.message)
   }
-};
+}
 
 const updateResource = async (req, res) => {
   try {
