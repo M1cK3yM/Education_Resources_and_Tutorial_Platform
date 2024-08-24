@@ -1,7 +1,22 @@
-
+import { useState, useEffect } from 'react';
 import NewsCard from "../components/NewsCard";
 
 function NewsPage() {
+  const [newsData, setNewsData] = useState([]);
+
+  useEffect(() => {
+    // Fetch news data from the backend
+    fetch('/api/news')
+      .then(response => response.json())
+      .then(data => {
+        // Process the data and update the front-end
+        setNewsData(data);
+      })
+      .catch(error => {
+        console.error('Error fetching news:', error);
+      });
+  }, []);
+
   return (
     <div>
       <div
@@ -21,27 +36,16 @@ function NewsPage() {
         </div>
       </div>
 
-      <NewsCard
-        title="Breaking News:"
-        date="August 15, 2024"
-        description="..."
-        imageUrl="/src/assets/images/med-mhamdi-Ab89XuE-0Oc-unsplash.jpg"
-        detailsUrl="/news/1"
-      />
-      <NewsCard
-        title="title of the news."
-        date="August 10, 2024"
-        description=""
-        imageUrl="/src/assets/images/med-mhamdi-Ab89XuE-0Oc-unsplash.jpg"
-        detailsUrl="/news/2"
-      />
-      <NewsCard
-        title="title of the news"
-        date="August 5, 2024"
-        description=""
-        imageUrl="/src/assets/images/med-mhamdi-Ab89XuE-0Oc-unsplash.jpg"
-        detailsUrl="/news/3"
-      />
+      {newsData.map((article, index) => (
+        <NewsCard
+          key={index}
+          title={article.title}
+          date={article.date}
+          description={article.description}
+          imageUrl={article.imageUrl}
+          detailsUrl={`/news/${article.id}`}
+        />
+      ))}
     </div>
   );
 }
