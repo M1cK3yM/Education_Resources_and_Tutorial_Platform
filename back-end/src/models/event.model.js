@@ -6,6 +6,10 @@ const eventSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    note: {
+      type: String,
+      required: true,
+    },
     description: {
       type: String,
       required: true,
@@ -26,12 +30,6 @@ const eventSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    rsvp: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
   },
   {
     timestamps: true,
