@@ -1,14 +1,24 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
+import { useAuthDialog } from "@/context/AuthDialogContext";
+import {
+  FaTelegramPlane,
+  FaFacebook,
+  FaLinkedin,
+  FaInstagram,
+  FaTwitter,
+  FaWhatsapp,
+} from "react-icons/fa";
 
 const EventDetailsPage = () => {
   const { eventId } = useParams();
   const [event, setEvent] = useState(null);
-  const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { toggleLogin } = useAuthDialog();
+  const currentUrl = window.location.href;
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -33,12 +43,17 @@ const EventDetailsPage = () => {
 
   const handleGetTicketsClick = () => {
     console.log("Is user authenticated?", isAuthenticated());
+
     if (!isAuthenticated()) {
-      alert("Please login to Book Events.");
-      navigate("/login");
+      toggleLogin();
     } else {
       window.location.href = "https://forms.gle/RLJcBTQn5ojCLk449";
     }
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(currentUrl);
+    alert("Link copied to clipboard. Share it on Instagram!");
   };
 
   return (
@@ -46,16 +61,11 @@ const EventDetailsPage = () => {
       <main className="container mx-auto mt-20 px-4 md:px-0">
         <div className="flex justify-end">
           <img
-            src={
-              event.image
-                ? `http://localhost:3000/uploads/${event.image}`
-                : "/src/assets/images/edwin-andrade-6liebVeAfrY-unsplash.jpg"
-            }
+            src={event.image}
             alt={event.title}
             className="w-[65vw] h-[500px] object-cover rounded mr-10"
           />
         </div>
-
         <div className="mt-8 text-left mx-40 mt-20 max-w-3xl">
           <p className="text-yellow-500 text-lg">
             {event.date
@@ -63,18 +73,89 @@ const EventDetailsPage = () => {
               : "Date not available"}
           </p>
           <h1 className="text-4xl font-bold mt-4">{event.title}</h1>
-          <p className="mt-6">{event.description}</p>
-          <div className="mt-4 space-y-2">
-            <p>
-              <span className="font-bold">Time:</span> {event.time}
-            </p>
-            <p>
-              <span className="font-bold">Location:</span> {event.location}
-            </p>
+        </div>
+        <div className="flex flex-row">
+          <div className="mt-8 text-left mx-40 mt-20 max-w-3xl">
+            <div className="mt-4 space-y-2">
+              <p>
+                <span className=" text-lg">Time:</span> {event.time}
+              </p>
+              <p className="text-base">
+                <span className="text-lg">Location:</span> {event.location}
+              </p>
+              <p className=" text-lg">
+                Created on: {new Date(event.createdAt).toLocaleDateString()}
+              </p>
+              <p className=" text-lg">
+                Last updated: {new Date(event.updatedAt).toLocaleDateString()}
+              </p>
+            </div>
+            <Button onClick={handleGetTicketsClick} className="mt-5">
+              Book Event
+            </Button>
           </div>
-          <Button onClick={handleGetTicketsClick} className="mt-5">
-            Book Event
-          </Button>
+          <div className="w-1/2">
+            <p className="mt-6 w-auto text-base">{event.description}</p>
+            <p className="mt-8 text-base">
+              Help us spread the word by sharing this page!
+            </p>
+            <div className="my-2 flex space-x-4 overflow-visible">
+              <a
+                href={`https://t.me/share/url?url=${encodeURIComponent(
+                  currentUrl
+                )}&text=${encodeURIComponent(event.title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:text-blue-600"
+              >
+                <FaTelegramPlane size={30} />
+              </a>
+              <a
+                href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                  currentUrl
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-700"
+              >
+                <FaFacebook size={30} />
+              </a>
+              <a
+                href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+                  currentUrl
+                )}&title=${encodeURIComponent(event.title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-800 hover:text-blue-900"
+              >
+                <FaLinkedin size={30} />
+              </a>
+              <button onClick={handleCopyLink} className="text-pink-600 ">
+                <FaInstagram size={30} />
+              </button>
+              <a
+                href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(
+                  currentUrl
+                )}&text=${encodeURIComponent(event.title)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:text-blue-600"
+              >
+                <FaTwitter size={30} />
+              </a>
+              <a
+                href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
+                  `${event.title} ${currentUrl}`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-green-500 hover:text-green-600"
+              >
+                <FaWhatsapp size={30} />
+              </a>
+            </div>
+            <hr />
+          </div>
         </div>
       </main>
 
@@ -94,12 +175,11 @@ const EventDetailsPage = () => {
               We can’t wait to connect with you during this year’s events. See
               what else we’ve got going on in our 2024 schedule.
             </p>
-            <a
-              href="localhost:5173/events"
-              className="inline-block mt-8 bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-md text-lg font-bold"
+            <Link
+              to="/events" // Use Link and 'to' for navigation
             >
-              VIEW 2024 SCHEDULE
-            </a>
+              <Button className="mt-5">VIEW 2024 SCHEDULE</Button>
+            </Link>
           </div>
         </div>
       </section>
