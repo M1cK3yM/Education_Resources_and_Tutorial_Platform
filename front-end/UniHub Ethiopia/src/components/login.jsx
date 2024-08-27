@@ -21,12 +21,18 @@ import { useAuth } from "../context/AuthContext";
 import { useAuthDialog } from "@/context/AuthDialogContext";
 import { Link } from "react-router-dom";
 import { Checkbox } from "@/components/ui/checkbox";
+import { EyeIcon, EyeOffIcon } from "@/components/ui/eyeicon";
 
 const LoginPage = () => {
   const [data, setData] = useState({
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   const { login } = useAuth();
   const { isLoginOpen, toggleLogin, toggleSignup } = useAuthDialog();
@@ -69,15 +75,28 @@ const LoginPage = () => {
                   required
                 />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 relative">
                 <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={data.password}
                   onChange={handleDataChange("password")}
                   required
                 />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute bottom-1 right-1 h-7 w-7"
+                  onClick={toggleShowPassword}
+                >
+                  {showPassword ? (
+                    <EyeIcon className="h-4 w-4" />
+                  ) : (
+                    <EyeOffIcon className="h-4 w-4" />
+                  )}
+                  <span className="sr-only">Toggle password visbility</span>
+                </Button>
               </div>
               <div className="flex items-center justify-between pb-2">
                 <div className="flex items-center">

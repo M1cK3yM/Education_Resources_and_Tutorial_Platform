@@ -46,12 +46,8 @@ function EventsPage() {
                 ? `${new Date(event.date).toLocaleDateString()}`
                 : "Date not available"
             }
-            description={event.description}
-            imageUrl={
-              event.image
-                ? `http://localhost:3000/uploads/${event.image}`
-                : "/src/assets/images/edwin-andrade-6liebVeAfrY-unsplash.jpg"
-            }
+            note={event.note}
+            imageUrl={event.image}
             detailsUrl={`/events/${event._id}`}
           />
         ))}

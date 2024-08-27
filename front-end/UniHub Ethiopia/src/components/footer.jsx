@@ -1,9 +1,9 @@
 const Footer = () => {
   return (
     <div>
-      <hr />
-      <footer className="bg-transparent text-white py-8 mt-0">
-        <div className="container mx-auto px-4">
+      <footer className="bg-transparent text-white py-8 mt-8">
+        <hr />
+        <div className="container mx-auto px-4 pt-5">
           <div className="flex flex-wrap justify-between">
             <div className="w-full md:w-1/4 mb-6">
               <h4 className="text-foreground text-xl font-bold mb-4">

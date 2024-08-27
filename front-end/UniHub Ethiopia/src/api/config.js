@@ -3,6 +3,8 @@ import { getCookie } from "@/utils/requestHandler";
 
 export const BASE_URL = "http://localhost:3000/";
 
+let trial = false;
+
 const apiClient = axios.create({
   baseURL: BASE_URL,
   withCredentials: true,
@@ -19,8 +21,10 @@ apiClient.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
+    console.log(trial);
+
+    if (error.response.status === 401 && !trial) {
+      trial = true;
       try {
         await apiClient.get("/refresh");
         return apiClient(originalRequest);

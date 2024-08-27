@@ -279,6 +279,7 @@ const verifyEmail = async (req, res) => {
 
       bcrypt.hash(password, 10, (_err, hash) => {
         User.create({ name, email, role, password: hash }).then((result) => {
+          console.log(result);
           return res.status(201).json({
             message: "User Successfully Created",
             result: result,

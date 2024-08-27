@@ -1,13 +1,15 @@
+import { Button } from "../components/ui/button";
+
 function UniversityPage() {
   return (
-    <div className="pt-16 bg-gray-900 text-white">
+    <div className="pt-16 bg-transparent text-foreground">
       <div className="container mx-auto">
         <div className="px-4 md:px-0">
           <h1 className="text-4xl font-bold mb-8 text-center">
             Welcome to Our University
           </h1>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            <div className="bg-gray-800 shadow-md rounded-lg p-8">
+            <div className="bg-transparent shadow-md rounded-lg p-8">
               <h2 className="text-2xl font-bold mb-4">About the University</h2>
               <p>
                 Our university is a leading institution of higher education,
@@ -21,7 +23,7 @@ function UniversityPage() {
                 world.
               </p>
             </div>
-            <div className="bg-gray-800 shadow-md rounded-lg p-8">
+            <div className="bg-transparent shadow-md rounded-lg p-8">
               <h2 className="text-2xl font-bold mb-4">Academic Programs</h2>
               <ul className="list-disc pl-6">
                 <li>Bachelor's Degree Programs</li>
@@ -31,7 +33,7 @@ function UniversityPage() {
               </ul>
             </div>
           </div>
-          <div className="bg-gray-800 shadow-md rounded-lg p-8 mb-12">
+          <div className="bg-transparent shadow-md rounded-lg p-8 mb-12">
             <h2 className="text-2xl font-bold mb-4">Campus Life</h2>
             <p>
               Our vibrant campus offers a wide range of extracurricular
@@ -39,7 +41,7 @@ function UniversityPage() {
               enhance the overall university experience.
             </p>
           </div>
-          <div className="bg-gray-800 shadow-md rounded-lg p-8 mb-12">
+          <div className="bg-transparent shadow-md rounded-lg p-8 mb-12">
             <h2 className="text-2xl font-bold mb-4">Admissions</h2>
             <p>
               We welcome applications from students around the world. Our
@@ -47,11 +49,8 @@ function UniversityPage() {
               individuals who have the potential to thrive in our academic
               environment.
             </p>
-            <a
-              href="/admissions"
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4 inline-block"
-            >
-              Learn More About Admissions
+            <a href="/admissions">
+              <Button className="mt-8">Learn More About Admissions</Button>
             </a>
           </div>
         </div>

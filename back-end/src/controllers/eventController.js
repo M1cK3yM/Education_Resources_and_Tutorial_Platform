@@ -3,7 +3,7 @@ const upload = require("../middleware/multerConfig");
 
 const getAllEvents = async (req, res) => {
   try {
-    const events = await Event.find();
+    const events = await Event.find().sort({ date: 1 });
     res.status(200).json(events);
   } catch (err) {
     res.status(500).json({ message: "Server Error" });
@@ -18,8 +18,7 @@ const getEventById = async (req, res) => {
       return res.status(404).json({ message: "Event not found" });
     }
     res.status(200).json(event);
-    console.log(req.params.id);
-  } catch {
+  } catch (err) {
     res.status(500).json({ message: "Server Error" });
     console.error(err);
   }
@@ -30,10 +29,11 @@ const createEvent = async (req, res) => {
     const event = new Event({
       title: req.body.title,
       description: req.body.description,
+      note: req.body.note,
       location: req.body.location,
       date: req.body.date,
       time: req.body.time,
-      image: req.file ? req.file.filename : null, // Store filename in the database
+      image: req.file ? req.file.path : null, // Store Cloudinary URL in the database
     });
 
     const newEvent = await event.save();
@@ -49,13 +49,14 @@ const updateEvent = async (req, res) => {
     const updateData = {
       title: req.body.title,
       description: req.body.description,
+      note: req.body.note,
       location: req.body.location,
       date: req.body.date,
       time: req.body.time,
     };
 
     if (req.file) {
-      updateData.image = req.file.filename;
+      updateData.image = req.file.path; // Update Cloudinary URL in the database
     }
 
     const event = await Event.findByIdAndUpdate(req.params.id, updateData, {
@@ -72,6 +73,7 @@ const updateEvent = async (req, res) => {
     console.error(err);
   }
 };
+
 const deleteEvent = async (req, res) => {
   console.log("Deleting event by the id : ", req.params.id);
   try {
