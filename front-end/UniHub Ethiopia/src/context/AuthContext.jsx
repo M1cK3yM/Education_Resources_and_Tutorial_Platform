@@ -12,6 +12,7 @@ const AuthContext = createContext({
   logout: async () => {},
   verifyUser: async () => {},
   forgetPassword: async () => {},
+  getUser: async () => {},
   isAuthenticated: () => false,
 });
 
@@ -20,7 +21,8 @@ const useAuth = () => useContext(AuthContext);
 const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
-  const accessToken = getCookie("access_token");
+  const accessToken = getCookie("accessToken");
+  console.log(accessToken);
 
   const navigate = useNavigate();
 
@@ -67,7 +69,10 @@ const AuthProvider = ({ children }) => {
       () => {
         setTimeout(() => navigate("/"), 3000);
       },
-      () => navigate("*"),
+      (error) => {
+        console.log(error);
+        navigate("*");
+      },
     );
   };
 
@@ -76,7 +81,7 @@ const AuthProvider = ({ children }) => {
       async () => await authApi.forgetPassword(data),
       setIsLoading,
       () => {
-        navigate("reset");
+        navigate("reset-password");
       },
       (error) => console.log(error),
     );
@@ -84,8 +89,8 @@ const AuthProvider = ({ children }) => {
 
   const isAuthenticated = () => !!user;
 
-  useEffect(() => {
-    const getUser = async () => {
+  const getUser = async () => {
+    if (user === null) {
       await requestHandler(
         async () => await authApi.getUserData(),
         setIsLoading,
@@ -93,10 +98,31 @@ const AuthProvider = ({ children }) => {
           console.log(res);
           setUser(res);
         },
-        (error) => console.log(error),
+        (error) => {
+          console.log(error);
+        },
       );
+    }
+  };
+
+  useEffect(() => {
+    const getUser = async () => {
+      if (user === null) {
+        await requestHandler(
+          async () => await authApi.getUserData(),
+          setIsLoading,
+          (res) => {
+            console.log(res);
+            setUser(res);
+          },
+          (error) => {
+            console.log(error);
+          },
+        );
+      }
     };
-    if (user === null) getUser();
+
+    getUser();
   }, [accessToken]);
 
   return (
@@ -109,6 +135,7 @@ const AuthProvider = ({ children }) => {
         isAuthenticated,
         verifyUser,
         forgetPassword,
+        getUser,
       }}
     >
       {isLoading ? <Loader size="md" center /> : children}

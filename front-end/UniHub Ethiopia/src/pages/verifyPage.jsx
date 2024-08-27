@@ -1,7 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Email } from "@rsuite/icons";
-import { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import {
   Card,
@@ -16,11 +15,9 @@ export default function Component() {
   const { token } = useParams();
   const { verifyUser } = useAuth();
 
-  useEffect(() => {
-    if (token) {
-      verifyUser(token);
-    }
-  }, [token]);
+  if (token) {
+    verifyUser(token);
+  }
 
   return token ? (
     <div className="flex flex-col items-center justify-center h-screen bg-background">

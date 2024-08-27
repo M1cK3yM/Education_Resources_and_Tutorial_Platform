@@ -9,6 +9,7 @@ import HomePage from "./homePage";
 import VerifyPage from "./verifyPage";
 import NotFoundPage from "./404Page";
 import ForgetPasswordPage from "./forgetPasswordPage";
+import ResetPassword from "./resetPasswordPage";
 
 const Pages = {
   UniversityPage,
@@ -21,6 +22,7 @@ const Pages = {
   VerifyPage,
   NotFoundPage,
   ForgetPasswordPage,
+  ResetPassword,
   EventDetailsPage,
 };
 

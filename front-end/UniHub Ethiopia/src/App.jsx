@@ -26,6 +26,7 @@ function App() {
               path="/forgot-password"
               element={<Pages.ForgetPasswordPage />}
             />
+            <Route path="/reset-password" element={<Pages.ResetPassword />} />
             <Route path="*" element={<Pages.NotFoundPage />} />
           </Routes>
         </main>
