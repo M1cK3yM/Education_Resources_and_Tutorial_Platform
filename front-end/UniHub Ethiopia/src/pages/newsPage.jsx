@@ -1,29 +1,29 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import NewsCard from "../components/NewsCard";
 
 function NewsPage() {
   const [newsData, setNewsData] = useState([]);
 
   useEffect(() => {
-    // Fetch news data from the backend
-    fetch('/api/news')
-      .then(response => response.json())
-      .then(data => {
-        // Process the data and update the front-end
-        setNewsData(data);
-      })
-      .catch(error => {
-        console.error('Error fetching news:', error);
-      });
+    fetchNews();
   }, []);
+
+  const fetchNews = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/news");
+      const data = await response.json();
+      setNewsData(data);
+    } catch (err) {
+      console.error("Error fetching news:", err);
+    }
+  };
 
   return (
     <div>
       <div
         className="relative bg-cover bg-center h-64 md:h-96 lg:h-[500px]"
         style={{
-          backgroundImage:
-            "url('')",
+          backgroundImage: "url('')",
         }}
       >
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-foreground p-4 md:p-8 lg:p-12">
@@ -36,9 +36,9 @@ function NewsPage() {
         </div>
       </div>
 
-      {newsData.map((article, index) => (
+      {newsData.map((article) => (
         <NewsCard
-          key={index}
+          key={article._id}
           title={article.title}
           date={article.date}
           description={article.description}

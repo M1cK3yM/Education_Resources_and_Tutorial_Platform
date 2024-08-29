@@ -10,6 +10,7 @@ import VerifyPage from "./verifyPage";
 import NotFoundPage from "./404Page";
 import ForgetPasswordPage from "./forgetPasswordPage";
 import ResetPassword from "./resetPasswordPage";
+import ArchivedPage from "./archivedPage";
 
 const Pages = {
   UniversityPage,
@@ -24,6 +25,7 @@ const Pages = {
   ForgetPasswordPage,
   ResetPassword,
   EventDetailsPage,
+  ArchivedPage,
 };
 
 export default Pages;

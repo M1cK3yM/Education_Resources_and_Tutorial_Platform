@@ -13,7 +13,7 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 
-const EventDetailsPage = () => {
+const EventDetailsPage = ({ isArchived = false }) => {
   const { eventId } = useParams();
   const [event, setEvent] = useState(null);
   const { isAuthenticated } = useAuth();
@@ -23,9 +23,11 @@ const EventDetailsPage = () => {
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3000/api/events/${eventId}`
-        );
+        const endPoint = isArchived
+          ? `http://localhost:3000/api/archived-events/${eventId}`
+          : `http://localhost:3000/api/events/${eventId}`;
+        console.log(endPoint);
+        const response = await axios.get(endPoint);
         setEvent(response.data);
       } catch (error) {
         console.error("Error fetching event details:", error);
@@ -35,7 +37,7 @@ const EventDetailsPage = () => {
     if (eventId) {
       fetchEventDetails();
     }
-  }, [eventId]);
+  }, [eventId, isArchived]);
 
   if (!event) {
     return <div>Loading...</div>;
@@ -83,16 +85,23 @@ const EventDetailsPage = () => {
               <p className="text-base">
                 <span className="text-lg">Location:</span> {event.location}
               </p>
-              <p className=" text-lg">
-                Created on: {new Date(event.createdAt).toLocaleDateString()}
-              </p>
-              <p className=" text-lg">
-                Last updated: {new Date(event.updatedAt).toLocaleDateString()}
-              </p>
+              {!isArchived && (
+                <div>
+                  <p className=" text-lg">
+                    Created on: {new Date(event.createdAt).toLocaleDateString()}
+                  </p>
+                  <p className=" text-lg">
+                    Last updated:{" "}
+                    {new Date(event.updatedAt).toLocaleDateString()}
+                  </p>
+                </div>
+              )}
             </div>
-            <Button onClick={handleGetTicketsClick} className="mt-5">
-              Book Event
-            </Button>
+            {!isArchived && (
+              <Button onClick={handleGetTicketsClick} className="mt-5">
+                Book Event
+              </Button>
+            )}
           </div>
           <div className="w-1/2">
             <p className="mt-6 w-auto text-base">{event.description}</p>
@@ -179,6 +188,18 @@ const EventDetailsPage = () => {
               to="/events" // Use Link and 'to' for navigation
             >
               <Button className="mt-5">VIEW 2024 SCHEDULE</Button>
+            </Link>
+          </div>
+          <div className="md:w-1/3 mt-8 md:mt-0 text-center md:text-left ml-10">
+            <h2 className="text-2xl font-bold">PREVIOUSE EVENTS</h2>
+            <p className="mt-4 w-2/3">
+              We can’t wait to show you how the attendant of the past events
+              enjoy during this year’s events.
+            </p>
+            <Link
+              to="/archived-events" // Use Link and 'to' for navigation
+            >
+              <Button className="mt-5">VIEW PAST SCHEDULE</Button>
             </Link>
           </div>
         </div>
