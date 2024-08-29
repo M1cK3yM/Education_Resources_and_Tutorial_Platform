@@ -13,6 +13,7 @@ function ArchivedPage() {
       const response = await fetch("http://localhost:3000/api/archived-events");
       const data = await response.json();
       setArchivedEvents(data);
+      console.log(data);
     } catch (err) {
       console.error("Failed to fetch: ", err);
     }

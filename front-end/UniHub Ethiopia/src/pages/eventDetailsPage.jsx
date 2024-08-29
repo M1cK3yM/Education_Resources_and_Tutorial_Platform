@@ -27,8 +27,10 @@ const EventDetailsPage = ({ isArchived = false }) => {
           ? `http://localhost:3000/api/archived-events/${eventId}`
           : `http://localhost:3000/api/events/${eventId}`;
         console.log(endPoint);
+        console.log(isArchived);
         const response = await axios.get(endPoint);
         setEvent(response.data);
+        console.log(response);
       } catch (error) {
         console.error("Error fetching event details:", error);
       }
