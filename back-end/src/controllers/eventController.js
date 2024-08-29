@@ -3,7 +3,7 @@ const upload = require("../middleware/multerConfig");
 
 const getAllEvents = async (req, res) => {
   try {
-    const events = await Event.find().sort({ date: 1 });
+    const events = await Event.find({ status: "active" }).sort({ date: 1 });
     res.status(200).json(events);
   } catch (err) {
     res.status(500).json({ message: "Server Error" });
