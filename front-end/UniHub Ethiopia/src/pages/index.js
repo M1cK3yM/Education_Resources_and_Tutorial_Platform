@@ -11,6 +11,7 @@ import NotFoundPage from "./404Page";
 import ForgetPasswordPage from "./forgetPasswordPage";
 import ResetPassword from "./resetPasswordPage";
 import ArchivedPage from "./archivedPage";
+import RsvpForm from "./rsvpForm";
 
 const Pages = {
   UniversityPage,
@@ -26,6 +27,7 @@ const Pages = {
   ResetPassword,
   EventDetailsPage,
   ArchivedPage,
+  RsvpForm,
 };
 
 export default Pages;

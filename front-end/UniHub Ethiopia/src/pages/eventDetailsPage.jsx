@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
@@ -19,6 +19,7 @@ const EventDetailsPage = ({ isArchived = false }) => {
   const { isAuthenticated } = useAuth();
   const { toggleLogin } = useAuthDialog();
   const currentUrl = window.location.href;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -27,12 +28,10 @@ const EventDetailsPage = ({ isArchived = false }) => {
           ? `http://localhost:3000/api/archived-events/${eventId}`
           : `http://localhost:3000/api/events/${eventId}`;
         console.log(endPoint);
-        console.log(isArchived);
         const response = await axios.get(endPoint);
         setEvent(response.data);
-        console.log(response);
-      } catch (error) {
-        console.error("Error fetching event details:", error);
+      } catch (err) {
+        console.error("Error fetching event details:", err);
       }
     };
 
@@ -51,10 +50,14 @@ const EventDetailsPage = ({ isArchived = false }) => {
     if (!isAuthenticated()) {
       toggleLogin();
     } else {
-      window.location.href = "https://forms.gle/RLJcBTQn5ojCLk449";
+      navigate(`/event/rsvp/${eventId}`, {
+        state: {
+          title: event.title,
+          image: event.image,
+        },
+      });
     }
   };
-
   const handleCopyLink = () => {
     navigator.clipboard.writeText(currentUrl);
     alert("Link copied to clipboard. Share it on Instagram!");

@@ -22,6 +22,7 @@ function App() {
               path="/archived-events/:eventId"
               element={<Pages.EventDetailsPage isArchived={true} />}
             />
+            <Route path="/event/rsvp/:eventId" element={<Pages.RsvpForm />} />
             <Route path="/resources" element={<Pages.ResourcePage />} />
             <Route path="/profile" element={<Pages.UserProfilePage />} />
             <Route path="/about" element={<Pages.AboutPage />} />
