@@ -30,6 +30,11 @@ const eventSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      enum: ["active", "archived"],
+      default: "active",
+    },
   },
   {
     timestamps: true,
