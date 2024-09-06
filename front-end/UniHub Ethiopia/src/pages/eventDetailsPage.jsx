@@ -41,7 +41,11 @@ const EventDetailsPage = ({ isArchived = false }) => {
   }, [eventId, isArchived]);
 
   if (!event) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Loading...
+      </div>
+    );
   }
 
   const handleGetTicketsClick = () => {
