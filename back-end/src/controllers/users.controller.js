@@ -46,16 +46,32 @@ const getUser = async (_req, res) => {
   }
 };
 
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Invalid ID" });
+  }
+};
+
 const updateProfile = async (req, res) => {
   const { _id, role } = res.locals.user;
   console.log(req.file);
+  console.log(req.body);
   try {
     if (role === "admin" || _id.toString() === req.params.id) {
       if (req.body.name || req.body.profile || req.body.mobile || req.file) {
         const update = {
           ...req.body,
-          profile: req.file.filename,
         };
+        if (req.file) {
+          update.profile = req.file.filename;
+        }
         const user = await User.findByIdAndUpdate(req.params.id, update, {
           new: true,
         });
@@ -70,7 +86,8 @@ const updateProfile = async (req, res) => {
       return res.status(403).json({ message: "Forbidden: Unauthorized user" });
     }
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.log(err);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -132,4 +149,5 @@ module.exports = {
   createUser,
   updatePassword,
   getUser,
+  getUserById,
 };
