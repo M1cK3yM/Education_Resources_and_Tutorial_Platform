@@ -35,6 +35,7 @@ router.post(
   validatePasswordUpdate,
   userController.updatePassword,
 );
+router.get("/:id", userController.getUserById);
 router.get("/", authorizeJwt, userController.getUser);
 router.put(
   "/:id",
@@ -44,5 +45,4 @@ router.put(
   userController.updateProfile,
 );
 router.delete("/:id", authorizeJwt, userController.deleteAccount);
-
 module.exports = router;

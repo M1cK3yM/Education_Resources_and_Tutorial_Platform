@@ -18,10 +18,8 @@ const resourceController = require("../controllers/resourceController");
 router.get("/", resourceController.getAllResource);
 router.post("/", resourceController.createResource);
 router.get("/:id", resourceController.getResourceById);
-router.put(
-  "/:id",
-  resourceController.updateResource
-);
-router.delete("/:id",  resourceController.deleteResource);
+router.put("/:id", resourceController.updateResource);
+router.delete("/:id", resourceController.deleteResource);
+router.get("/search/:q", resourceController.searchResource);
 
 module.exports = router;

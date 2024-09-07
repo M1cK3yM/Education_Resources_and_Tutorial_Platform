@@ -31,6 +31,7 @@ app.use("/", routes.authRoutes);
 app.use("/admin", routes.adminRoutes);
 app.use("/api/events/rsvp", routes.rsvpRoutes);
 app.use("/api/archived-events", routes.archivedRoutes);
+app.use("/search", routes.searchRoute);
 
 //Serving uploaded file
 app.use("/uploads", express.static("uploads"));

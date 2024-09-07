@@ -30,8 +30,8 @@ const getResourceById = async (req, res) => {
 //     res.status(400).json({ message: err.message });
 //   }
 // };
-const createResource = async(req, res) => {
-  try{
+const createResource = async (req, res) => {
+  try {
     const resource = new Resource({
       title: req.body.title,
       description: req.body.description,
@@ -42,15 +42,17 @@ const createResource = async(req, res) => {
     });
     const newResource = await resource.save();
     res.status(201).json(newResource);
-  }catch(err){
-    res.status(400).json({message: 'server error'})
-    console.error(err)
+  } catch (err) {
+    res.status(400).json({ message: "server error" });
+    console.error(err);
   }
-}
+};
 
 const updateResource = async (req, res) => {
   try {
-    const resource = await Resource.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const resource = await Resource.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     if (!resource) {
       return res.status(404).json({ message: "Resource not found" });
     }
@@ -72,10 +74,49 @@ const deleteResource = async (req, res) => {
   }
 };
 
+const searchResource = async (req, res) => {
+  try {
+    const pipeline = [
+      {
+        $search: {
+          index: "searchResources",
+          text: {
+            query: req.params.q,
+            path: {
+              wildcard: "*",
+            },
+            fuzzy: {},
+          },
+        },
+      },
+      {
+        $sort: {
+          score: {
+            $meta: "textScore",
+          },
+        },
+      },
+    ];
+
+    const response = await Resource.aggregate(pipeline);
+    if (!response) {
+      return res.status(404).json({ message: "Resource not found" });
+    }
+
+    console.log(response);
+
+    res.status(200).json(response);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   getAllResource,
   createResource,
   getResourceById,
   updateResource,
-  deleteResource
+  deleteResource,
+  searchResource,
 };
