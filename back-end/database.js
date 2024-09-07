@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const mongoURI = "mongodb://localhost:27017/eduDB";
+const mongoURI = `${process.env.MONGODB_URI}:${process.env.MONGODB_PORT}/${process.env.MONGODB_DATABASE}?directConnection=true`;
 
 const connectDB = async () => {
   try {

@@ -47,5 +47,13 @@ const usersSchema = new mongoose.Schema({
 
 const User = mongoose.model("users", usersSchema);
 
-module.exports = User;
+User.createSearchIndex({
+  name: "searchUsers",
+  definition: {
+    mappings: {
+      dynamic: true,
+    },
+  },
+});
 
+module.exports = User;

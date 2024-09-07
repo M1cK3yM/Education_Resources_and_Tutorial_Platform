@@ -34,5 +34,13 @@ const newsSchema = new mongoose.Schema(
 
 const News = mongoose.model("News", newsSchema);
 
-module.exports = News;
+News.createSearchIndex({
+  name: "searchNews",
+  definition: {
+    mappings: {
+      dynamic: true,
+    },
+  },
+});
 
+module.exports = News;

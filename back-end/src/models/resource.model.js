@@ -39,4 +39,12 @@ const resourceSchema = new mongoose.Schema({
 
 const Resource = mongoose.model("Resource", resourceSchema);
 
+Resource.createSearchIndex({
+  name: "searchResources",
+  definition: {
+    mappings: {
+      dynamic: true,
+    },
+  },
+});
 module.exports = Resource;
