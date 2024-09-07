@@ -1,14 +1,25 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import Pages from "./pages";
-
+import { useState } from "react";
 function App() {
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleSearch = () => {
+    console.log("search term", searchTerm);
+    navigate(`/search/${searchTerm}`);
+  };
+
   return (
     <>
       <div className="flex flex-col min-h-screen">
         <main className="flex-grow">
-          <Navbar />
+          <Navbar
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            handleSearch={handleSearch}
+          />
           <Routes>
             <Route path="/" element={<Pages.HomePage />} />
             <Route path="/universities" element={<Pages.UniversityPage />} />
@@ -24,7 +35,6 @@ function App() {
             />
             <Route path="/event/rsvp/:eventId" element={<Pages.RsvpForm />} />
             <Route path="/resources" element={<Pages.ResourcePage />} />
-            <Route path="/profile" element={<Pages.UserProfilePage />} />
             <Route path="/about" element={<Pages.AboutPage />} />
             <Route path="/news" element={<Pages.NewsPage />} />
             <Route path="/verify/:token?" element={<Pages.VerifyPage />} />
@@ -32,7 +42,16 @@ function App() {
               path="/forgot-password"
               element={<Pages.ForgetPasswordPage />}
             />
-            <Route path="/reset-password" element={<Pages.ResetPassword />} />
+            <Route
+              path="/reset-password/:token"
+              element={<Pages.ResetPassword />}
+            />
+            <Route path="/user/:userId" element={<Pages.UserProfile />} />
+            <Route path="/setting" element={<Pages.Setting />} />
+            <Route
+              path="/search/:searchTerm"
+              element={<Pages.SearchResultPage />}
+            />
             <Route path="*" element={<Pages.NotFoundPage />} />
           </Routes>
         </main>

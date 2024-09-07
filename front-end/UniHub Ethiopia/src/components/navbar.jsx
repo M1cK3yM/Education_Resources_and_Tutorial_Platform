@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ModeToggle } from "./modeToggle";
 import { LoginPage } from "./login";
 import { SignupPage } from "./signup";
@@ -9,8 +9,9 @@ import { Button } from "@/components/ui/button";
 import { itemsConfig } from "@/api";
 import MainNav from "./mainNav";
 import MobileNav from "./mobileNav";
+import { Input } from "./ui/input";
 
-function Navbar() {
+function Navbar({ searchTerm, setSearchTerm, handleSearch }) {
   const { user, logout } = useAuth();
 
   const handleLogout = async () => {
@@ -35,16 +36,32 @@ function Navbar() {
         <MainNav />
         <MobileNav />
 
+        {!isHomePage && (
+          <form onSubmit={handleSearch} className="flex mx-10 min-w-32">
+            <Input
+              className="flex w-full"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+              }}
+              placeholder="Search"
+            />
+          </form>
+        )}
+
         <div className="flex items-center gap-4">
           {user ? (
             <>
-              <Avatar>
-                <AvatarImage
-                  src={BASE_URL + "uploads/" + user.profile}
-                  alt="@shadcn"
-                />
-                <AvatarFallback>{user.name.toUpperCase()[0]}</AvatarFallback>
-              </Avatar>
+              <Link to="/setting">
+                <Avatar>
+                  <AvatarImage
+                    src={BASE_URL + "uploads/" + user.profile}
+                    alt="@shadcn"
+                    className="object-cover"
+                  />
+                  <AvatarFallback>{user.name.toUpperCase()[0]}</AvatarFallback>
+                </Avatar>
+              </Link>
               <Button
                 onClick={handleLogout}
                 variant="outline"

@@ -2,7 +2,6 @@ import UniversityPage from "./universityPage";
 import EventsPage from "./eventsPage";
 import EventDetailsPage from "./eventDetailsPage";
 import ResourcePage from "./resourcePage";
-import UserProfilePage from "./user.profile";
 import AboutPage from "./aboutPage";
 import NewsPage from "./newsPage";
 import HomePage from "./homePage";
@@ -12,12 +11,14 @@ import ForgetPasswordPage from "./forgetPasswordPage";
 import ResetPassword from "./resetPasswordPage";
 import ArchivedPage from "./archivedPage";
 import RsvpForm from "./rsvpForm";
+import UserProfile from "./userProfilePage";
+import Setting from "./settingPage";
+import SearchResultPage from "./searchResultPage";
 
 const Pages = {
   UniversityPage,
   EventsPage,
   ResourcePage,
-  UserProfilePage,
   AboutPage,
   NewsPage,
   HomePage,
@@ -28,6 +29,9 @@ const Pages = {
   EventDetailsPage,
   ArchivedPage,
   RsvpForm,
+  UserProfile,
+  Setting,
+  SearchResultPage,
 };
 
 export default Pages;

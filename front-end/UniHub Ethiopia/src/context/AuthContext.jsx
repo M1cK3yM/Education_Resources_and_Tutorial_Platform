@@ -12,6 +12,7 @@ const AuthContext = createContext({
   logout: async () => {},
   verifyUser: async () => {},
   forgetPassword: async () => {},
+  resetPassword: async () => {},
   getUser: async () => {},
   isAuthenticated: () => false,
 });
@@ -22,7 +23,6 @@ const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState(null);
   const accessToken = getCookie("accessToken");
-  console.log(accessToken);
 
   const navigate = useNavigate();
 
@@ -87,6 +87,18 @@ const AuthProvider = ({ children }) => {
     );
   };
 
+  const resetPassword = async (token, data) => {
+    const res = await requestHandler(
+      async () => authApi.resetPassword(token, data),
+      setIsLoading,
+      () => {
+        navigate("/");
+      },
+      (error) => console.log(error),
+    );
+
+    return res;
+  };
   const isAuthenticated = () => !!user;
 
   const getUser = async () => {
@@ -135,6 +147,7 @@ const AuthProvider = ({ children }) => {
         isAuthenticated,
         verifyUser,
         forgetPassword,
+        resetPassword,
         getUser,
       }}
     >

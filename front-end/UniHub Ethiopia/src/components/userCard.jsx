@@ -52,7 +52,6 @@ function UserCard({ name, role, email, profileImageUrl }) {
         </div>
 
         <div className="md:w-2/3 md:pr-6 mt-6 md:mt-0 md:pl-6 space-y-4">
-          <h6 className="text-3xl font-light mt-2">user</h6>
           <h2 className="text-3xl font-bold">{name}</h2>
           <p className="text-lg font-semibold">{role}</p>
           <p className="text-lg">{email}</p>
