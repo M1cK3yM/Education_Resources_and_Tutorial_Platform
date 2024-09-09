@@ -112,10 +112,10 @@ const deleteAccount = async (req, res) => {
 const updatePassword = async (req, res) => {
   const { _id, role } = res.locals.user;
   try {
-    if (role === "admin" || _id.toString() === req.body.id) {
-      const { id, oldPassword, newPassword } = req.body;
+    if (role === "admin" || _id.toString() === req.params.id) {
+      const { oldPassword, newPassword } = req.body;
 
-      const user = await User.findById(id);
+      const user = await User.findById(_id);
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });

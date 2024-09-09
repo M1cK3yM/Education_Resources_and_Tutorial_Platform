@@ -20,6 +20,7 @@ const authorizeJwt = async (req, res, next) => {
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
       if (err) {
+        console.log(err);
         return res.status(401).json({ message: "Invalid token" });
       }
 
