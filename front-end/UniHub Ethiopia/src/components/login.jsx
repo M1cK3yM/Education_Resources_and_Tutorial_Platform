@@ -22,19 +22,25 @@ import { useAuthDialog } from "@/context/AuthDialogContext";
 import { Link } from "react-router-dom";
 import { Checkbox } from "@/components/ui/checkbox";
 import { EyeIcon, EyeOffIcon } from "@/components/ui/eyeicon";
+import { Loader } from "rsuite";
 
 const LoginPage = () => {
+  const { isLoading, login } = useAuth();
   const [data, setData] = useState({
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
   const [showPassword, setShowPassword] = useState(false);
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const { login } = useAuth();
   const { isLoginOpen, toggleLogin, toggleSignup } = useAuthDialog();
 
   const handleDataChange = (name) => (e) => {
@@ -44,7 +50,52 @@ const LoginPage = () => {
     });
   };
 
-  const handleLogin = async () => await login(data);
+  const validateForm = async () => {
+    let isValid = true;
+    const newErrors = {
+      email: "",
+      password: "",
+    };
+
+    if (!data.email) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    }
+
+    if (!data.password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    }
+    if (isValid) {
+      const response = await login(data);
+      console.log("response", response);
+
+      if (!response.success) {
+        if (response.data.message) {
+          newErrors["password"] = response.data.message;
+        }
+        response.data.errors?.map((err) => {
+          newErrors[err.path] = err.msg;
+        });
+
+        setErrors(newErrors);
+        console.log(errors);
+        return;
+      }
+
+      toggleLogin();
+    } else {
+      setErrors(newErrors);
+      console.log("errors", errors);
+      return;
+    }
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    validateForm();
+  };
+
   return (
     <Dialog onOpenChange={toggleLogin} open={isLoginOpen}>
       <DialogTrigger asChild>
@@ -74,6 +125,7 @@ const LoginPage = () => {
                   onChange={handleDataChange("email")}
                   required
                 />
+                {errors.email && <p className="text-red-500">{errors.email}</p>}
               </div>
               <div className="space-y-2 relative">
                 <Label htmlFor="password">Password</Label>
@@ -98,6 +150,9 @@ const LoginPage = () => {
                   <span className="sr-only">Toggle password visbility</span>
                 </Button>
               </div>
+              {errors.password && (
+                <p className="text-red-500">{errors.password}</p>
+              )}
               <div className="flex items-center justify-between pb-2">
                 <div className="flex items-center">
                   <Checkbox
@@ -139,8 +194,11 @@ const LoginPage = () => {
                   <Label>New to UniHUB ?</Label>
                 </div>
               </div>
-              <Button type="submit" className="w-full" onClick={handleLogin}>
-                Login
+              <Button type="button" className="w-full" onClick={handleLogin}>
+                <span>Login</span>
+                <span className="ml-2 w-4 h-4">
+                  {isLoading && <Loader size="sm" />}
+                </span>
               </Button>
             </div>
           </CardContent>

@@ -15,6 +15,7 @@ const AuthContext = createContext({
   resetPassword: async () => {},
   getUser: async () => {},
   isAuthenticated: () => false,
+  isLoading: true,
 });
 
 const useAuth = () => useContext(AuthContext);
@@ -27,7 +28,7 @@ const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const login = async (data) => {
-    await requestHandler(
+    const res = await requestHandler(
       async () => await authApi.loginUser(data),
       setIsLoading,
       (res) => {
@@ -37,6 +38,8 @@ const AuthProvider = ({ children }) => {
       },
       (error) => console.log(error),
     );
+
+    return res;
   };
 
   const register = async (data) => {
@@ -149,9 +152,10 @@ const AuthProvider = ({ children }) => {
         forgetPassword,
         resetPassword,
         getUser,
+        isLoading,
       }}
     >
-      {isLoading ? <Loader size="md" center /> : children}
+      {children}
     </AuthContext.Provider>
   );
 };
