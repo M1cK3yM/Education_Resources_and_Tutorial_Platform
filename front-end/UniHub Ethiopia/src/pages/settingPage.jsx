@@ -16,6 +16,7 @@ import { BASE_URL } from "@/api/config";
 import { useRef, useState } from "react";
 import { userApi } from "@/api";
 import { requestHandler } from "@/utils/requestHandler";
+import { Loader } from "rsuite";
 
 export default function Component() {
   const { isAuthenticated, user } = useAuth();
@@ -30,7 +31,7 @@ export default function Component() {
     profile: "",
   });
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleDataChange = (name) => (e) => {
     setData({
@@ -60,6 +61,72 @@ export default function Component() {
     setData(formData);
   };
 
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    let valid = true;
+    const newErrors = {
+      oldPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    };
+    if (!data.oldPassword) {
+      newErrors.oldPassword = "Password is required";
+      valid = false;
+    }
+
+    if (!data.newPassword) {
+      newErrors.newPassword = "New password is required";
+      valid = false;
+    }
+
+    if (!data.confirmPassword) {
+      newErrors.confirmPassword = "Confirm password is required";
+      valid = false;
+    }
+
+    if (data.newPassword !== data.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+      valid = false;
+    }
+
+    if (valid) {
+      const response = await requestHandler(
+        async () =>
+          await userApi.updatePassword(
+            {
+              oldPassword: data.oldPassword,
+              newPassword: data.newPassword,
+            },
+            user._id,
+          ),
+        setIsLoading,
+        () => {
+          window.location.reload();
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
+
+      if (!response.success) {
+        if (response.data.message) {
+          newErrors["confirmPassword"] = response.data.message;
+        }
+
+        response.data.errors?.map((err) => {
+          newErrors[err.path] = err.msg;
+        });
+
+        setErrors(newErrors);
+        console.log(errors);
+        return;
+      }
+    } else {
+      setErrors(newErrors);
+      return;
+    }
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
     const response = await requestHandler(
@@ -67,11 +134,13 @@ export default function Component() {
       setIsLoading,
       (res) => {
         console.log(res);
+        window.location.reload();
       },
       (err) => {
         console.log(err);
       },
     );
+    console.log(response);
   };
 
   return (
@@ -145,7 +214,11 @@ export default function Component() {
               </CardContent>
               <CardFooter>
                 <Button className="ml-auto" onClick={handleSave}>
-                  Save Changes
+                  <span className="ml-2 w-4 h-4"></span>
+                  <span>Save Changes</span>
+                  <span className="ml-2 w-4 h-4">
+                    {isLoading && <Loader size="sm" />}
+                  </span>
                 </Button>
               </CardFooter>
             </Card>
@@ -190,32 +263,46 @@ export default function Component() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="current-password">Current Password</Label>
+                    <Label htmlFor="oldPassword">Current Password</Label>
                     <Input
-                      id="current-password"
+                      id="oldPassword"
                       type="password"
                       placeholder="Enter your current password"
+                      onChange={handleDataChange("oldPassword")}
                     />
+                    {errors.oldPassword && (
+                      <p className="text-red-500">{errors.oldPassword}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="new-password">New Password</Label>
+                    <Label htmlFor="newPassword">New Password</Label>
                     <Input
-                      id="new-password"
+                      id="newPassword"
                       type="password"
                       placeholder="Enter your new password"
+                      onChange={handleDataChange("newPassword")}
                     />
+                    {errors.newPassword && (
+                      <p className="text-red-500">{errors.newPassword}</p>
+                    )}
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="confirm-password">Confirm Password</Label>
+                    <Label htmlFor="confirmPassword">Confirm Password</Label>
                     <Input
-                      id="confirm-password"
+                      id="confirmPassword"
                       type="password"
                       placeholder="Confirm your new password"
+                      onChange={handleDataChange("confirmPassword")}
                     />
+                    {errors.confirmPassword && (
+                      <p className="text-red-500">{errors.confirmPassword}</p>
+                    )}
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button className="ml-auto">Change Password</Button>
+                  <Button className="ml-auto" onClick={handleChangePassword}>
+                    Change Password
+                  </Button>
                 </CardFooter>
               </Card>
               <Card>
