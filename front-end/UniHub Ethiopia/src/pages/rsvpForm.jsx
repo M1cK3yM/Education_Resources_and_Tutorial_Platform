@@ -61,7 +61,7 @@ const RsvpForm = () => {
         <input
           type="text"
           placeholder="Name"
-          className="p-4 border shadow-2xl mb-2"
+          className="p-4 border shadow-2xl mb-2 bg-transparent"
           {...register("name", { required: true, maxLength: 80 })}
         />
         {errors.name && (
@@ -74,7 +74,7 @@ const RsvpForm = () => {
         <input
           type="text"
           placeholder="Email"
-          className=" p-4 mb-2 border shadow-2xl"
+          className=" p-4 mb-2 border shadow-2xl bg-transparent"
           {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
         />
         {errors.email && (
@@ -87,7 +87,7 @@ const RsvpForm = () => {
         <input
           type="number"
           placeholder="Number of Guests"
-          className="p-4 mb-2 border shadow-2xl"
+          className="p-4 mb-6 border shadow-2xl bg-transparent"
           {...register("numberOfGuests", {
             required: true,
             min: 1,

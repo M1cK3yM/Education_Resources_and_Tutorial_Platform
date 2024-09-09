@@ -1,5 +1,5 @@
 const Event = require("../models/event.model");
-const upload = require("../middleware/multerConfig");
+const { uploadImage } = require("../middleware/cloudinaryConfig");
 
 const getAllEvents = async (req, res) => {
   try {
@@ -90,8 +90,10 @@ const deleteEvent = async (req, res) => {
 
 module.exports = {
   getAllEvents,
-  createEvent: [upload.single("image"), createEvent],
+  // createEvent: [uploadImage.single("image"), createEvent],
+  createEvent,
   getEventById,
-  updateEvent: [upload.single("image"), updateEvent],
+  // updateEvent: [uploadImage.single("image"), updateEvent],
+  updateEvent,
   deleteEvent,
 };

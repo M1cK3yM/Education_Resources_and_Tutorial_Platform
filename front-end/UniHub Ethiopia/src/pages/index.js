@@ -11,6 +11,7 @@ import ForgetPasswordPage from "./forgetPasswordPage";
 import ResetPassword from "./resetPasswordPage";
 import ArchivedPage from "./archivedPage";
 import RsvpForm from "./rsvpForm";
+import ResourceDetailsPage from "./resourceDetailsPage";
 import UserProfile from "./userProfilePage";
 import Setting from "./settingPage";
 import SearchResultPage from "./searchResultPage";
@@ -29,6 +30,7 @@ const Pages = {
   EventDetailsPage,
   ArchivedPage,
   RsvpForm,
+  ResourceDetailsPage,
   UserProfile,
   Setting,
   SearchResultPage,

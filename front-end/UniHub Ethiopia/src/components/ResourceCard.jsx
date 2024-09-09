@@ -1,7 +1,20 @@
-import { useEffect, useRef, useState } from "react";
-import { Button } from "../components/ui/button";
+import { useEffect, useState, useRef } from "react";
+import { Link } from "react-router-dom";
 
-function ResourceCard({ title, type, description, resourceUrl }) {
+const formatSize = (sizeInBytes) => {
+  if (sizeInBytes < 1024) return `${sizeInBytes} B`;
+  if (sizeInBytes < 1048576) return `${(sizeInBytes / 1024).toFixed(2)} KB`;
+  return `${(sizeInBytes / 1048576).toFixed(2)} MB`;
+};
+
+function ResourceCard({
+  title,
+  size,
+  description,
+  coverImage,
+  numberOfPages,
+  resource,
+}) {
   const [isVisible, setIsVisible] = useState(false);
   const cardRef = useRef(null);
 
@@ -13,7 +26,7 @@ function ResourceCard({ title, type, description, resourceUrl }) {
           observer.disconnect();
         }
       },
-      { threshold: 0.1 },
+      { threshold: 0.1 }
     );
 
     if (cardRef.current) {
@@ -30,23 +43,25 @@ function ResourceCard({ title, type, description, resourceUrl }) {
   return (
     <div
       ref={cardRef}
-      className={`bg-transparent text-foreground mt-2 p-6 my-2 max-w-6xl w-4/5 mx-auto flex flex-col md:flex-row md:items-center transition-transform duration-500 ${
+      className={`flex flex-row justify-around border p-4 my-4 shadow-sm rounded-lg bg-transparent hover:shadow-lg transition-shadow duration-300${
         isVisible
           ? "animate-slide-in-up animate-zoom-in"
           : "opacity-0 translate-y-4"
-      } shadow-2xl`}
+      }`}
     >
-      <div className="md:w-2/3 md:pr-6">
-        <h2 className="text-3xl font-bold mt-2">{title}</h2>
-        <p className="text-lg font-semibold">{type}</p>
-        <p className="mt-2 text-lg">{description}</p>
-        <a href={resourceUrl} className="mt-8">
-          <Button className="mt-8">View Resource</Button>
-        </a>
+      <img src={coverImage} alt={title} className="cover-image" />
+      <div className="flex flex-col">
+        <Link to={`/resources/${resource._id}`}>
+          <h2 className="text-xl font-semibold mb-2">{title}</h2>
+        </Link>
+        <div className="flex text-foreground text-sm">
+          <span className="mr-4">{numberOfPages} Pages</span>
+          <span>{formatSize(size)}</span>
+        </div>
+        <p className="mt-2 text-sm text-foreground">{description}</p>
       </div>
     </div>
   );
 }
 
 export default ResourceCard;
-

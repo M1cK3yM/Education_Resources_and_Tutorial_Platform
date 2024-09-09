@@ -1,50 +1,66 @@
 const Resource = require("../models/resource.model");
+const { uploadDocument } = require("../middleware/cloudinaryConfig");
+const pdf = require("pdf-parse");
+const axios = require("axios");
 
-const getAllResource = async (_req, res) => {
+const createResource = async (req, res) => {
+  try {
+    const response = await axios.get(req.file.path, {
+      responseType: "arraybuffer", // Fetch the file as a buffer
+    });
+
+    const pdfBuffer = Buffer.from(response.data); // Convert response data to buffer
+
+    // Extract PDF details
+    const pdfData = await pdf(pdfBuffer);
+
+    const numberOfPages = pdfData.numpages; // Get number of pages from the PDF
+
+    const resource = new Resource({
+      title: req.body.title,
+      description: req.body.description,
+      type: req.body.type,
+      tags: req.body.tags ? req.body.tags.split(",") : [],
+      resource: req.file ? req.file.path : null, // Store Cloudinary URL in the database
+      size: req.file.size,
+      numberOfPages: numberOfPages,
+      createdBy: res.locals.user?._id,
+    });
+
+    const newResource = await resource.save();
+    res.status(201).json(newResource);
+  } catch (err) {
+    res.status(400).json({ message: "Server Error" });
+    console.error(err);
+  }
+};
+
+// Get all resources
+const getAllResources = async (req, res) => {
   try {
     const resources = await Resource.find();
     res.status(200).json(resources);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err);
+    res.status(500).json({ error: "Error fetching resources" });
   }
 };
 
+// Get a single resource by ID
 const getResourceById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const resource = await Resource.findById(req.params.id);
+    const resource = await Resource.findById(id).populate(
+      "createdBy",
+      "username email"
+    );
     if (!resource) {
-      return res.status(404).json({ message: "Resource not found" });
+      return res.status(404).json({ error: "Resource not found" });
     }
     res.status(200).json(resource);
   } catch (err) {
     res.status(500).json({ message: err.message });
-  }
-};
-
-// const createResource = async (req, res) => {
-//   const resource = new Resource(req.body);
-//   try {
-//     const newResource = await resource.save();
-//     res.status(201).json(newResource);
-//   } catch (err) {
-//     res.status(400).json({ message: err.message });
-//   }
-// };
-const createResource = async (req, res) => {
-  try {
-    const resource = new Resource({
-      title: req.body.title,
-      description: req.body.description,
-      createdBy: req.body.createdBy,
-      createdAt: req.body.createdAt,
-      tag: req.body.tag,
-      type: req.body.type,
-    });
-    const newResource = await resource.save();
-    res.status(201).json(newResource);
-  } catch (err) {
-    res.status(400).json({ message: "server error" });
-    console.error(err);
   }
 };
 
@@ -54,19 +70,23 @@ const updateResource = async (req, res) => {
       new: true,
     });
     if (!resource) {
-      return res.status(404).json({ message: "Resource not found" });
+      return res.status(404).json({ error: "Resource not found" });
     }
-    res.status(200).json(resource);
+    res.json(resource);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(500).json({ message: "Server Error" });
+    console.error(err);
   }
 };
 
+// Delete a resource by ID
 const deleteResource = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const resource = await Resource.findByIdAndDelete(req.params.id);
+    const resource = await Resource.findByIdAndDelete(id);
     if (!resource) {
-      return res.status(404).json({ message: "Resource not found" });
+      return res.status(404).json({ error: "Resource not found" });
     }
     res.status(200).json({ message: "Resource deleted successfully" });
   } catch (err) {
@@ -113,10 +133,11 @@ const searchResource = async (req, res) => {
 };
 
 module.exports = {
-  getAllResource,
+  // createResource: [uploadDocument.single("resource"), createResource],
   createResource,
+  getAllResources,
   getResourceById,
-  updateResource,
   deleteResource,
+  updateResource,
   searchResource,
 };
