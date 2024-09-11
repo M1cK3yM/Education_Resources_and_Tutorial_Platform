@@ -1,6 +1,8 @@
 const User = require("../models/users.model.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const {cloudinary} = require("../middleware/cloudinaryConfig.js");
+const streamifier = require("streamifier");
 
 const createUser = async (req, res) => {
   const { name, email, password, role } = req.body;
@@ -70,7 +72,31 @@ const updateProfile = async (req, res) => {
           ...req.body,
         };
         if (req.file) {
-          update.profile = req.file.filename;
+          const profile = await new Promise((resolve, result) => {
+            const cld_profile_upstream = cloudinary.uploader.upload_stream(
+              { folder: 'profiles', },
+              (error, result) => {
+                if (result) {
+                  resolve(result);
+                } else {
+                  resolve(error);
+                }
+              }
+            );
+
+            streamifier.createReadStream(req.file.buffer).pipe(cld_profile_upstream);
+          });
+
+          const url = cloudinary.url(profile.public_id, {
+            transformation: [
+              {
+                quality: 'auto',
+                fetch_format: 'auto'
+              }
+            ]
+          });
+          console.log("profile url", url);
+          update.profile = url;
         }
         const user = await User.findByIdAndUpdate(req.params.id, update, {
           new: true,

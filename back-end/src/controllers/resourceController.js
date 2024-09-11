@@ -1,36 +1,68 @@
 const Resource = require("../models/resource.model");
-const { uploadDocument } = require("../middleware/cloudinaryConfig");
-const pdf = require("pdf-parse");
-const axios = require("axios");
+const pdfParse = require("pdf-parse");
+const pdfThumb = require("pdf-thumbnail");
+const {cloudinary} = require("../middleware/cloudinaryConfig");
+const streamifier = require("streamifier");
+const fs = require("fs");
+const { uploadPdf } = require("../middleware/firebase.middleware");
 
 const createResource = async (req, res) => {
   try {
-    const response = await axios.get(req.file.path, {
-      responseType: "arraybuffer", // Fetch the file as a buffer
+    const pdfData = await pdfParse(req.file.buffer);
+
+    const thumbStream = await pdfThumb(req.file.buffer, {
+       compress: {
+        type:"JPEG",
+        quality: 70
+      }
+    });
+    const thumbBuffer = await new Promise((resolve, reject) => {
+      const chunks = [];
+      thumbStream.on('data', chunk => chunks.push(chunk));
+      thumbStream.on('end', () => resolve(Buffer.concat(chunks)));
+      thumbStream.on('error', reject);
     });
 
-    const pdfBuffer = Buffer.from(response.data); // Convert response data to buffer
+    const thumb = await new Promise((resolve, reject) =>{
+      const cld_thumb_upstream = cloudinary.uploader.upload_stream(
+        { folder: 'resources' },
+        (error, result) => {
+          if (result) {
+            resolve(result);
+          } else { resolve(error)};
+        }
+      )
 
-    // Extract PDF details
-    const pdfData = await pdf(pdfBuffer);
+      streamifier.createReadStream(thumbBuffer).pipe(cld_thumb_upstream);
+    })
 
-    const numberOfPages = pdfData.numpages; // Get number of pages from the PDF
+    console.log(thumb);
 
-    const resource = new Resource({
-      title: req.body.title,
-      description: req.body.description,
-      type: req.body.type,
-      tags: req.body.tags ? req.body.tags.split(",") : [],
-      resource: req.file ? req.file.path : null, // Store Cloudinary URL in the database
-      size: req.file.size,
-      numberOfPages: numberOfPages,
-      createdBy: res.locals.user?._id,
-    });
+    const numberOfPages = pdfData.numpages;
 
-    const newResource = await resource.save();
-    res.status(201).json(newResource);
-  } catch (err) {
-    res.status(400).json({ message: "Server Error" });
+    const pdfUrl = await uploadPdf(req.file.originalname, req.file.buffer);
+
+    if (pdfUrl.success) {
+      const resource = new Resource({
+          title: req.body.title,
+          description: req.body.description,
+          type: req.body.type,
+          tags: req.body.tags ? req.body.tags.split(",") : [],
+          resource: pdfUrl.url, // Store Cloudinary URL in the database
+          coverImage: thumb.url,
+          size: req.file.size,
+          numberOfPages: numberOfPages,
+          createdBy: res.locals.user?._id,
+        });
+
+        const newResource = await resource.save();
+        return res.status(201).json(newResource);
+    }
+
+    return res.status(500).json({ message: pdfUrl.message})
+
+    } catch (err) {
+    res.status(500).json({ message: "Server Error" });
     console.error(err);
   }
 };

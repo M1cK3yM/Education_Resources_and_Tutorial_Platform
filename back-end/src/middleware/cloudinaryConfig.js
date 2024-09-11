@@ -1,13 +1,13 @@
-// require("dotenv").config();
-// const multer = require("multer");
-// const cloudinary = require("cloudinary").v2;
-// const { CloudinaryStorage } = require("multer-storage-cloudinary");
+require("dotenv").config();
+const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
-// cloudinary.config({
-//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-//   api_key: process.env.CLOUDINARY_API_KEY,
-//   api_secret: process.env.CLOUDINARY_API_SECRET,
-// });
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // const imageStorage = new CloudinaryStorage({
 //   cloudinary: cloudinary,
@@ -16,7 +16,7 @@
 //     allowed_formats: ["jpg", "jpeg", "png", "gif"],
 //   },
 // });
-
+//
 // const documentStorage = new CloudinaryStorage({
 //   cloudinary: cloudinary,
 //   params: {
@@ -25,13 +25,12 @@
 //     allowed_formats: ["pdf", "docx", "pptx"],
 //   },
 // });
-
+//
 // const uploadImage = multer({ storage: imageStorage });
-// const uploadDocument = multer({ storage: documentStorage });
-
-// module.exports = {
-//   uploadImage,
-//   uploadDocument,
-// };
+// const uploadDocument = multer({ storage: documentStorage, onError: function(err) {console.error(JSON.stringify(err))} });
+//
+module.exports = {
+  cloudinary
+};
 
 
