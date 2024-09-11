@@ -47,7 +47,7 @@ export default function Component() {
         <div className="flex items-center gap-4">
           <Avatar className="h-16 w-16 md:h-20 md:w-20 object-cover">
             <AvatarImage
-              src={BASE_URL + "uploads/" + user.profile}
+              src={user.profile}
               alt={user.name}
             />
             <AvatarFallback>{user.name.toUpperCase()[0]}</AvatarFallback>

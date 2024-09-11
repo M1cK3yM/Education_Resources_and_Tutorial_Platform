@@ -55,7 +55,7 @@ function Navbar({ searchTerm, setSearchTerm, handleSearch }) {
               <Link to="/setting">
                 <Avatar>
                   <AvatarImage
-                    src={BASE_URL + "uploads/" + user.profile}
+                    src={user.profile}
                     alt="@shadcn"
                     className="object-cover"
                   />

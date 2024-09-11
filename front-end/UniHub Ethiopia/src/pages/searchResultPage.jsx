@@ -108,7 +108,7 @@ export default function Component() {
                           name={result.name}
                           email={result.email}
                           profileImageUrl={
-                            BASE_URL + "uploads/" + result.profile
+                            result.profile
                           }
                           role={result.role}
                         />
@@ -121,6 +121,8 @@ export default function Component() {
                           description={result.description}
                           type={result.type}
                           url={result.url}
+                          resource={result}
+                          coverImage={result.coverImage}
                           tags={result.tags}
                         />
                       );

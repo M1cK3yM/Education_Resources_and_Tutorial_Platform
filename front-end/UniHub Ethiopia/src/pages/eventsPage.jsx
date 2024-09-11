@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import EventCard from "../components/EventCard";
+import EventCard from "../components/eventCard";
 import { Button } from "@/components/ui/button";
 
 function EventsPage() {

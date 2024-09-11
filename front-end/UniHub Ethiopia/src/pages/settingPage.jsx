@@ -166,7 +166,7 @@ export default function Component() {
                   <Avatar className="h-20 w-20 border">
                     <AvatarImage
                       src={
-                        profile ? profile : BASE_URL + "uploads/" + user.profile
+                        profile ? profile : user.profile
                       }
                       alt="@shadcn"
                       className="object-cover"
