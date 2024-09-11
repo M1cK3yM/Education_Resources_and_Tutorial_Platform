@@ -8,7 +8,7 @@ const searchAll = async (req, res) => {
   const query = req.params.q;
 
   const collections = [
-    { model: User, sIndex: "searchUsers", match: { role: { $ne: "admin" } } },
+    { model: User, sIndex: "searchUsers", match: { role: { $ne: "admin" } }, excludeFields: { password: 0, bookmark: 0 } },
     { model: Event, sIndex: "searchEvents" },
     { model: Resource, sIndex: "searchResources" },
     { model: University, sIndex: "searchUniversities" },
@@ -41,6 +41,7 @@ const searchAll = async (req, res) => {
 
       if (collection.model === User) {
         pipeline.push({ $match: collection.match });
+        pipeline.push({ $project: collection.excludeFields });
       }
 
       const response = await collection.model.aggregate(pipeline);
