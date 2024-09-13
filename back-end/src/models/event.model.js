@@ -43,12 +43,12 @@ const eventSchema = new mongoose.Schema(
 
 const Event = mongoose.model("Event", eventSchema);
 
-Event.createSearchIndex({
-  name: "searchEvents",
-  definition: {
-    mappings: {
-      dynamic: true,
-    },
-  },
-});
+// Event.createSearchIndex({
+//   name: "searchEvents",
+//   definition: {
+//     mappings: {
+//       dynamic: true,
+//     },
+//   },
+// });
 module.exports = Event;

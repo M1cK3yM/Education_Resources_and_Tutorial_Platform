@@ -42,13 +42,13 @@ const universitySchema = new mongoose.Schema(
 
 const University = mongoose.model("University", universitySchema);
 
-University.createSearchIndex({
-  name: "searchUniversities",
-  definition: {
-    mappings: {
-      dynamic: true,
-    },
-  },
-});
+// University.createSearchIndex({
+//   name: "searchUniversities",
+//   definition: {
+//     mappings: {
+//       dynamic: true,
+//     },
+//   },
+// });
 
 module.exports = University;
