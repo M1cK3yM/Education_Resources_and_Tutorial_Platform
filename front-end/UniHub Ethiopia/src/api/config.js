@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getCookie } from "@/utils/requestHandler";
 
-export const BASE_URL = "http://localhost:3000/";
+export const BASE_URL = import.meta.env.VITE_API_URL;
 
 let trial = false;
 

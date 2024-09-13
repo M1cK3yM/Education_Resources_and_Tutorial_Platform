@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { useAuthDialog } from "@/context/AuthDialogContext";
 import axios from "axios";
-import ResourceCard from "@/components/resourceCard";
+import ResourceCard from "@/components/ResourceCard";
 
 function ResourceDetailsPage() {
   const { resourceId } = useParams();
