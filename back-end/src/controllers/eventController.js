@@ -3,8 +3,18 @@ const { uploadImage } = require("../middleware/cloudinaryConfig");
 
 const getAllEvents = async (req, res) => {
   try {
-    const events = await Event.find({ status: "active" }).sort({ date: 1 });
-    res.status(200).json(events);
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * 10;
+
+    const events = await Event.find({ status: "active" })
+      .sort({ date: 1 })
+      .skip(skip)
+      .limit(10);
+
+    const totalEvents = await Event.countDocuments({ status: "active" });
+    const pages = Math.ceil(totalEvents / 10);
+
+    res.status(200).json({ events: events, pages: pages });
   } catch (err) {
     res.status(500).json({ message: "Server Error" });
     console.error(err);

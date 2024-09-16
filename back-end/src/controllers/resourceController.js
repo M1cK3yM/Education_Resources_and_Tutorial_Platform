@@ -1,7 +1,7 @@
 const Resource = require("../models/resource.model");
 const pdfParse = require("pdf-parse");
 const pdfThumb = require("pdf-thumbnail");
-const {cloudinary} = require("../middleware/cloudinaryConfig");
+const { cloudinary } = require("../middleware/cloudinaryConfig");
 const streamifier = require("streamifier");
 const fs = require("fs");
 const { uploadPdf } = require("../middleware/firebase.middleware");
@@ -11,8 +11,8 @@ const createResource = async (req, res) => {
     const pdfData = await pdfParse(req.file.buffer);
 
     const thumbStream = await pdfThumb(req.file.buffer, {
-       compress: {
-        type:"JPEG",
+      compress: {
+        type: "JPEG",
         quality: 70
       }
     });
@@ -23,13 +23,13 @@ const createResource = async (req, res) => {
       thumbStream.on('error', reject);
     });
 
-    const thumb = await new Promise((resolve, reject) =>{
+    const thumb = await new Promise((resolve, reject) => {
       const cld_thumb_upstream = cloudinary.uploader.upload_stream(
         { folder: 'resources' },
         (error, result) => {
           if (result) {
             resolve(result);
-          } else { resolve(error)};
+          } else { resolve(error) };
         }
       )
 
@@ -44,24 +44,24 @@ const createResource = async (req, res) => {
 
     if (pdfUrl.success) {
       const resource = new Resource({
-          title: req.body.title,
-          description: req.body.description,
-          type: req.body.type,
-          tags: req.body.tags ? req.body.tags.split(",") : [],
-          resource: pdfUrl.url, // Store Cloudinary URL in the database
-          coverImage: thumb.url,
-          size: req.file.size,
-          numberOfPages: numberOfPages,
-          createdBy: res.locals.user?._id,
-        });
+        title: req.body.title,
+        description: req.body.description,
+        type: req.body.type,
+        tags: req.body.tags ? req.body.tags.split(",") : [],
+        resource: pdfUrl.url, // Store Cloudinary URL in the database
+        coverImage: thumb.url,
+        size: req.file.size,
+        numberOfPages: numberOfPages,
+        createdBy: res.locals.user?._id,
+      });
 
-        const newResource = await resource.save();
-        return res.status(201).json(newResource);
+      const newResource = await resource.save();
+      return res.status(201).json(newResource);
     }
 
-    return res.status(500).json({ message: pdfUrl.message})
+    return res.status(500).json({ message: pdfUrl.message })
 
-    } catch (err) {
+  } catch (err) {
     res.status(500).json({ message: "Server Error" });
     console.error(err);
   }
@@ -70,8 +70,18 @@ const createResource = async (req, res) => {
 // Get all resources
 const getAllResources = async (req, res) => {
   try {
-    const resources = await Resource.find();
-    res.status(200).json(resources);
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * 10;
+
+    const resources = await Resource.find()
+      .sort({ createdAt: 1 })
+      .skip(skip)
+      .limit(10);
+
+    const totalEvents = await Resource.countDocuments();
+    const pages = Math.ceil(totalEvents / 10);
+
+    res.status(200).json({ resources: resources, pages: pages });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Error fetching resources" });
