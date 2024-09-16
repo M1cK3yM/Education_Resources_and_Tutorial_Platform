@@ -13,6 +13,9 @@ import { useAuth } from "@/context/AuthContext";
 import { useAuthDialog } from "@/context/AuthDialogContext";
 import axios from "axios";
 import ResourceCard from "@/components/ResourceCard";
+import { resourcesApi, searchApi } from "@/api";
+import { requestHandler } from "@/utils/requestHandler";
+import { Loader } from "rsuite";
 
 function ResourceDetailsPage() {
   const { resourceId } = useParams();
@@ -20,34 +23,37 @@ function ResourceDetailsPage() {
   const [resources, setResources] = useState([]);
   const { isAuthenticated } = useAuth();
   const { toggleLogin } = useAuthDialog();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchResource = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:3000/api/resources/${resourceId}`
+      if (resource == null) {
+        await requestHandler(
+          () => resourcesApi.getResourcesById(resourceId),
+          setLoading,
+          async (data) => {
+            await requestHandler(
+              () => searchApi.getResults(data.tags.split(" ")[0]),
+              setLoading,
+              (data) => setResources(data),
+              (error) => setError(error),
+            );
+
+            console.log(data)
+
+            setResource(data);
+          },
+          (error) => setError(error),
         );
-        const data = await response.json();
-        setResource(data);
-        const responses = await axios.get(
-          "http://localhost:3000/api/resources"
-        );
-        setResources(responses.data);
-      } catch (error) {
-        console.error("Error fetching resource:", error);
+
+      } else {
+        setLoading(false);
       }
-    };
+    }
 
     fetchResource();
   }, [resourceId]);
-
-  if (!resource) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        Loading...
-      </div>
-    );
-  }
 
   const handelDownload = (url) => {
     console.log("Is user Authenticated : ", isAuthenticated());
@@ -66,12 +72,21 @@ function ResourceDetailsPage() {
     window.open(viewerUrl, "_blank");
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <Loader size="md" />
+      </div>
+
+    )
+  }
+
   return (
     <div className="text-foreground font-sans">
       <main className="container mx-auto mt-40 px-4 md:px-0">
         <div className="flex justify-around border w-4/5 items-center mx-auto">
           <img
-            src={resource.resource}
+            src={resource.coverImage}
             alt={resource.title}
             className="w-auto h-[200px] object-cover rounded mr-10"
           />
@@ -98,7 +113,6 @@ function ResourceDetailsPage() {
                 key={resource._id}
                 title={resource.title}
                 description={resource.description}
-                resourceUrl={resource.resource}
                 size={resource.size}
                 coverImage={resource.coverImage}
                 numberOfPages={resource.numberOfPages}

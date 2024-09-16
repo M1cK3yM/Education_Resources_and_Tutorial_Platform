@@ -20,7 +20,7 @@ import NewsCard from "@/components/newscard";
 export default function Component() {
   const { searchTerm } = useParams();
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(5);
+  const [resultsPerPage] = useState(5);
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -46,10 +46,10 @@ export default function Component() {
     setFilter(value);
   };
 
-  const indexOfLastResult = currentPage * productsPerPage;
-  const indexOfFirstResult = indexOfLastResult - productsPerPage;
+  const indexOfLastResult = currentPage * resultsPerPage;
+  const indexOfFirstResult = indexOfLastResult - resultsPerPage;
   const currentResults = results.slice(indexOfFirstResult, indexOfLastResult);
-  const totalPages = Math.ceil(results.length / productsPerPage);
+  const totalPages = Math.ceil(results.length / resultsPerPage);
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -152,16 +152,14 @@ export default function Component() {
                   <PaginationContent>
                     <PaginationItem>
                       <PaginationPrevious
-                        href="#"
                         disabled={currentPage === 1}
-                        onClick={() => handlePageChange(currentPage - 1)}
+                        onClick={() => currentPage == 1 ? null : handlePageChange(currentPage - 1)}
                       />
                     </PaginationItem>
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map(
                       (page) => (
                         <PaginationItem key={page}>
                           <PaginationLink
-                            href="#"
                             isActive={page === currentPage}
                             onClick={() => handlePageChange(page)}
                           >
@@ -172,9 +170,8 @@ export default function Component() {
                     )}
                     <PaginationItem>
                       <PaginationNext
-                        href="#"
                         disabled={currentPage === totalPages}
-                        onClick={() => handlePageChange(currentPage + 1)}
+                        onClick={() => currentPage == totalPages ? null : handlePageChange(currentPage + 1)}
                       />
                     </PaginationItem>
                   </PaginationContent>

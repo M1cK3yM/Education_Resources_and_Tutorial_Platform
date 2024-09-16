@@ -41,26 +41,29 @@ function ResourceCard({
   }, []);
 
   return (
-    <div
-      ref={cardRef}
-      className={`flex flex-row justify-around border p-4 my-4 shadow-sm rounded-lg bg-transparent hover:shadow-lg transition-shadow duration-300${
-        isVisible
+    <Link to={`/resources/${resource._id}`}>
+      <div
+        ref={cardRef}
+        className={`flex flex-row justify-around border p-4 my-4 shadow-sm rounded-lg bg-transparent hover:shadow-lg transition-shadow duration-300${isVisible
           ? "animate-slide-in-up animate-zoom-in"
           : "opacity-0 translate-y-4"
-      }`}
-    >
-      <img src={coverImage} alt={title} className="cover-image" />
-      <div className="flex flex-col">
-        <Link to={`/resources/${resource._id}`}>
-          <h2 className="text-xl font-semibold mb-2">{title}</h2>
-        </Link>
-        <div className="flex text-foreground text-sm">
-          <span className="mr-4">{numberOfPages} Pages</span>
-          <span>{formatSize(size)}</span>
+          }`}
+      >
+        <div className="w-1/4">
+          <img src={coverImage} alt={title} className="cover-image h-32" />
         </div>
-        <p className="mt-2 text-sm text-foreground">{description}</p>
+        <div className="flex flex-col w-3/4">
+          <Link to={`/resources/${resource._id}`}>
+            <h2 className="text-xl font-semibold mb-2">{title}</h2>
+          </Link>
+          <div className="flex text-foreground text-sm">
+            <span className="mr-4">{numberOfPages} Pages</span>
+            <span>{formatSize(size)}</span>
+          </div>
+          <p className="mt-2 text-sm text-foreground">{description}</p>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
