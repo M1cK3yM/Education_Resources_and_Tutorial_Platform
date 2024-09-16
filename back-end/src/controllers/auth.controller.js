@@ -50,14 +50,16 @@ const loginAccount = async (req, res) => {
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-      sameSite: "Lax",
+      sameSite: "none",
       secure: false,
+      domain: process.env.BACKEND_DOMAIN,
     });
 
     res.cookie("accessToken", accessToken, {
       maxAge: 15 * 60 * 1000, // 15 minutes
-      sameSite: "Lax",
+      sameSite: "none",
       secure: false,
+      domain: process.env.BACKEND_DOMAIN,
     });
 
     return res.status(200).json({
@@ -248,12 +250,13 @@ const refreshToken = async (req, res) => {
       { expiresIn: process.env.ACCESS_TOKEN_EXPIRY },
     );
 
-    res.clearCookie("accessToken");
+    res.clearCookie("accessToken", { sameSite: "none", secure: false });
 
     res.cookie("accessToken", accessToken, {
       maxAge: 15 * 60 * 1000, // 15 minutes
-      sameSite: "Lax",
+      sameSite: "none",
       secure: false,
+      domain: process.env.BACKEND_DOMAIN,
     });
     return res.status(200).send("Access token refreshed");
   } catch (err) {
