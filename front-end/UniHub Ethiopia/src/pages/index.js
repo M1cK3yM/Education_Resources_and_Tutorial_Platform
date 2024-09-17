@@ -4,6 +4,7 @@ import EventDetailsPage from "./eventDetailsPage";
 import ResourcePage from "./resourcePage";
 import AboutPage from "./aboutPage";
 import NewsPage from "./newsPage";
+import NewsDetailPage from "./newsDetailPage";
 import HomePage from "./homePage";
 import VerifyPage from "./verifyPage";
 import NotFoundPage from "./404page";
@@ -22,6 +23,7 @@ const Pages = {
   ResourcePage,
   AboutPage,
   NewsPage,
+  NewsDetailPage,
   HomePage,
   VerifyPage,
   NotFoundPage,

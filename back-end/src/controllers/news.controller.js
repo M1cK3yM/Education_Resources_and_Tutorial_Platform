@@ -1,8 +1,9 @@
 const News = require("../models/news.model");
+const { uploadImage } = require("../middleware/cloudinaryConfig");
 
-const getAllNews = async (_req, res) => {
+const getAllNews = async (req, res) => {
   try {
-    const news = await News.find();
+    const news = await News.find().sort({ date: 1 });
     res.status(200).json(news);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -28,7 +29,7 @@ const createNews = async (req, res) => {
     content: req.body.content,
     author: req.body.author,
     tags: req.body.tags,
-    image: req.body.image,
+    image: req.file ? req.file.path : null,
     status: req.body.status,
   });
   try {
@@ -75,9 +76,8 @@ const deleteNews = async (req, res) => {
 
 module.exports = {
   getAllNews,
-  createNews,
+  createNews: [uploadImage.single("image"), createNews],
   getNewsById,
   updateNews,
   deleteNews,
 };
-

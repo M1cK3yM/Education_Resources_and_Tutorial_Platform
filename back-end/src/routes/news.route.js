@@ -8,8 +8,7 @@ router.get("/", newsController.getAllNews);
 router.post(
   "/",
   authorizeJwt,
-  isAdmin,
-  validateNews,
+  // isAdmin,
   newsController.createNews,
 );
 router.get("/:id", newsController.getNewsById);

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
+import { Button } from "./ui/button";
 
 function NewsCard({ title, date, description, imageUrl, detailsUrl }) {
   const [isVisible, setIsVisible] = useState(false);
@@ -14,7 +15,7 @@ function NewsCard({ title, date, description, imageUrl, detailsUrl }) {
           observer.disconnect();
         }
       },
-      { threshold: 0.1 },
+      { threshold: 0.1 }
     );
 
     if (cardRef.current) {
@@ -31,13 +32,13 @@ function NewsCard({ title, date, description, imageUrl, detailsUrl }) {
   return (
     <div
       ref={cardRef}
-      className={`bg-transparent text-foreground mt-2 p-6 my-2 max-w-6xl w-4/5 mx-auto flex flex-col md:flex-row md:items-center transition-transform duration-500 ${
+      className={`bg-transparent text-foreground mt-2 p-6 my-2 max-w-xl w-4/5 mx-auto flex md:flex-row md:items-center transition-transform duration-500 ${
         isVisible
           ? "animate-slide-in-up animate-zoom-in"
           : "opacity-0 translate-y-4"
       } shadow-2xl`}
     >
-      <div className="bg-white shadow-md rounded-lg overflow-hidden my-4 md:my-8 flex flex-col md:flex-row">
+      <div className="bg-transparent overflow-hidden my-4 md:my-8 flex flex-row">
         <div className="md:flex-shrink-0 md:w-1/2">
           <img
             className="h-64 w-full object-cover md:h-auto"
@@ -59,11 +60,8 @@ function NewsCard({ title, date, description, imageUrl, detailsUrl }) {
             <p className="mt-2 text-gray-500">{description}</p>
           </div>
           <div className="mt-4">
-            <Link
-              to={detailsUrl}
-              className="inline-block bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded"
-            >
-              Read More
+            <Link to={detailsUrl}>
+              <Button>Read More</Button>
             </Link>
           </div>
         </div>
@@ -73,4 +71,3 @@ function NewsCard({ title, date, description, imageUrl, detailsUrl }) {
 }
 
 export default NewsCard;
-

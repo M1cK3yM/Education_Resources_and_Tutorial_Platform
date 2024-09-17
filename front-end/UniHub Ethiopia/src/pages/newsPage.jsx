@@ -49,12 +49,7 @@ const NewsPage = () => {
 
   return (
     <div>
-      <div
-        className="relative bg-cover bg-center h-64 md:h-96 lg:h-[500px]"
-        style={{
-          backgroundImage: "url('')",
-        }}
-      >
+      <div className="relative bg-cover bg-center h-64 md:h-96 lg:h-[500px] shadow-2xl">
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-foreground p-4 md:p-8 lg:p-12">
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold">
             News and Updates

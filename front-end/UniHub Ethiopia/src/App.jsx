@@ -41,9 +41,13 @@ function App() {
               />
               <Route path="/event/rsvp/:eventId" element={<Pages.RsvpForm />} />
               <Route path="/resources" element={<Pages.ResourcePage />} />
-              <Route path="/resources/:resourceId" element={<Pages.ResourceDetailsPage />} />
+              <Route
+                path="/resources/:resourceId"
+                element={<Pages.ResourceDetailsPage />}
+              />
               <Route path="/about" element={<Pages.AboutPage />} />
               <Route path="/news" element={<Pages.NewsPage />} />
+              <Route path="/news/:newsId" element={<Pages.NewsDetailPage />} />
               <Route path="/verify/:token?" element={<Pages.VerifyPage />} />
               <Route
                 path="/forgot-password"

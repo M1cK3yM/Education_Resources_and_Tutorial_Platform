@@ -23,20 +23,26 @@ function ArchivedPage() {
       <br />
       <br />
       <br />
-      {archivedEvents.map((event) => (
-        <EventCard
-          key={event._id}
-          title={event.title}
-          date={
-            event.date
-              ? `${new Date(event.date).toLocaleDateString()}`
-              : "Date not available"
-          }
-          note={event.note}
-          imageUrl={event.image}
-          detailsUrl={`/archived-events/${event._id}`}
-        />
-      ))}
+      {archivedEvents.length === 0 ? (
+        <div>there is no events</div>
+      ) : (
+        <ul>
+          {archivedEvents.map((event) => (
+            <EventCard
+              key={event._id}
+              title={event.title}
+              date={
+                event.date
+                  ? `${new Date(event.date).toLocaleDateString()}`
+                  : "Date not available"
+              }
+              note={event.note}
+              imageUrl={event.image}
+              detailsUrl={`/archived-events/${event._id}`}
+            />
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
