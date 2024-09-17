@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import ResourceCard from "@/components/ResourceCard";
 import { Loader } from "rsuite";
 import {
