@@ -37,8 +37,8 @@ function EventsPage() {
           setEvents(data.events);
           setTotalPages(data.pages);
         },
-        (error) => setError(error),
-      )
+        (error) => setError(error)
+      );
     } catch (error) {
       console.error("Error fetching events:", error);
     }
@@ -46,10 +46,10 @@ function EventsPage() {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-  }
+  };
 
   return (
-    <div>
+    <div className="min-h-screen bg-background">
       <div className="relative bg-cover bg-center h-64 md:h-96 lg:h-[500px] shadow-2xl rounded-3xl">
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-foreground p-4 md:p-8 lg:p-12">
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold">
@@ -67,14 +67,14 @@ function EventsPage() {
         </div>
       ) : events.length === 0 ? (
         <div className="flex flex-col  items-center justify-center h-screen">
-          <h1 className="text-4xl font-bold mb-4 text-foreground">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-foreground">
             😔Oops! You Caught us With no Events
           </h1>
-          <p className="text-foreground text-2xl">
+          <p className="text-foreground text-lg sm:text-xl md:text-2xl">
             Sorry, we will add new events Soon or Not .
           </p>
           <div className="mt-4 text-center text-lg ">
-            <p className="text-gray-600 mb-6"> You might want to explore:</p>
+            <p className="text-gray-600 mb-6 text-lg sm:text-xl md:text-xl"> You might want to explore:</p>
             <a href="/" className=" p-2 hover:underline">
               <Button>Home</Button>
             </a>
@@ -112,7 +112,11 @@ function EventsPage() {
                   <PaginationItem>
                     <PaginationPrevious
                       disabled={currentPage === 1}
-                      onClick={() => currentPage == 1 ? null : handlePageChange(currentPage - 1)}
+                      onClick={() =>
+                        currentPage == 1
+                          ? null
+                          : handlePageChange(currentPage - 1)
+                      }
                     />
                   </PaginationItem>
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map(
@@ -125,15 +129,18 @@ function EventsPage() {
                           {page}
                         </PaginationLink>
                       </PaginationItem>
-                    ),
+                    )
                   )}
                   <PaginationItem>
                     <PaginationNext
                       disabled={currentPage === totalPages}
-                      onClick={() => currentPage == totalPages ? null : handlePageChange(currentPage + 1)}
+                      onClick={() =>
+                        currentPage == totalPages
+                          ? null
+                          : handlePageChange(currentPage + 1)
+                      }
                     />
                   </PaginationItem>
-
                 </PaginationContent>
               </Pagination>
             )}

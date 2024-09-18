@@ -1,83 +1,72 @@
-const Footer = () => {
+import { Link } from "react-router-dom";
+import { FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
+import { Button } from "./ui/button";
+
+export default function Footer() {
   return (
-    <div>
-      <footer className="bg-transparent text-white py-8 mt-8">
-        <hr />
-        <div className="container mx-auto px-4 pt-5">
-          <div className="flex flex-wrap justify-between">
-            <div className="w-full md:w-1/4 mb-6">
-              <h4 className="text-foreground text-xl font-bold mb-4">
-                UniHub Ethiopia
-              </h4>
-              <p className="text-foreground">
-                Empowering Students and Educators
-              </p>
-            </div>
-            <div className="w-full md:w-1/4 mb-6">
-              <h5 className="text-foreground text-lg font-bold mb-3">
-                Quick Links
-              </h5>
-              <ul>
-                <li>
-                  <a href="/" className=" text-foreground hover:underline">
-                    Home
-                  </a>
-                </li>
-                <li>
-                  <a href="/about" className="text-foreground hover:underline">
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="/contact"
-                    className="text-foreground hover:underline"
-                  >
-                    Contact
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div className="text-foreground w-full md:w-1/4 mb-6">
-              <h5 className="text-lg font-bold mb-3">Follow Us</h5>
-              <div className="flex space-x-4">
-                <a href="#" className="hover:text-gray-400">
-                  Facebook
-                </a>
-                <a href="#" className="hover:text-gray-400">
-                  Twitter
-                </a>
-                <a href="#" className="hover:text-gray-400">
-                  LinkedIn
-                </a>
-              </div>
-            </div>
-            <div className="text-foreground w-full md:w-1/4 mb-6">
-              <h5 className="text-lg font-bold mb-3">Newsletter</h5>
-              <form>
-                <input
-                  type="email"
-                  placeholder="Your email"
-                  className="p-2 w-full rounded bg-transparent border border-gray-700"
-                />
-                <button
-                  type="submit"
-                  className="mt-2 w-full bg-foreground hover:bg-background hover:text-foreground text-background p-2 rounded"
-                >
-                  Subscribe
-                </button>
-              </form>
+    <footer className="bg-transparent text-foregroud py-8 mt-8 border-t border-gray-300 footer-scaling">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-wrap justify-between">
+          <div className="w-1/4 mb-6">
+            <h4 className="text-xl font-bold mb-4">UniHub Ethiopia</h4>
+            <p className="text-foreground">Empowering Students and Educators</p>
+          </div>
+          <div className="w-1/4 mb-6">
+            <h5 className="text-lg font-bold mb-3">Quick Links</h5>
+            <ul className="space-y-2">
+              <li>
+                <Link to="/" className="hover:text-gray-300">
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="hover:text-gray-300">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" className="hover:text-gray-300">
+                  Contact
+                </Link>
+              </li>
+            </ul>
+          </div>
+          <div className="w-1/4 mb-6">
+            <h5 className="text-lg font-bold mb-3">Follow Us</h5>
+            <div className="flex space-x-4">
+              <a href="#" className="hover:text-gray-300">
+                <FaFacebook className="h-6 w-6" />
+                <span className="sr-only">Facebook</span>
+              </a>
+              <a href="#" className="hover:text-gray-300">
+                <FaTwitter className="h-6 w-6" />
+                <span className="sr-only">Twitter</span>
+              </a>
+              <a href="#" className="hover:text-gray-300">
+                <FaLinkedin className="h-6 w-6" />
+                <span className="sr-only">LinkedIn</span>
+              </a>
             </div>
           </div>
-          <div className="text-center mt-6">
-            <p className="text-gray-500">
-              &copy; 2024 UniHub Ethiopia. All rights reserved.
-            </p>
+          <div className="w-1/4 mb-6">
+            <h5 className="text-lg font-bold mb-3">Newsletter</h5>
+            <form className="space-y-2">
+              <input
+                type="email"
+                placeholder="Your email"
+                className="w-full p-2 bg-transparent border rounded"
+              />
+              <Button className="w-full">Subscribe</Button>
+            </form>
           </div>
         </div>
-      </footer>
-    </div>
+        <div className="text-center mt-6">
+          <p className="text-sm text-gray-400">
+            &copy; {new Date().getFullYear()} UniHub Ethiopia. All rights
+            reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
   );
-};
-
-export default Footer;
+}

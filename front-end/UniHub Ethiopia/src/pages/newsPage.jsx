@@ -28,7 +28,7 @@ const NewsPage = () => {
           () => newsApi.getAllNews(currentPage),
           setLoading,
           (data) => {
-            setNewsData(data.resource);
+            setNewsData(data.news);
             setTotalPages(data.pages);
           },
           (error) => setError(error)
@@ -48,45 +48,44 @@ const NewsPage = () => {
   };
 
   return (
-    <div>
-      <div className="relative bg-cover bg-center h-64 md:h-96 lg:h-[500px] shadow-2xl">
+    <div className="min-h-screen">
+      <div className="relative bg-cover bg-center h-48 sm:h-64 md:h-96 lg:h-[500px] shadow-2xl">
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-foreground p-4 md:p-8 lg:p-12">
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold">
             News and Updates
           </h1>
-          <p className="mt-4 text-lg md:text-xl lg:text-2xl">
+          <p className="mt-2 sm:mt-4 text-base sm:text-lg md:text-xl lg:text-2xl">
             Stay informed with the latest news and updates
           </p>
         </div>
       </div>
       {loading ? (
-        <div className="flex justify-center items-center h-full">
+        <div className="flex justify-center items-center h-64">
           <Loader size="md" />
         </div>
       ) : newsData.length === 0 ? (
-        <div className="flex flex-col  items-center justify-center h-screen">
-          <h1 className="text-4xl font-bold mb-4 text-foreground">
-            😔Oops! You Caught us With no News
+        <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-foreground">
+            😔 Oops! You Caught us With no News
           </h1>
-          <p className="text-foreground text-2xl">
-            Sorry, we will add news Soon or Not .
+          <p className="text-foreground text-lg sm:text-xl md:text-2xl mb-6">
+            Sorry, we will add news Soon or Not.
           </p>
-          <div className="mt-4 text-center text-lg ">
-            <p className="text-gray-600 mb-6"> You might want to explore:</p>
-            <a href="/" className=" p-2 hover:underline">
-              <Button>Home</Button>
-            </a>
-            <a href="/resources" className=" p-2 hover:underline ml-2">
-              <Button>Resources</Button>
-            </a>
-            <a href="/contact" className=" p-2 hover:underline ml-2">
-              <Button>Contact </Button>
-            </a>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Button asChild>
+              <a href="/">Home</a>
+            </Button>
+            <Button asChild>
+              <a href="/resources">Resources</a>
+            </Button>
+            <Button asChild>
+              <a href="/contact">Contact</a>
+            </Button>
           </div>
         </div>
       ) : (
         <>
-          <ul>
+          <ul className="space-y-6 p-4 sm:p-6 md:p-8">
             {newsData.map((article) => (
               <NewsCard
                 key={article._id}
@@ -98,15 +97,15 @@ const NewsPage = () => {
               />
             ))}
           </ul>
-          <div className="flex justify-center mt-8">
+          <div className="flex justify-center mt-8 pb-8">
             {totalPages > 0 && (
               <Pagination>
-                <PaginationContent>
+                <PaginationContent className="flex-wrap justify-center">
                   <PaginationItem>
                     <PaginationPrevious
                       disabled={currentPage === 1}
                       onClick={() =>
-                        currentPage == 1
+                        currentPage === 1
                           ? null
                           : handlePageChange(currentPage - 1)
                       }
@@ -128,7 +127,7 @@ const NewsPage = () => {
                     <PaginationNext
                       disabled={currentPage === totalPages}
                       onClick={() =>
-                        currentPage == totalPages
+                        currentPage === totalPages
                           ? null
                           : handlePageChange(currentPage + 1)
                       }

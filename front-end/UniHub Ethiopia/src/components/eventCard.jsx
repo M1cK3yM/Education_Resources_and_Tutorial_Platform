@@ -32,15 +32,16 @@ function EventCard({ title, date, note, imageUrl, detailsUrl }) {
     <Link to={detailsUrl}>
       <div
         ref={cardRef}
-        className={`bg-transparent text-foreground mt-2 p-6 my-2 max-w-6xl w-4/5 mx-auto flex flex-col md:flex-row md:items-center transition-transform duration-500 ${isVisible
-          ? "animate-slide-in-up animate-zoom-in"
-          : "opacity-0 translate-y-4"
-          } shadow-2xl`}
+        className={`bg-transparent text-foreground mt-2 p-6 my-2 max-w-6xl w-4/5 mx-auto flex flex-col md:flex-row md:items-center transition-transform duration-500 ${
+          isVisible
+            ? "animate-slide-in-up animate-zoom-in"
+            : "opacity-0 translate-y-4"
+        } shadow-2xl`}
       >
         <div className="md:w-2/3 md:pr-6">
-          <p className="text-lg font-semibold">{date}</p>
-          <h2 className="text-3xl font-bold mt-2">{title}</h2>
-          <p className="mt-2 text-lg w-2/3">{note}</p>
+          <p className="text-sm md:text-base font-semibold">{date}</p>
+          <h2 className="text-2xl md:text-3xl font-bold mt-2">{title}</h2>
+          <p className="mt-2 text-sm md:text-base w-2/3">{note}</p>
           <a href={detailsUrl} className="mt-8">
             <Button className="mt-8">See Event Details</Button>
           </a>
