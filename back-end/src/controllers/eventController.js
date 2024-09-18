@@ -68,56 +68,23 @@ const updateEvent = async (req, res) => {
     if (req.file) {
       updateData.image = req.file.path; // Update Cloudinary URL in the database
     }
-if (!req.params.id || !mongoose.Types.ObjectId.isValid(req.params.id)) {
-  return res.status(400).json({ message: "Invalid Event ID" });
-}
-const event = await Event.findByIdAndUpdate(req.params.id, updateData, {
-  new: true,
-});
+    if (!req.params.id || !mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: "Invalid Event ID" });
+    }
+    const event = await Event.findByIdAndUpdate(req.params.id, updateData, {
+      new: true,
+    });
 
-if (!event) {
-  return res.status(404).json({ message: "Event not found" });
-}
+    if (!event) {
+      return res.status(404).json({ message: "Event not found" });
+    }
 
-res.json(event);
-} catch (err) {
-console.error("Error updating event:", err);
-res.status(500).json({ message: "Server Error" });
-}
+    res.json(event);
+  } catch (err) {
+    console.error("Error updating event:", err);
+    res.status(500).json({ message: "Server Error" });
+  }
 };
-
-// const updateEvent = async (req, res) => {
-//   try {
-//     const { title, description, note, location, date, time } = req.body;
-
-//     const updateData = { title, description, note, location, date, time };
-
-//     // Handle image if file is uploaded
-//     if (req.file) {
-//       updateData.image = req.file.path; // Update Cloudinary URL in the database
-//     }
-
-//     // Validate the event ID
-//     if (!req.params.id || !mongoose.Types.ObjectId.isValid(req.params.id)) {
-//       return res.status(400).json({ message: "Invalid Event ID" });
-//     }
-
-//     // Find and update the event
-//     const event = await Event.findByIdAndUpdate(req.params.id, updateData, {
-//       new: true,
-//     });
-
-//     if (!event) {
-//       return res.status(404).json({ message: "Event not found" });
-//     }
-
-//     res.json(event);
-//   } catch (err) {
-//     console.error("Error updating event:", err);
-//     res.status(500).json({ message: "Server Error" });
-//   }
-// };
-
 
 const deleteEvent = async (req, res) => {
   console.log("Deleting event by the id : ", req.params.id);
