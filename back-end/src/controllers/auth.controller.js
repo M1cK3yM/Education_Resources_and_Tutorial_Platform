@@ -89,7 +89,7 @@ const forgetPassword = async (req, res) => {
       expiresIn: "1h",
     });
 
-    const link = `http://${process.env.HOST}${process.env.CPORT ? ":" + process.env.CPORT : ""}/reset-password/${token}`;
+    const link = `${process.env.FRONTEND_URL}/reset-password/${token}`;
 
     transporter.sendMail(
       {
@@ -172,7 +172,7 @@ const registerUser = async (req, res) => {
       const token = jwt.sign(req.body, process.env.VERIFY_TOKEN, {
         expiresIn: "1h",
       });
-      const link = `http://${process.env.HOST}${process.env.CPORT ? ":" + process.env.CPORT : ""}/verify/${token}`;
+      const link = `${process.env.FRONTEND_URL}/verify/${token}`;
       console.log(link);
 
       transporter.sendMail(
