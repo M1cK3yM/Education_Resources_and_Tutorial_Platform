@@ -12,8 +12,8 @@ const registerUser = (data) => {
   return apiClient.post("/register", data);
 };
 
-const logoutUser = () => {
-  return apiClient.get("/logout");
+const logoutUser = (data) => {
+  return apiClient.post("/logout", data);
 };
 
 const verifyUser = (token) => {

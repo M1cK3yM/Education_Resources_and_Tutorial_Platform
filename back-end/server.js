@@ -4,10 +4,13 @@ const connectDB = require("./database");
 const cookieParser = require("cookie-parser");
 const routes = require("./src/routes");
 const cors = require("cors");
+const useragent = require("express-useragent");
+const { deleteInactiveSessions } = require("./src/middleware/cronJob");
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+app.use(useragent.express());
 
 const corsOptions = {
   origin: process.env.ALLOWED_ORIGINS.split(","),
@@ -18,6 +21,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 // Connect to MongoDB
 connectDB();
+
+deleteInactiveSessions();
 
 // Use the event routes
 app.use("/api/events", routes.eventRoutes);

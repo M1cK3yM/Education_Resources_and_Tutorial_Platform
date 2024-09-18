@@ -1,7 +1,7 @@
 const User = require("../models/users.model.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const {cloudinary} = require("../middleware/cloudinaryConfig.js");
+const { cloudinary } = require("../middleware/cloudinaryConfig.js");
 const streamifier = require("streamifier");
 
 const createUser = async (req, res) => {
@@ -63,8 +63,7 @@ const getUserById = async (req, res) => {
 
 const updateProfile = async (req, res) => {
   const { _id, role } = res.locals.user;
-  console.log(req.file);
-  console.log(req.body);
+  console.log("id", _id, role);
   try {
     if (role === "admin" || _id.toString() === req.params.id) {
       if (req.body.name || req.body.profile || req.body.mobile || req.file) {

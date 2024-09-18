@@ -1,4 +1,5 @@
 const User = require("../models/users.model");
+const Session = require("../models/session.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
@@ -47,19 +48,11 @@ const loginAccount = async (req, res) => {
       { expiresIn: process.env.REFRESH_TOKEN_EXPIRY },
     );
 
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-      sameSite: "none",
-      secure: false,
-      domain: process.env.BACKEND_DOMAIN,
-    });
-
-    res.cookie("accessToken", accessToken, {
-      maxAge: 15 * 60 * 1000, // 15 minutes
-      sameSite: "none",
-      secure: false,
-      domain: process.env.BACKEND_DOMAIN,
+    await Session.create({
+      userId: user._id,
+      refreshToken,
+      ipAddress: req.ip,
+      userAgent: req.userAgent,
     });
 
     return res.status(200).json({
@@ -70,7 +63,10 @@ const loginAccount = async (req, res) => {
         role: user.role,
         bookmark: user.bookmark,
         profile: user.profile,
+
       },
+      refreshToken: refreshToken,
+      accessToken: accessToken,
       message: "Logged in Successfully",
     });
   } catch (err) {
@@ -93,7 +89,7 @@ const forgetPassword = async (req, res) => {
       expiresIn: "1h",
     });
 
-    const link = `http://${process.env.HOST}:${process.env.CPORT}/reset-password/${token}`;
+    const link = `http://${process.env.HOST}${process.env.CPORT ? ":" + process.env.CPORT : ""}/reset-password/${token}`;
 
     transporter.sendMail(
       {
@@ -176,7 +172,7 @@ const registerUser = async (req, res) => {
       const token = jwt.sign(req.body, process.env.VERIFY_TOKEN, {
         expiresIn: "1h",
       });
-      const link = `http://${process.env.HOST}:${process.env.CPORT}/verify/${token}`;
+      const link = `http://${process.env.HOST}${process.env.CPORT ? ":" + process.env.CPORT : ""}/verify/${token}`;
       console.log(link);
 
       transporter.sendMail(
@@ -223,42 +219,70 @@ const registerUser = async (req, res) => {
   }
 };
 
-const logout = (_req, res) => {
-  res.clearCookie("refreshToken");
-  res.clearCookie("accessToken");
-  console.log("Logged out successfully");
-  res.status(200).json({ message: "Logged out successfully" });
+const logout = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    const session = await Session.findOneAndDelete({ refreshToken, userId: res.locals.user._id });
+
+    if (!session) {
+      return res.status(404).json({ message: "Session not found" });
+    }
+
+    res.status(200).json({ message: "Logged out successfully" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Server error" });
+  }
 };
 
 const refreshToken = async (req, res) => {
-  const { refreshToken } = req.cookies;
+  const { refreshToken } = req.body;
   if (!refreshToken) {
     return res.status(403).json({ message: "Unauthorized" });
   }
   try {
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-    const user = await User.findById(decoded.id);
-    if (!user) {
-      return res.status(401).json({ message: "Unauthorized" });
+    const session = await Session.findOne({ refreshToken, userId: res.locals.user._id });
+
+    if (!session) {
+      return res.status(404).json({ message: "Session not found" });
     }
-    const accessToken = jwt.sign(
-      {
-        id: user._id,
-        role: user.role,
-      },
-      process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: process.env.ACCESS_TOKEN_EXPIRY },
-    );
 
-    res.clearCookie("accessToken", { sameSite: "none", secure: false });
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
 
-    res.cookie("accessToken", accessToken, {
-      maxAge: 15 * 60 * 1000, // 15 minutes
-      sameSite: "none",
-      secure: false,
-      domain: process.env.BACKEND_DOMAIN,
+      if (err) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const newAccessToken = jwt.sign(
+        {
+          id: decoded.id,
+          role: decoded.role,
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: process.env.ACCESS_TOKEN_EXPIRY },
+      );
+
+      const newRefreshToken = jwt.sign(
+        {
+          id: decoded.id,
+          role: decoded.role,
+        },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: process.env.REFRESH_TOKEN_EXPIRY },
+      );
+
+      session.refreshToken = newRefreshToken;
+      await session.save();
+
+      return res.status(200).json({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+      });
     });
-    return res.status(200).send("Access token refreshed");
   } catch (err) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -270,6 +294,7 @@ const verifyEmail = async (req, res) => {
   try {
     jwt.verify(token, process.env.VERIFY_TOKEN, async (err, decoded) => {
       if (err) {
+        console.error("Error Controller", err)
         return res.status(401).json({ message: "Invalid token" });
       }
 

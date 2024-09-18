@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getCookie } from "@/utils/requestHandler";
+import { getCookie, requestHandler } from "@/utils/requestHandler";
 
 export const BASE_URL = import.meta.env.VITE_API_URL;
 
@@ -25,12 +25,21 @@ apiClient.interceptors.response.use(
 
     if (error.response.status === 401 && !trial) {
       trial = true;
-      try {
-        await apiClient.get("/refresh");
-        return apiClient(originalRequest);
-      } catch (err) {
-        console.error("Failed to refresh token", err);
-      }
+      await requestHandler(
+        async () => await apiClient.post("/refresh", {
+          refreshToken: getCookie("refreshToken"),
+        }),
+        null,
+        (res) => {
+          const { accessToken, refreshToken } = res;
+          document.cookie = `accessToken=${accessToken}; path=/; max-age=900`;
+          document.cookie = `refreshToken=${refreshToken}; path=/; max-age=${15 * 24 * 60 * 60}`;
+          return apiClient(originalRequest);
+        },
+        (error) => {
+          console.log("Failed to refresh token", error);
+        }
+      )
     }
     return Promise.reject(error);
   },

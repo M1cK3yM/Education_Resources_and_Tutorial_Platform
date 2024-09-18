@@ -7,13 +7,13 @@ import { Loader } from "rsuite";
 
 const AuthContext = createContext({
   user: null,
-  login: async () => {},
-  register: async () => {},
-  logout: async () => {},
-  verifyUser: async () => {},
-  forgetPassword: async () => {},
-  resetPassword: async () => {},
-  getUser: async () => {},
+  login: async () => { },
+  register: async () => { },
+  logout: async () => { },
+  verifyUser: async () => { },
+  forgetPassword: async () => { },
+  resetPassword: async () => { },
+  getUser: async () => { },
   isAuthenticated: () => false,
   isLoading: true,
 });
@@ -32,8 +32,10 @@ const AuthProvider = ({ children }) => {
       async () => await authApi.loginUser(data),
       setIsLoading,
       (res) => {
-        const { data } = res;
+        const { data, accessToken, refreshToken } = res;
         setUser(data);
+        document.cookie = `accessToken=${accessToken}; path=/; max-age=900`;
+        document.cookie = `refreshToken=${refreshToken}; path=/; max-age=${15 * 24 * 60 * 60}`;// max-age 15day
         navigate("/");
       },
       (error) => console.log(error),
@@ -55,10 +57,12 @@ const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     await requestHandler(
-      async () => await authApi.logoutUser(),
+      async () => await authApi.logoutUser({ refreshToken: getCookie("refreshToken") }),
       setIsLoading,
       () => {
         setUser(null);
+        document.cookie = "accessToken=; max-age=0; path=/;";
+        document.cookie = "refreshToken=; max-age=0; path=/;";
         navigate("/");
       },
       (error) => console.log(error),
