@@ -23,11 +23,13 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config;
     console.log(trial);
 
-    if (error.response.status === 401 && !trial) {
+    const refreshToken = getCookie("refreshToken");
+
+    if (error.response.status === 401 && !trial && refreshToken) {
       trial = true;
       await requestHandler(
         async () => await apiClient.post("/refresh", {
-          refreshToken: getCookie("refreshToken"),
+          refreshToken,
         }),
         null,
         (res) => {
