@@ -22,26 +22,29 @@ const NewsPage = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
-    const fetchNews = async (currentPage) => {
-      try {
-        await requestHandler(
-          () => newsApi.getAllNews(currentPage),
-          setLoading,
-          (data) => {
-            setNewsData(data.news);
-            setTotalPages(data.pages);
-          },
-          (error) => setError(error)
-        );
-      } catch (err) {
-        setError("Failed to fetch News");
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchNews(currentPage);
+    if (!error) {
+      fetchNews(currentPage);
+    } else {
+      setLoading(false);
+    }
   }, [currentPage]);
+
+  const fetchNews = async (currentPage) => {
+    try {
+      await requestHandler(
+        () => newsApi.getAllNews(currentPage),
+        setLoading,
+        (data) => {
+          setNewsData(data.news);
+          console.log(data);
+          setTotalPages(data.pages);
+        },
+        (error) => setError(error)
+      );
+    } catch (error) {
+      console.error("Error Fetching News : ", error);
+    }
+  };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -63,7 +66,7 @@ const NewsPage = () => {
         <div className="flex justify-center items-center h-64">
           <Loader size="md" />
         </div>
-      ) : newsData.length === 0 ? (
+      ) : !newsData ? (
         <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-foreground">
             😔 Oops! You Caught us With no News
