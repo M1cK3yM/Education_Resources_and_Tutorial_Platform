@@ -58,7 +58,9 @@ function ArchivedPage() {
           <Loader size="md" />
         </div>
       ) : archivedEvents.length === 0 ? (
-        <div>There are no events</div>
+        <div className="flex items-center justify-center text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-foreground">
+          There are no events
+        </div>
       ) : (
         <>
           <ul>
