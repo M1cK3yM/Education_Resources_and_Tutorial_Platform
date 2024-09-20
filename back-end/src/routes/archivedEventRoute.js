@@ -4,8 +4,18 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const archivedEvents = await ArchivedEvent.find({});
-    res.json(archivedEvents);
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * 10;
+
+    const archivedEvents = await ArchivedEvent.find({})
+      .sort({ date: 1 })
+      .skip(skip)
+      .limit(10);
+
+    const totalArchivedEvents = await ArchivedEvent.countDocuments();
+    const pages = Math.ceil(totalArchivedEvents / 10);
+
+    res.status(200).json({ archivedEvents: archivedEvents, pages: pages });
   } catch (err) {
     res.status(500).json({ message: "Server Error" });
     console.error(err);
