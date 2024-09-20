@@ -95,8 +95,8 @@ const NewsPage = () => {
                 title={article.title}
                 date={article.date}
                 description={article.description}
-                imageUrl={article.imageUrl}
-                detailsUrl={`/news/${article.id}`}
+                imageUrl={article.image}
+                detailsUrl={`/news/${article._id}`}
               />
             ))}
           </ul>

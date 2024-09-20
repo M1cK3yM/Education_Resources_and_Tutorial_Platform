@@ -35,6 +35,7 @@ function EventsPage() {
         setLoading,
         (data) => {
           setEvents(data.events);
+          console.log(data);
           setTotalPages(data.pages);
         },
         (error) => setError(error)
@@ -74,7 +75,10 @@ function EventsPage() {
             Sorry, we will add new events Soon or Not .
           </p>
           <div className="mt-4 text-center text-lg ">
-            <p className="text-gray-600 mb-6 text-lg sm:text-xl md:text-xl"> You might want to explore:</p>
+            <p className="text-gray-600 mb-6 text-lg sm:text-xl md:text-xl">
+              {" "}
+              You might want to explore:
+            </p>
             <a href="/" className=" p-2 hover:underline">
               <Button>Home</Button>
             </a>
