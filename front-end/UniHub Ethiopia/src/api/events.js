@@ -24,10 +24,38 @@ const submitRsvpForm = (data, token) => {
   });
 };
 
+// New function to create an event
+const createEvent = (data, token) => {
+  return apiClient.post(`/api/events`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data", // For image upload support
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+// New function to update an event
+const updateEvent = (id, data,token) => {
+  return apiClient.put(`/api/events/${id}`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data", // For image update support
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+// New function to delete an event
+const deleteEvent = (id) => {
+  return apiClient.delete(`/api/events/${id}`);
+};
+
 export {
   getEventById,
   getArchivedEventById,
   getAllEvents,
   getArchivedEvents,
   submitRsvpForm,
+  createEvent, // Added create event
+  updateEvent, // Added update event
+  deleteEvent, // Added delete event
 };
