@@ -1,5 +1,6 @@
 const Event = require("../models/event.model");
 const { uploadImage } = require("../middleware/cloudinaryConfig");
+const mongoose = require("mongoose");
 
 const getAllEvents = async (req, res) => {
   try {
@@ -56,23 +57,25 @@ const createEvent = async (req, res) => {
 
 const updateEvent = async (req, res) => {
   try {
-    const updateData = {
-      title: req.body.title,
-      description: req.body.description,
-      note: req.body.note,
-      location: req.body.location,
-      date: req.body.date,
-      time: req.body.time,
-    };
+    const updateData = {};
 
-    if (req.file) {
-      updateData.image = req.file.path; // Update Cloudinary URL in the database
-    }
+    // Only add fields that are provided in the request body
+    if (req.body.title) updateData.title = req.body.title;
+    if (req.body.description) updateData.description = req.body.description;
+    if (req.body.note) updateData.note = req.body.note;
+    if (req.body.location) updateData.location = req.body.location;
+    if (req.body.date) updateData.date = req.body.date;
+    if (req.body.time) updateData.time = req.body.time;
+    if (req.file) updateData.image = req.file.path; // Update Cloudinary URL if a new file is provided
+
+    // Validate the event ID
     if (!req.params.id || !mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ message: "Invalid Event ID" });
     }
+
     const event = await Event.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
+      runValidators: true, // Ensures validation happens on update
     });
 
     if (!event) {
