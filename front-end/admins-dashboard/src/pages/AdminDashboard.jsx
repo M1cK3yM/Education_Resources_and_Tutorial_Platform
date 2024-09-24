@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
 
 const menuItems = [
   { name: "Home", icon: "🏠" },
@@ -23,7 +23,7 @@ const dashboardItems = [
   { name: "Event RSVP", icon: "📝", color: "bg-pink-500" },
 ];
 
-export default function AdminDashboard() {
+const AdminDashboard = () => {
   const navigate = useNavigate();
 
   const handleItemClick = (item) => {
@@ -78,4 +78,6 @@ export default function AdminDashboard() {
       </div>
     </div>
   );
-}
+};
+
+export default AdminDashboard;

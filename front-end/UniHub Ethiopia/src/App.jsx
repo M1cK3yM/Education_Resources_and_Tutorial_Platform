@@ -1,17 +1,14 @@
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import Pages from "./pages";
 import { useState } from "react";
 import { Loader } from "rsuite";
 import { useAuth } from "./context/AuthContext";
-import AdminDashboard from "@/components/admin/AdminDashboard";
-import AdminPages from "./pages/admin";
 
 function App() {
   const { isLoading } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearch = () => {
@@ -19,12 +16,14 @@ function App() {
     navigate(`/search/${searchTerm}`);
   };
 
-  // Check if the current route is an admin route
-  const isAdminRoute = location.pathname.startsWith("/admin");
-
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-grow">
+        <Navbar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          handleSearch={handleSearch}
+        />
         {isLoading ? (
           <Loader size="lg" center />
         ) : (
@@ -66,26 +65,10 @@ function App() {
               element={<Pages.SearchResultPage />}
             />
             <Route path="*" element={<Pages.NotFoundPage />} />
-
-            <Route path="/admin/*" element={<AdminDashboard />} />
-            <Route
-              path="/admin/events"
-              element={<AdminPages.AdminEventsPage />}
-            />
           </Routes>
         )}
       </main>
-
-      {!isAdminRoute && (
-        <>
-          <Navbar
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            handleSearch={handleSearch}
-          />
-          <Footer />
-        </>
-      )}
+      <Footer />
     </div>
   );
 }

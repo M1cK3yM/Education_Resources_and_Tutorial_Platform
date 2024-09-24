@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 
 function EventForm({ event, onSubmit, onClose }) {
   const [title, setTitle] = useState(event?.title || "");

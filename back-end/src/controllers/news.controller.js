@@ -4,7 +4,7 @@ const { uploadImage } = require("../middleware/cloudinaryConfig");
 const getAllNews = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const skip = (page - 1) * 10;
+    const skip = (page - 1) * 10;'om'
 
     const news = await News.find().sort({ date: 1 }).skip(skip).limit(10);
 
