@@ -3,7 +3,7 @@ import { getCookie, requestHandler } from "@/utils/requestHandler";
 
 export const BASE_URL = import.meta.env.VITE_API_URL;
 
-let trial = false;
+let trial = 0;
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
@@ -25,8 +25,8 @@ apiClient.interceptors.response.use(
 
     const refreshToken = getCookie("refreshToken");
 
-    if (error.response.status === 401 && !trial && refreshToken) {
-      trial = true;
+    if (error.response.status === 401 && trial < 4 && refreshToken) {
+      trial++;
       await requestHandler(
         async () => await apiClient.post("/refresh", {
           refreshToken,
