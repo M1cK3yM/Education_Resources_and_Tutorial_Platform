@@ -21,6 +21,7 @@
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slider": "^1.2.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-switch": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.0",
     "@rsuite/icons": "^1.0.3",
     "axios": "^1.7.4",

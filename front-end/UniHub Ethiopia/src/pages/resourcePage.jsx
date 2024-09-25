@@ -47,11 +47,9 @@ const ResourcesPage = () => {
     setCurrentPage(page);
   }
 
-  console.log(currentPage)
-
   return (
     <div>
-      <div className="relative h-64 md:h-96 lg:h-[500px] shadow-2xl rounded-3xl">
+      <div className="mt-20 relative h-32 md:h-48 lg:h-72 shadow-2xl rounded-3xl">
         <div className="absolute inset-0 flex items-center justify-center text-center text-foreground p-4 md:p-8 lg:p-12">
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold">
             Explore Your Favorite Resources
@@ -85,7 +83,7 @@ const ResourcesPage = () => {
         </div>
       ) : (
         <>
-          <div className="max-w-6xl pt-20 mx-auto">
+          <div className="max-w-6xl mt-20 mx-auto">
             {resources.map((resource) => (
               <ResourceCard
                 key={resource._id}
