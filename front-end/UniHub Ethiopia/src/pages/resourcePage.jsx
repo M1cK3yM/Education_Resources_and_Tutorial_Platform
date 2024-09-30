@@ -1,58 +1,137 @@
-import React from 'react';
-import ResourceCard from '../components/ResourceCard';
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import ResourceCard from "@/components/ResourceCard";
+import { Loader } from "rsuite";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationPrevious,
+  PaginationLink,
+  PaginationNext,
+} from "@/components/ui/pagination";
+import { resourcesApi } from "@/api";
+import { requestHandler } from "@/utils/requestHandler";
 
-function ResourcePage() {
+const ResourcesPage = () => {
+  const [resources, setResources] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  useEffect(() => {
+    const fetchResources = async (currentPage) => {
+      try {
+        await requestHandler(
+          () => resourcesApi.getAllResources(currentPage),
+          setLoading,
+          (data) => {
+            setResources(data.resources);
+            setTotalPages(data.pages);
+          },
+          (error) => setError(error),
+        )
+      } catch (err) {
+        setError("Failed to fetch resources");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchResources(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  }
+
   return (
     <div>
-      <div
-        className="relative bg-cover bg-center h-64 md:h-96 lg:h-[500px]"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1561469371-48cd0acc9ba9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')", // Modern education and technology background image
-        }}
-      >
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-foreground p-4 md:p-8 lg:p-12">
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold">
-            Educational Resources
+      <div className="mt-20 relative h-32 md:h-48 lg:h-72 shadow-2xl rounded-3xl">
+        <div className="absolute inset-0 flex items-center justify-center text-center text-foreground p-4 md:p-8 lg:p-12">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold">
+            Explore Your Favorite Resources
           </h1>
-          <p className="mt-4 text-lg md:text-xl lg:text-2xl">
-            Explore a wealth of educational resources
+        </div>
+      </div>
+      {loading ? (
+        <div className="flex justify-center items-center h-full">
+          <Loader size="md" />
+        </div>
+      ) : resources.length === 0 ? (
+        <div className="flex flex-col  items-center justify-center h-screen">
+          <h1 className="text-4xl font-bold mb-4 text-foreground">
+            😔Oops! You Caught us With no Resources
+          </h1>
+          <p className="text-foreground text-2xl">
+            Sorry, we will add new Books Soon or Not .
           </p>
+          <div className="mt-4 text-center text-lg ">
+            <p className="text-gray-600 mb-6"> You might want to explore:</p>
+            <a href="/" className=" p-2 hover:underline">
+              <Button>Home</Button>
+            </a>
+            <a href="/events" className=" p-2 hover:underline ml-2">
+              <Button>Events</Button>
+            </a>
+            <a href="/contact" className=" p-2 hover:underline ml-2">
+              <Button>Contact </Button>
+            </a>
+          </div>
         </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-8">
-        <h2 className="text-2xl font-bold mb-4">Featured Resources</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {/* Updated Resource Cards */}
-          <ResourceCard
-            title="Digital Learning Platforms"
-            description="Explore platforms that offer online courses, tutorials, and certifications."
-            imageUrl="\src\assets\images\images.jpg"
-            detailsUrl="/resources/digital-learning-platforms"
-          />
-          <ResourceCard
-            title="E-books and Journals"
-            description="Access a variety of e-books and academic journals on different subjects."
-            imageUrl="https://images.unsplash.com/photo-1593642532973-d31b6557fa68?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNTE5N3wwfDF8c2VhcmNofDh8fGVib29rc3x8MHx8fHwxNjM0OTQ5MDQw&ixlib=rb-1.2.1&q=80&w=400"
-            detailsUrl="/resources/e-books-and-journals"
-          />
-          <ResourceCard
-            title="Coding and Development"
-            description="Learn to code with interactive tutorials, exercises, and challenges."
-            imageUrl="\src\assets\images\learn-coding-online-for-free.webp"
-            detailsUrl="/resources/coding-and-development"
-          />
-          <ResourceCard
-            title="Tech News and Updates"
-            description="Stay updated with the latest trends and innovations in technology."
-            imageUrl="\src\assets\images\Google_Career_Cert.width-560.format-webp.webpquality-95_d4Y1FgQ.webp"
-            detailsUrl="/resources/tech-news-updates"
-          />
-        </div>
-      </div>
+      ) : (
+        <>
+          <div className="max-w-6xl mt-20 mx-auto">
+            {resources.map((resource) => (
+              <ResourceCard
+                key={resource._id}
+                title={resource.title}
+                description={resource.description}
+                size={resource.size}
+                numberOfPages={resource.numberOfPages}
+                resource={resource}
+                coverImage={resource.coverImage}
+              />
+            ))}
+          </div>
+          <div className="flex justify-center mt-8">
+            {totalPages > 0 && (
+              <Pagination>
+                <PaginationContent>
+                  <PaginationItem>
+                    <PaginationPrevious
+                      disabled={currentPage === 1}
+                      onClick={() => currentPage == 1 ? null : handlePageChange(currentPage - 1)}
+                    />
+                  </PaginationItem>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                    (page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          isActive={page === currentPage}
+                          onClick={() => handlePageChange(page)}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ),
+                  )}
+                  <PaginationItem>
+                    <PaginationNext
+                      disabled={currentPage === totalPages}
+                      onClick={() => currentPage == totalPages ? null : handlePageChange(currentPage + 1)}
+                    />
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
-}
+};
 
-export default ResourcePage;
+export default ResourcesPage;

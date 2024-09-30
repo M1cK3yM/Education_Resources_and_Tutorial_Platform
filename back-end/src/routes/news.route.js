@@ -7,13 +7,20 @@ const { validateNews } = require("../middleware/newsmiddleware");
 router.get("/", newsController.getAllNews);
 router.post(
   "/",
-  authorizeJwt,
-  isAdmin,
-  validateNews,
-  newsController.createNews,
+  // authorizeJwt,
+  // isAdmin,
+  newsController.createNews
 );
 router.get("/:id", newsController.getNewsById);
-router.put("/:id", authorizeJwt, isAdmin, newsController.updateNews);
-router.delete("/:id", authorizeJwt, isAdmin, newsController.deleteNews);
+router.put(
+  "/:id",
+  // authorizeJwt, isAdmin,
+  newsController.updateNews
+);
+router.delete(
+  "/:id",
+  // authorizeJwt, isAdmin,
+  newsController.deleteNews
+);
 
 module.exports = router;

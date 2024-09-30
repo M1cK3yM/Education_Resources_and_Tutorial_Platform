@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
-const connectDB = require("./database");
 const cookieParser = require("cookie-parser");
+const mongoose = require("mongoose");
 const eventRoutes = require("./src/routes/eventRoute");
 const userRoutes = require("./src/routes/user.route");
 const bookmarkRoutes = require("./src/routes/bookmarkRoute");
@@ -14,7 +14,18 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Connect to MongoDB
-  
+const connectDB = async () => {
+  try {
+    await mongoose.connect(
+      "mongodb://localhost:52806/eduDB?directConnection=true",
+    );
+    console.log("MongoDB connected");
+  } catch (err) {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
+  }
+};
+
 connectDB();
 
 // Use the event routes

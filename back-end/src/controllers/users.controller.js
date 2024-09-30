@@ -1,6 +1,8 @@
 const User = require("../models/users.model.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { cloudinary } = require("../middleware/cloudinaryConfig.js");
+const streamifier = require("streamifier");
 
 const createUser = async (req, res) => {
   const { name, email, password, role } = req.body;
@@ -46,16 +48,55 @@ const getUser = async (_req, res) => {
   }
 };
 
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Invalid ID" });
+  }
+};
+
 const updateProfile = async (req, res) => {
   const { _id, role } = res.locals.user;
-  console.log(req.file);
+  console.log("id", _id, role);
   try {
     if (role === "admin" || _id.toString() === req.params.id) {
       if (req.body.name || req.body.profile || req.body.mobile || req.file) {
         const update = {
           ...req.body,
-          profile: req.file.filename,
         };
+        if (req.file) {
+          const profile = await new Promise((resolve, result) => {
+            const cld_profile_upstream = cloudinary.uploader.upload_stream(
+              { folder: 'profiles', },
+              (error, result) => {
+                if (result) {
+                  resolve(result);
+                } else {
+                  resolve(error);
+                }
+              }
+            );
+
+            streamifier.createReadStream(req.file.buffer).pipe(cld_profile_upstream);
+          });
+
+          const url = cloudinary.url(profile.public_id, {
+            transformation: [
+              {
+                quality: 'auto',
+                fetch_format: 'auto'
+              }
+            ]
+          });
+          console.log("profile url", url);
+          update.profile = url;
+        }
         const user = await User.findByIdAndUpdate(req.params.id, update, {
           new: true,
         });
@@ -70,7 +111,8 @@ const updateProfile = async (req, res) => {
       return res.status(403).json({ message: "Forbidden: Unauthorized user" });
     }
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.log(err);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -95,10 +137,10 @@ const deleteAccount = async (req, res) => {
 const updatePassword = async (req, res) => {
   const { _id, role } = res.locals.user;
   try {
-    if (role === "admin" || _id.toString() === req.body.id) {
-      const { id, oldPassword, newPassword } = req.body;
+    if (role === "admin" || _id.toString() === req.params.id) {
+      const { oldPassword, newPassword } = req.body;
 
-      const user = await User.findById(id);
+      const user = await User.findById(_id);
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -132,4 +174,5 @@ module.exports = {
   createUser,
   updatePassword,
   getUser,
+  getUserById,
 };

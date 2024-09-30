@@ -10,8 +10,11 @@ import { Label } from "@/components/ui/label";
 import { useState, useEffect } from "react";
 import { EyeIcon, EyeOffIcon } from "@/components/ui/eyeicon";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
+import { useParams } from "react-router-dom";
 
 export default function ResetPassword() {
+  const { token } = useParams();
   const [data, setData] = useState({
     newPassword: "",
     confirmPassword: "",
@@ -25,6 +28,8 @@ export default function ResetPassword() {
   const [showConfirmPasswordAlert, setShowConfirmPasswordAlert] =
     useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  const { resetPassword } = useAuth();
 
   const validateForm = () => {
     setIsValid(true);
@@ -64,11 +69,14 @@ export default function ResetPassword() {
     });
   };
 
-  const handleResetPassword = () => {
+  const handleResetPassword = async () => {
     setSubmitted(true);
     if (!isValid) {
       return;
     }
+
+    const response = await resetPassword(token, data);
+    console.log(response);
   };
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 py-12 px-4 dark:bg-gray-950">

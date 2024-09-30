@@ -1,10 +1,21 @@
 const Event = require("../models/event.model");
-const upload = require("../middleware/multerConfig");
+const { uploadImage } = require("../middleware/cloudinaryConfig");
+const mongoose = require("mongoose");
 
 const getAllEvents = async (req, res) => {
   try {
-    const events = await Event.find({ status: "active" }).sort({ date: 1 });
-    res.status(200).json(events);
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * 10;
+
+    const events = await Event.find({ status: "active" })
+      .sort({ date: 1 })
+      .skip(skip)
+      .limit(10);
+
+    const totalEvents = await Event.countDocuments({ status: "active" });
+    const pages = Math.ceil(totalEvents / 10);
+
+    res.status(200).json({ events: events, pages: pages });
   } catch (err) {
     res.status(500).json({ message: "Server Error" });
     console.error(err);
@@ -46,21 +57,25 @@ const createEvent = async (req, res) => {
 
 const updateEvent = async (req, res) => {
   try {
-    const updateData = {
-      title: req.body.title,
-      description: req.body.description,
-      note: req.body.note,
-      location: req.body.location,
-      date: req.body.date,
-      time: req.body.time,
-    };
+    const updateData = {};
 
-    if (req.file) {
-      updateData.image = req.file.path; // Update Cloudinary URL in the database
+    // Only add fields that are provided in the request body
+    if (req.body.title) updateData.title = req.body.title;
+    if (req.body.description) updateData.description = req.body.description;
+    if (req.body.note) updateData.note = req.body.note;
+    if (req.body.location) updateData.location = req.body.location;
+    if (req.body.date) updateData.date = req.body.date;
+    if (req.body.time) updateData.time = req.body.time;
+    if (req.file) updateData.image = req.file.path; // Update Cloudinary URL if a new file is provided
+
+    // Validate the event ID
+    if (!req.params.id || !mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: "Invalid Event ID" });
     }
 
     const event = await Event.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
+      runValidators: true, // Ensures validation happens on update
     });
 
     if (!event) {
@@ -69,8 +84,8 @@ const updateEvent = async (req, res) => {
 
     res.json(event);
   } catch (err) {
+    console.error("Error updating event:", err);
     res.status(500).json({ message: "Server Error" });
-    console.error(err);
   }
 };
 
@@ -90,8 +105,8 @@ const deleteEvent = async (req, res) => {
 
 module.exports = {
   getAllEvents,
-  createEvent: [upload.single("image"), createEvent],
+  createEvent: [uploadImage.single("image"), createEvent],
   getEventById,
-  updateEvent: [upload.single("image"), updateEvent],
+  updateEvent: [uploadImage.single("image"), updateEvent],
   deleteEvent,
 };

@@ -39,13 +39,17 @@ const usersSchema = new mongoose.Schema({
       },
     },
   ],
-  refreshToken: {
-    type: String,
-    required: false,
-  },
 });
 
 const User = mongoose.model("users", usersSchema);
 
+// User.createSearchIndex({
+//   name: "searchUsers",
+//   definition: {
+//     mappings: {
+//       dynamic: true,
+//     },
+//   },
+// });
+//
 module.exports = User;
-

@@ -1,11 +1,20 @@
 const News = require("../models/news.model");
+const { uploadImage } = require("../middleware/cloudinaryConfig");
 
-const getAllNews = async (_req, res) => {
+const getAllNews = async (req, res) => {
   try {
-    const news = await News.find();
-    res.status(200).json(news);
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * 10;'om'
+
+    const news = await News.find().sort({ date: 1 }).skip(skip).limit(10);
+
+    const totalNews = await News.countDocuments();
+    const pages = Math.ceil(totalNews / 10);
+
+    res.status(200).json({ news: news, pages: pages });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: "Server Error" });
+    console.error(err);
   }
 };
 
@@ -17,8 +26,9 @@ const getNewsById = async (req, res) => {
     }
     res.status(200).json(news);
     console.log(req.params.id);
-  } catch {
-    res.status(500).json({ message: err.message });
+  } catch (err) {
+    res.status(500).json({ message: "Server Error" });
+    console.log(err);
   }
 };
 
@@ -28,14 +38,15 @@ const createNews = async (req, res) => {
     content: req.body.content,
     author: req.body.author,
     tags: req.body.tags,
-    image: req.body.image,
+    image: req.file ? req.file.path : null,
     status: req.body.status,
   });
   try {
     const newNews = await news.save();
     res.status(201).json(newNews);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({ message: "Server Error" });
+    console.error(err);
   }
 };
 
@@ -69,15 +80,15 @@ const deleteNews = async (req, res) => {
     }
     res.status(200).json({ message: "News deleted successfully" });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: "Server Error" });
+    console.error(err);
   }
 };
 
 module.exports = {
   getAllNews,
-  createNews,
+  createNews: [uploadImage.single("image"), createNews],
   getNewsById,
   updateNews,
   deleteNews,
 };
-

@@ -18,9 +18,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { EyeIcon, EyeOffIcon } from "@/components/ui/eyeicon";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useAuthDialog } from "../context/AuthDialogContext";
+import { Loader } from "rsuite";
 
 const SignupPage = () => {
   const [data, setData] = useState({
@@ -37,14 +38,12 @@ const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPasswordAlert, setShowConfirmPasswordAlert] =
     useState(false);
-  const [isValid, setIsValid] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const { register } = useAuth();
+  const { register, isLoading } = useAuth();
   const { isSignupOpen, toggleLogin, toggleSignup } = useAuthDialog();
 
   const handleDataChange = (name) => (e) => {
@@ -54,8 +53,8 @@ const SignupPage = () => {
     });
   };
 
-  const validateForm = () => {
-    setIsValid(true);
+  const validateForm = async () => {
+    let isValid = true;
     setShowConfirmPasswordAlert(false);
     const newErrors = {
       name: "",
@@ -66,27 +65,43 @@ const SignupPage = () => {
 
     if (!data.name) {
       newErrors.name = "Name is required";
-      setIsValid(false);
+      isValid = false;
     }
 
     if (!data.email) {
       newErrors.email = "Email is required";
-      setIsValid(false);
+      isValid = false;
     }
 
     if (!data.password) {
       newErrors.password = "Password is required";
-      setIsValid(false);
+      isValid = false;
     }
 
     if (data.password !== data.confirmPassword) {
       // Handle password mismatch error
       setShowConfirmPasswordAlert(true);
       newErrors.confirmPassword = "Passwords do not match";
-      setIsValid(false);
+      isValid = false;
     }
+    if (isValid) {
+      const response = await register({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        role: "student",
+      });
 
-    if (!isValid) {
+      if (!response.success) {
+        response.data.errors.map((err) => {
+          newErrors[err.path] = err.msg;
+        });
+
+        setErrors(newErrors);
+        console.log(errors);
+        return;
+      }
+    } else {
       setErrors(newErrors);
       return;
     }
@@ -94,35 +109,8 @@ const SignupPage = () => {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    if (!isValid) {
-      return;
-    }
-
-    const response = await register({
-      name: data.name,
-      email: data.email,
-      password: data.password,
-      role: "student",
-    });
-
-    if (!response.success) {
-      const errors = {};
-      response.data.errors.map((err) => {
-        errors[err.path] = err.msg;
-      });
-
-      setErrors(errors);
-      console.log(errors);
-      return;
-    }
+    validateForm();
   };
-
-  useEffect(() => {
-    if (submitted) {
-      validateForm();
-    }
-  }, [data, submitted]);
 
   return (
     <Dialog open={isSignupOpen} onOpenChange={toggleSignup}>
@@ -219,8 +207,11 @@ const SignupPage = () => {
               {errors.confirmPassword && (
                 <p className="text-red-500">{errors.confirmPassword}</p>
               )}
-              <Button type="button" className="" onClick={handleSignup}>
-                Sign Up
+              <Button type="button" className="w-full" onClick={handleSignup}>
+                <span>Sign in</span>
+                <span className="ml-2 w-4 h-4">
+                  {isLoading && <Loader size="sm" />}
+                </span>
               </Button>
               <div>
                 <p>

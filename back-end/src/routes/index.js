@@ -9,6 +9,7 @@ const universitiesRoutes = require("./universitiesRoute");
 const ratingRoutes = require("./ratingRoute");
 const rsvpRoutes = require("./rsvpRoute");
 const archivedRoutes = require("./archivedEventRoute");
+const searchRoute = require("./searchRoute");
 
 module.exports = {
   adminRoutes,
@@ -22,4 +23,5 @@ module.exports = {
   ratingRoutes,
   rsvpRoutes,
   archivedRoutes,
+  searchRoute,
 };

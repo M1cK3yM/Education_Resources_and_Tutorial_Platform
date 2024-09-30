@@ -1,6 +1,7 @@
 const cron = require("node-cron");
 const Event = require("../models/event.model");
 const ArchivedEvent = require("../models/archive.model");
+const Session = require("../models/session.model");
 
 const archivePastEvents = cron.schedule("0 0 * * *", async () => {
   try {
@@ -33,4 +34,22 @@ const archivePastEvents = cron.schedule("0 0 * * *", async () => {
   }
 });
 
-module.exports = archivePastEvents;
+const deleteInactiveSessions = () => {
+  cron.schedule('0 0 * * *', async () => {
+    try {
+      const result = await Session.deleteMany(
+        {
+          active: false,
+          updatedAt: { $lte: new Date(Date.now() - 5 * 60 * 1000) }, // 5 min
+        }
+      );
+
+      console.log(`Deleted ${result.deletedCount} sessions`);
+    } catch (err) {
+      console.error("Error deleting sessions", err);
+    }
+  });
+}
+
+
+module.exports = { archivePastEvents, deleteInactiveSessions };

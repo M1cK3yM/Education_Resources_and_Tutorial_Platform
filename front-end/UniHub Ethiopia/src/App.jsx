@@ -1,14 +1,32 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import Pages from "./pages";
+import { useState } from "react";
+import { Loader } from "rsuite";
+import { useAuth } from "./context/AuthContext";
 
 function App() {
+  const { isLoading } = useAuth();
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = () => {
+    console.log("search term", searchTerm);
+    navigate(`/search/${searchTerm}`);
+  };
+
   return (
-    <>
-      <div className="flex flex-col min-h-screen">
-        <main className="flex-grow">
-          <Navbar />
+    <div className="flex flex-col min-h-screen">
+      <main className="flex-grow">
+        <Navbar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          handleSearch={handleSearch}
+        />
+        {isLoading ? (
+          <Loader size="lg" center />
+        ) : (
           <Routes>
             <Route path="/" element={<Pages.HomePage />} />
             <Route path="/universities" element={<Pages.UniversityPage />} />
@@ -24,21 +42,34 @@ function App() {
             />
             <Route path="/event/rsvp/:eventId" element={<Pages.RsvpForm />} />
             <Route path="/resources" element={<Pages.ResourcePage />} />
-            <Route path="/profile" element={<Pages.UserProfilePage />} />
+            <Route
+              path="/resources/:resourceId"
+              element={<Pages.ResourceDetailsPage />}
+            />
             <Route path="/about" element={<Pages.AboutPage />} />
             <Route path="/news" element={<Pages.NewsPage />} />
+            <Route path="/news/:newsId" element={<Pages.NewsDetailPage />} />
             <Route path="/verify/:token?" element={<Pages.VerifyPage />} />
             <Route
               path="/forgot-password"
               element={<Pages.ForgetPasswordPage />}
             />
-            <Route path="/reset-password" element={<Pages.ResetPassword />} />
+            <Route
+              path="/reset-password/:token"
+              element={<Pages.ResetPassword />}
+            />
+            <Route path="/user/:userId" element={<Pages.UserProfile />} />
+            <Route path="/setting" element={<Pages.Setting />} />
+            <Route
+              path="/search/:searchTerm"
+              element={<Pages.SearchResultPage />}
+            />
             <Route path="*" element={<Pages.NotFoundPage />} />
           </Routes>
-        </main>
-        <Footer />
-      </div>
-    </>
+        )}
+      </main>
+      <Footer />
+    </div>
   );
 }
 

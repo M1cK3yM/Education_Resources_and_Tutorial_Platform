@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const User = require("../models/users.model");
 
 const resourceSchema = new mongoose.Schema({
   title: {
@@ -12,19 +13,27 @@ const resourceSchema = new mongoose.Schema({
   type: {
     type: String,
     required: true,
-    enum: ["document", "video", "audio", "image"],
+    enum: ["Engineering", "Health", "Science", "Technology", "Other"],
   },
-  url: {
+  resource: {
     type: String,
     required: true,
   },
-  tags: {
-    type: [String],
+  size: {
+    type: Number,
     required: true,
   },
+  numberOfPages: {
+    type: Number,
+    required: false,
+  },
+  coverImage: {
+    type: String,
+  },
+  tags: [{ type: String, required: true }],
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: User,
     required: true,
   },
   createdAt: {
@@ -39,4 +48,12 @@ const resourceSchema = new mongoose.Schema({
 
 const Resource = mongoose.model("Resource", resourceSchema);
 
+// Resource.createSearchIndex({
+//   name: "searchResources",
+//   definition: {
+//     mappings: {
+//       dynamic: true,
+//     },
+//   },
+// });
 module.exports = Resource;

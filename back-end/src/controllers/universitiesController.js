@@ -2,10 +2,20 @@ const University = require("../models/universities.model");
 
 const getAllUniversities = async (req, res) => {
   try {
-    const university = await University.find();
-    res.status(200).json(university);
+    const page = parseInt(req.query.page) || 1;
+    const skip = (page - 1) * 9;
+
+    const universities = await University.find()
+      .sort({ name: 1 })
+      .skip(skip)
+      .limit(9);
+
+    const totalUniversities = await University.countDocuments();
+    const pages = Math.ceil(totalUniversities / 9);
+
+    res.status(200).json({ universities: universities, pages: pages });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ error: "Error fetching universities" });
   }
 };
 

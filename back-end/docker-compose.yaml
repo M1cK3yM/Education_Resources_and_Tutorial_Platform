@@ -1,0 +1,9 @@
+services:
+  mongodb:
+    image: mongodb/mongodb-atlas-local
+    ports:
+      - 27019:27017
+    volumes:
+      - data:/data/db
+volumes:
+  data:

@@ -5,14 +5,7 @@ const { authorizeJwt } = require("../middleware/auth.middleware");
 const multer = require("multer");
 const path = require("path");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.fieldname + "-" + Date.now() + "-" + file.originalname);
-  },
-});
+const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
   fileFilter: (req, file, cb) => {
@@ -23,6 +16,7 @@ const upload = multer({
     cb(null, true);
   },
 });
+
 
 const {
   validateUpdateUser,
@@ -35,6 +29,7 @@ router.post(
   validatePasswordUpdate,
   userController.updatePassword,
 );
+router.get("/:id", userController.getUserById);
 router.get("/", authorizeJwt, userController.getUser);
 router.put(
   "/:id",
@@ -44,5 +39,4 @@ router.put(
   userController.updateProfile,
 );
 router.delete("/:id", authorizeJwt, userController.deleteAccount);
-
 module.exports = router;

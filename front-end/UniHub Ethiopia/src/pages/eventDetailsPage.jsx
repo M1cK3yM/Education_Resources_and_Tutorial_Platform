@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
-import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { useAuthDialog } from "@/context/AuthDialogContext";
 import {
@@ -12,6 +11,7 @@ import {
   FaTwitter,
   FaWhatsapp,
 } from "react-icons/fa";
+import { getEventById, getArchivedEventById } from "@/api/events"; // Use the API functions here
 
 const EventDetailsPage = ({ isArchived = false }) => {
   const { eventId } = useParams();
@@ -24,11 +24,9 @@ const EventDetailsPage = ({ isArchived = false }) => {
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const endPoint = isArchived
-          ? `http://localhost:3000/api/archived-events/${eventId}`
-          : `http://localhost:3000/api/events/${eventId}`;
-        console.log(endPoint);
-        const response = await axios.get(endPoint);
+        const response = isArchived
+          ? await getArchivedEventById(eventId) // Use the new API function
+          : await getEventById(eventId); // Use the existing API function
         setEvent(response.data);
       } catch (err) {
         console.error("Error fetching event details:", err);
@@ -41,12 +39,14 @@ const EventDetailsPage = ({ isArchived = false }) => {
   }, [eventId, isArchived]);
 
   if (!event) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Loading...
+      </div>
+    );
   }
 
   const handleGetTicketsClick = () => {
-    console.log("Is user authenticated?", isAuthenticated());
-
     if (!isAuthenticated()) {
       toggleLogin();
     } else {
@@ -58,6 +58,7 @@ const EventDetailsPage = ({ isArchived = false }) => {
       });
     }
   };
+
   const handleCopyLink = () => {
     navigator.clipboard.writeText(currentUrl);
     alert("Link copied to clipboard. Share it on Instagram!");
@@ -76,7 +77,7 @@ const EventDetailsPage = ({ isArchived = false }) => {
         <div className="mt-8 text-left mx-40 mt-20 max-w-3xl">
           <p className="text-yellow-500 text-lg">
             {event.date
-              ? `${new Date(event.date).toLocaleDateString()}`
+              ? new Date(event.date).toLocaleDateString()
               : "Date not available"}
           </p>
           <h1 className="text-4xl font-bold mt-4">{event.title}</h1>
@@ -114,6 +115,8 @@ const EventDetailsPage = ({ isArchived = false }) => {
               Help us spread the word by sharing this page!
             </p>
             <div className="my-2 flex space-x-4 overflow-visible">
+              {/* Social Sharing Buttons */}
+              {/* Same logic for social sharing */}
               <a
                 href={`https://t.me/share/url?url=${encodeURIComponent(
                   currentUrl
@@ -172,7 +175,7 @@ const EventDetailsPage = ({ isArchived = false }) => {
           </div>
         </div>
       </main>
-
+      {/* More Events and Previous Events Section */}
       <section className="mt-12 py-12">
         <div className="container mx-auto flex flex-col md:flex-row items-center">
           <div className="md:w-1/3 mr-20">
