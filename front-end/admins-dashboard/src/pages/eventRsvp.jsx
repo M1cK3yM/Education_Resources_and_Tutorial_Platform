@@ -18,9 +18,9 @@ const menuItems = [
 
 const EventRsvp = () => {
   const [events, setEvents] = useState([]);
-  const [selectedEventId, setSelectedEventId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchEvents();
@@ -31,14 +31,11 @@ const EventRsvp = () => {
       const eventData = await requestHandler(
         () => eventsApi.getAllEvents(), // Fetch all events
         setLoading,
-        (data) => {
-          console.log(data.events);
-          return data.events;
-        },
+        (data) => data.events,
         (error) => setError(error)
       );
       const response = eventData.data.events;
-      console.log(response);
+
       // Fetch RSVPs for each event in parallel
       const rsvpPromises = response.map((event) =>
         eventsApi.getEventRsvps(event._id).then((rsvps) => ({
@@ -54,29 +51,15 @@ const EventRsvp = () => {
     }
   };
 
-  const fetchRsvps = async (eventId) => {
-    setSelectedEventId(eventId);
-    // Fetch RSVPs when the button is clicked
-    try {
-      const rsvps = await requestHandler(
-        () => eventsApi.getEventRsvps(eventId), // Fetch RSVPs for the specific event
-        null,
-        (data) => {
-          console.log(data);
-          return data; // Handle rsvp data if needed
-        },
-        (error) => setError(error)
-      );
-      console.log(rsvps.data);
-    } catch (error) {
-      console.error("Error fetching RSVPs:", error);
-    }
+  const handleShowResponses = (eventId) => {
+    // Navigate to the RSVP page for the selected event
+    navigate(`/admin/event-rsvp/${eventId}/responses`);
   };
-  const navigate = useNavigate();
 
   const handleItemClick = (item) => {
     navigate(`/admin/${item.toLowerCase().replace(" ", "-")}`);
   };
+
   return (
     <div className="flex bg-gray-100">
       <div className="w-64 bg-gray-800 text-white p-4 min-h-screen">
@@ -115,13 +98,12 @@ const EventRsvp = () => {
               >
                 <div className="flex justify-between mt-4">
                   <button
-                    onClick={() => fetchRsvps(event._id)}
+                    onClick={() => handleShowResponses(event._id)}
                     className="bg-blue-500 text-white px-4 py-2 rounded"
                   >
                     Show Responses
                   </button>
-                  <div>Total Responses: {event.rsvpCount}</div>{" "}
-                  {/* Display RSVP count */}
+                  <div>Total Responses: {event.rsvpCount}</div> {/* Display RSVP count */}
                 </div>
               </EventCard>
             ))}

@@ -4,6 +4,7 @@ import { authApi } from "@/api";
 import { requestHandler } from "@/utils/requestHandler";
 import { useAuth } from "@/context/AuthContext";
 import { Loader } from "rsuite";
+import { useState } from "react";
 
 const RedirectPage = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const RedirectPage = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const code = queryParams.get("code")
+  const [error, setError] = useState();
 
   useEffect(() => {
     const handleRedirect = async () => {
@@ -28,6 +30,7 @@ const RedirectPage = () => {
             },
             (error) => {
               console.error("Error:", error);
+              setError(error);
             }
           );
         } catch (error) {
@@ -40,8 +43,9 @@ const RedirectPage = () => {
   }, [code]);
 
   return (
-    <div className="flex justify-center items-center h-full">
-      <Loader size="md" />
+    <div className="flex flex-col  items-center justify-center h-screen">
+      {error && <p className="text-red-500">{error}</p>}
+      <Loader size="md" center />
     </div>
   )
 }

@@ -111,6 +111,7 @@ function UniversityPage() {
                   location={university.location}
                   founded={university.founded}
                   logo={university.logo}
+                  website={university.description}
                   isTileView={isTileView} />
               ))}
             </div>
