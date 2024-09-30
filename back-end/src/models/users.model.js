@@ -19,7 +19,7 @@ const usersSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: false,
   },
   role: {
     type: String,
@@ -39,6 +39,10 @@ const usersSchema = new mongoose.Schema({
       },
     },
   ],
+  googleRefreshToken: {
+    type: String,
+    required: false
+  }
 });
 
 const User = mongoose.model("users", usersSchema);

@@ -24,6 +24,7 @@
     "firebase-admin": "^12.4.0",
     "fs": "^0.0.1-security",
     "fuse.js": "^7.0.0",
+    "google-auth-library": "^9.14.1",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.2",

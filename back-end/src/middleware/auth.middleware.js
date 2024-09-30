@@ -13,9 +13,15 @@ const authorizeJwt = async (req, res, next) => {
         .json({ message: "Authorization Header Not Found" });
     }
 
-    const [authType, token] = authHeader.split(" ");
+    let [authType, token] = authHeader.split(" ");
     if (authType !== "Bearer" || !token) {
-      return res.status(401).json({ message: "Invalid Authorization Header" });
+      req.headers.cookie.split("; ").forEach(e => {
+        if (e.split("=")[0] == "accessToken" && e.split("=")[1]) {
+          token = e.split("=")[1];
+        } else {
+          return res.status(401).json({ message: "Invalid Authorization Header" });
+        }
+      })
     }
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, decoded) => {
@@ -61,7 +67,7 @@ const checkAdmin = async (req, res, next) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user || user.role === "admin") {
-      return res.status(403).json({ message: "Forbidden: Admin not allowed" });
+      return res.status(403).json({ message: "Invalid Email or Password" });
     }
     next();
   } catch (error) {

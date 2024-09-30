@@ -3,6 +3,7 @@ const Session = require("../models/session.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const { OAuth2Client } = require('google-auth-library');
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -12,6 +13,110 @@ const transporter = nodemailer.createTransport({
     pass: process.env.SMTP_PASSWORD,
   },
 });
+
+const redirectURL = process.env.FRONTEND_URL + "/redirect";
+
+
+
+async function getUserData(access_token) {
+
+  const response = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`);
+
+  //console.log('response',response);
+  const data = await response.json();
+  console.log('data', data);
+  return data;
+}
+
+const consentRequest = async (req, res) => {
+  res.header("Referrer-Policy", "no-referrer-when-downgrade");
+
+  const oAuth2Client = new OAuth2Client(process.env.CLIENT_ID, process.env.CLIENT_SECRET, redirectURL);
+  const authorizeUrl = oAuth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: 'https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid',
+    prompt: 'consent'
+  });
+
+  res.json({ url: authorizeUrl })
+}
+
+const oauthResponse = async (req, res) => {
+  const code = req.query.code;
+
+  console.log('code', code);
+
+
+  try {
+    const oAuth2Client = new OAuth2Client(process.env.CLIENT_ID, process.env.CLIENT_SECRET, redirectURL);
+    const r = await oAuth2Client.getToken(code);
+    console.log("tokens", r);
+    oAuth2Client.setCredentials(r.tokens);
+    const credential = oAuth2Client.credentials;
+    console.log('credentials', credential);
+    const data = await getUserData(oAuth2Client.credentials.access_token)
+
+    let user = await User.findOne({ email: data.email });
+
+    if (!user) {
+      user = await User.create({
+        name: data.name,
+        email: data.email,
+        role: 'user',
+        googleRefreshToken: r.tokens.refresh_token,
+        profile: data.picture
+      })
+    } else {
+      user.googleRefreshToken = r.tokens.refresh_token;
+      await user.save();
+    }
+
+    const accessToken = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: process.env.ACCESS_TOKEN_EXPIRY },
+    );
+
+    const refreshToken = jwt.sign(
+      {
+        id: user._id,
+        role: user.role,
+      },
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: process.env.REFRESH_TOKEN_EXPIRY },
+    );
+
+    await Session.create({
+      userId: user._id,
+      refreshToken,
+      ipAddress: req.ip,
+      userAgent: req.userAgent,
+    });
+
+
+    return res.status(200).json({
+      data: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        bookmark: user.bookmark,
+        profile: user.profile,
+
+      },
+      refreshToken: refreshToken,
+      accessToken: accessToken,
+      message: "Logged in Successfully",
+    });
+
+  } catch (error) {
+    console.log("error", error);
+    return res.status(500).json({ message: "Internal server error" })
+  }
+}
 
 const loginAccount = async (req, res) => {
   const { email, password } = req.body;
@@ -329,4 +434,6 @@ module.exports = {
   logout,
   refreshToken,
   verifyEmail,
+  oauthResponse,
+  consentRequest
 };
