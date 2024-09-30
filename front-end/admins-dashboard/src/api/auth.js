@@ -5,7 +5,7 @@ const getUserData = () => {
 };
 
 const loginUser = (data) => {
-  return apiClient.post("/login", data);
+  return apiClient.post("/admin/login", data);
 };
 
 const registerUser = (data) => {
@@ -13,19 +13,7 @@ const registerUser = (data) => {
 };
 
 const logoutUser = (data) => {
-  return apiClient.post("/logout", data);
-};
-
-const verifyUser = (token) => {
-  return apiClient.get("/verify-email/" + token);
-};
-
-const forgetPassword = (data) => {
-  return apiClient.post("/forget-password", data);
-};
-
-const resetPassword = (token, data) => {
-  return apiClient.post("/reset-password" + token, data);
+  return apiClient.post("/admin/logout", data);
 };
 
 export {
@@ -33,7 +21,4 @@ export {
   loginUser,
   logoutUser,
   registerUser,
-  verifyUser,
-  forgetPassword,
-  resetPassword,
 };

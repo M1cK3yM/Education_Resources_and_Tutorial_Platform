@@ -16,6 +16,7 @@ const AuthContext = createContext({
   getUser: async () => { },
   isAuthenticated: () => false,
   isLoading: true,
+  setUser: () => { }
 });
 
 const useAuth = () => useContext(AuthContext);
@@ -30,7 +31,7 @@ const AuthProvider = ({ children }) => {
   const login = async (data) => {
     const res = await requestHandler(
       async () => await authApi.loginUser(data),
-      setIsLoading,
+      null,
       (res) => {
         const { data, accessToken, refreshToken } = res;
         setUser(data);
@@ -47,7 +48,7 @@ const AuthProvider = ({ children }) => {
   const register = async (data) => {
     const res = await requestHandler(
       async () => await authApi.registerUser(data),
-      setIsLoading,
+      null,
       () => navigate("/verify"),
       (error) => console.log(error),
     );
@@ -63,7 +64,6 @@ const AuthProvider = ({ children }) => {
         setUser(null);
         document.cookie = "accessToken=; max-age=0; path=/;";
         document.cookie = "refreshToken=; max-age=0; path=/;";
-        navigate("/");
       },
       (error) => console.log(error),
     );
@@ -124,6 +124,20 @@ const AuthProvider = ({ children }) => {
     }
   };
 
+  const signinWithGoogle = async () => {
+    const res = await requestHandler(
+      async () => await authApi.signinWithGoogle(),
+      null,
+      (res) => {
+        console.log(res)
+        window.location.href = res.url;
+      },
+      (error) => console.log(error),
+    );
+
+    return res;
+  }
+
   useEffect(() => {
     const getUser = async () => {
       if (user === null) {
@@ -157,6 +171,8 @@ const AuthProvider = ({ children }) => {
         resetPassword,
         getUser,
         isLoading,
+        signinWithGoogle,
+        setUser
       }}
     >
       {children}

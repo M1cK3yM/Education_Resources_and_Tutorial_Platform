@@ -1,4 +1,4 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import Pages from "./pages";
@@ -28,6 +28,9 @@ function App() {
           <Loader size="lg" center />
         ) : (
           <Routes>
+            <Route path="/redirect" element={
+              <Pages.RedirectPage />
+            } />
             <Route path="/" element={<Pages.HomePage />} />
             <Route path="/universities" element={<Pages.UniversityPage />} />
             <Route path="/events" element={<Pages.EventsPage />} />
@@ -69,7 +72,7 @@ function App() {
         )}
       </main>
       <Footer />
-    </div>
+    </div >
   );
 }
 

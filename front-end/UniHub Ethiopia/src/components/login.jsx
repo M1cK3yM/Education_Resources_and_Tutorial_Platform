@@ -25,7 +25,17 @@ import { EyeIcon, EyeOffIcon } from "@/components/ui/eyeicon";
 import { Loader } from "rsuite";
 
 const LoginPage = () => {
-  const { isLoading, login } = useAuth();
+
+  function navigate(url) {
+    window.location.href = url;
+  }
+  const [isLoading, setIsLoading] = useState(false)
+  const { login, signinWithGoogle } = useAuth();
+
+  async function handleGoogleSignIn() {
+    await signinWithGoogle();
+  }
+
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -67,7 +77,9 @@ const LoginPage = () => {
       isValid = false;
     }
     if (isValid) {
+      setIsLoading(true);
       const response = await login(data);
+      setIsLoading(false);
       console.log("response", response);
 
       if (!response.success) {
@@ -199,6 +211,15 @@ const LoginPage = () => {
                 <span className="ml-2 w-4 h-4">
                   {isLoading && <Loader size="sm" />}
                 </span>
+              </Button>
+              <div className="flex items-center my-4">
+                <div className="flex-grow border-t border-gray-300"></div>
+                <span className="mx-4 text-gray-500 text-sm px-2">or</span>
+                <div className="flex-grow border-t border-gray-300"></div>
+              </div>
+
+              <Button type="button" className="login-with-google-btn w-full" onClick={handleGoogleSignIn} >
+                Sign in with Google
               </Button>
             </div>
           </CardContent>

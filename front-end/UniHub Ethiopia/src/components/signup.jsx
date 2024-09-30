@@ -22,6 +22,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useAuthDialog } from "../context/AuthDialogContext";
 import { Loader } from "rsuite";
+import { GoogleLogin } from "@react-oauth/google";
 
 const SignupPage = () => {
   const [data, setData] = useState({
@@ -43,8 +44,13 @@ const SignupPage = () => {
     setShowPassword(!showPassword);
   };
 
-  const { register, isLoading } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const { register, signinWithGoogle } = useAuth();
   const { isSignupOpen, toggleLogin, toggleSignup } = useAuthDialog();
+
+  async function handleGoogleSignIn() {
+    await signinWithGoogle();
+  }
 
   const handleDataChange = (name) => (e) => {
     setData({
@@ -85,12 +91,14 @@ const SignupPage = () => {
       isValid = false;
     }
     if (isValid) {
+      setIsLoading(true);
       const response = await register({
         name: data.name,
         email: data.email,
         password: data.password,
         role: "student",
       });
+      setIsLoading(false);
 
       if (!response.success) {
         response.data.errors.map((err) => {
@@ -213,6 +221,19 @@ const SignupPage = () => {
                   {isLoading && <Loader size="sm" />}
                 </span>
               </Button>
+
+              <div className="flex items-center my-4">
+                <div className="flex-grow border-t border-gray-300"></div>
+                <span className="mx-4 text-gray-500 text-sm px-2">or</span>
+                <div className="flex-grow border-t border-gray-300"></div>
+              </div>
+
+              <div className="mt-7">
+                <Button type="button" className="login-with-google-btn w-full" onClick={handleGoogleSignIn} >
+                  Sign in with Google
+                </Button>
+
+              </div>
               <div>
                 <p>
                   Already have an account?{" "}

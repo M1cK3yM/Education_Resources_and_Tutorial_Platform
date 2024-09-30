@@ -16,6 +16,7 @@ import ResourceDetailsPage from "./resourceDetailsPage";
 import UserProfile from "./userProfilePage";
 import Setting from "./settingPage";
 import SearchResultPage from "./searchResultPage";
+import RedirectPage from "./redirectPage";
 
 const Pages = {
   UniversityPage,
@@ -36,6 +37,7 @@ const Pages = {
   UserProfile,
   Setting,
   SearchResultPage,
+  RedirectPage,
 };
 
 export default Pages;

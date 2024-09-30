@@ -1,12 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ModeToggle } from "./modeToggle";
 import { LoginPage } from "./login";
 import { SignupPage } from "./signup";
 import { useAuth } from "../context/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { BASE_URL } from "../api/config";
 import { Button } from "@/components/ui/button";
-import { itemsConfig } from "@/api";
 import MainNav from "./mainNav";
 import MobileNav from "./mobileNav";
 import { Input } from "./ui/input";
@@ -17,6 +15,7 @@ function Navbar({ searchTerm, setSearchTerm, handleSearch }) {
   const handleLogout = async () => {
     try {
       await logout();
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }

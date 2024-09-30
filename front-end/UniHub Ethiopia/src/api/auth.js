@@ -28,6 +28,14 @@ const resetPassword = (token, data) => {
   return apiClient.post("/reset-password" + token, data);
 };
 
+const signinWithGoogle = () => {
+  return apiClient.post("/request");
+}
+
+const redirect = (code) => {
+  return apiClient.get("/oauth2?code=" + code);
+}
+
 export {
   getUserData,
   loginUser,
@@ -36,4 +44,6 @@ export {
   verifyUser,
   forgetPassword,
   resetPassword,
+  signinWithGoogle,
+  redirect
 };

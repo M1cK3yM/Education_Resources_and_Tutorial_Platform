@@ -10,17 +10,15 @@ import { AuthDialogProvider } from "./context/AuthDialogContext.jsx";
 import { BrowserRouter } from "react-router-dom";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <CustomProvider theme="dark">
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <BrowserRouter>
-          <AuthProvider>
-            <AuthDialogProvider>
-              <App />
-            </AuthDialogProvider>
-          </AuthProvider>
-        </BrowserRouter>
-      </ThemeProvider>
-    </CustomProvider>
-  </StrictMode>,
+  <CustomProvider theme="dark">
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <BrowserRouter>
+        <AuthProvider>
+          <AuthDialogProvider>
+            <App />
+          </AuthDialogProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </ThemeProvider>
+  </CustomProvider>
 );

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import EventCard from "../components/eventCardAdmin";
 import { eventsApi } from "../api";
 import { requestHandler } from "../utils/requestHandler";
-import EventForm from "../components/EventForm";
+import EventForm from "../components/eventForm";
 
 const menuItems = [
   { name: "Home", icon: "🏠" },
