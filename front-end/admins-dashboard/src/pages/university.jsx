@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Button } from "../components/ui/button";
 import { useNavigate } from "react-router-dom";
 import EventCard from "../components/eventCardAdmin";
-import { eventsApi } from "../api";
+import { universitiesApi } from "../api";
 import { requestHandler } from "../utils/requestHandler";
-import EventForm from "../components/eventForm";
+import UniversityForm from "../components/universityForm";
 
 const menuItems = [
   { name: "Home", icon: "🏠" },
@@ -16,74 +16,75 @@ const menuItems = [
   { name: "Event RSVP", icon: "📝" },
 ];
 
-const AdminEventsPage = () => {
-  const [events, setEvents] = useState([]);
+const AdminUniversityPage = () => {
+  const [university, setUniversity] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [currentEvent, setCurrentEvent] = useState(null); // For updating an event
+  const [currentUnversity, setCurrentUniversity] = useState(null); // For updating an event
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     if (!error) {
-      fetchEvents(currentPage);
+      fetchUniversity(currentPage);
     } else {
       setLoading(false);
     }
   }, [currentPage]);
 
-  const fetchEvents = async (currentPage) => {
+  const fetchUniversity = async (currentPage) => {
     try {
       await requestHandler(
-        () => eventsApi.getAllEvents(currentPage),
+        () => universitiesApi.getAllUniversities(currentPage),
         setLoading,
         (data) => {
-          setEvents(data.events);
+          setUniversity(data.universities);
+          console.log(data);
           setTotalPages(data.pages);
         },
         (error) => setError(error)
       );
     } catch (error) {
-      console.error("Error fetching events:", error);
+      console.error("Error fetching university:", error);
     }
   };
 
-  const handleDelete = async (eventId) => {
+  const handleDelete = async (universityId) => {
     const confirmDelete = window.confirm(
-      "Are you sure you want to delete this event?"
+      "Are you sure you want to delete this university?"
     );
     if (confirmDelete) {
       try {
-        await eventsApi.deleteEvent(eventId);
-        fetchEvents(currentPage); // Refresh events after deletion
+        await universitiesApi.deleteUniversity(universityId);
+        fetchUniversity(currentPage); // Refresh university after deletion
       } catch (error) {
-        console.error("Error deleting event:", error);
+        console.error("Error deleting university:", error);
         setError(error);
       }
     }
   };
 
-  const handleUpdate = (event) => {
-    setCurrentEvent(event);
-    setShowForm(true); // Show the form for updating the event
+  const handleUpdate = (university) => {
+    setCurrentUniversity(university);
+    setShowForm(true); // Show the form for updating the university
   };
 
   const handleCreate = () => {
-    setCurrentEvent(null); // Clear current event for new creation
-    setShowForm(true); // Show the form for creating a new event
+    setCurrentUniversity(null); // Clear current university for new creation
+    setShowForm(true); // Show the form for creating a new university
   };
 
   const handleFormSubmit = async (formData) => {
     try {
-      if (currentEvent) {
-        await eventsApi.updateEvent(currentEvent._id, formData); // Update event
+      if (currentUnversity) {
+        await universitiesApi.updateUniversity(currentUnversity._id, formData); // Update university
       } else {
-        await eventsApi.createEvent(formData); // Create event
+        await universitiesApi.createUniversity(formData); // Create university
       }
       setShowForm(false);
-      fetchEvents(currentPage); // Refresh events after creating/updating
+      fetchUniversity(currentPage); // Refresh university after creating/updating
     } catch (error) {
       console.error("Error submitting form:", error);
       setError(error);
@@ -114,14 +115,14 @@ const AdminEventsPage = () => {
         </nav>
       </div>
       <div className="p-4">
-        <h1 className="text-2xl font-bold mb-4">Manage Events</h1>
+        <h1 className="text-2xl font-bold mb-4">Manage university</h1>
         <Button onClick={handleCreate} className="mb-4">
-          Add Event
+          Add university
         </Button>
 
         {showForm && (
-          <EventForm
-            event={currentEvent}
+          <UniversityForm
+            university={currentUnversity}
             onSubmit={handleFormSubmit}
             onClose={() => setShowForm(false)}
           />
@@ -130,23 +131,24 @@ const AdminEventsPage = () => {
         {loading ? (
           <p>Loading...</p>
         ) : error ? (
-          <p>Error fetching events: {error.message}</p>
-        ) : events.length === 0 ? (
-          <p>No events available.</p>
+          <p>Error fetching university: {error.message}</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {events.map((event) => (
+            {university.map((university) => (
               <EventCard
-                key={event._id}
-                title={event.title}
-                date={event.date}
-                note={event.note}
-                imageUrl={event.image}
+                key={university._id}
+                title={university.title}
+                date={university.date}
+                note={university.note}
+                description={university.description}
+                imageUrl={university.coverImage}
               >
                 <div className="flex justify-between mt-4">
-                  <Button onClick={() => handleUpdate(event)}>Update</Button>
+                  <Button onClick={() => handleUpdate(university)}>
+                    Update
+                  </Button>
                   <Button
-                    onClick={() => handleDelete(event._id)}
+                    onClick={() => handleDelete(university._id)}
                     className="bg-red-500 border"
                     variant="destructive"
                   >
@@ -162,4 +164,4 @@ const AdminEventsPage = () => {
   );
 };
 
-export default AdminEventsPage;
+export default AdminUniversityPage;

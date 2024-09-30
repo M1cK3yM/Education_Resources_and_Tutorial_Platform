@@ -13,6 +13,10 @@ function App() {
           <Route path="/admin/events" element={<Pages.AdminEventsPage />} />
           <Route path="/admin/news" element={<Pages.AdminNewsPage />} />
           <Route
+            path="/admin/universities"
+            element={<Pages.AdminUniversityPage />}
+          />
+          <Route
             path="/admin/resources"
             element={<Pages.AdminResourcePage />}
           />
