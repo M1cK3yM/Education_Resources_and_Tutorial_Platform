@@ -76,6 +76,20 @@ const checkAdmin = async (req, res, next) => {
   }
 };
 
+const checkNotAdmin = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user || user.role != "admin") {
+      return res.status(403).json({ message: "Invalid Email or Password" });
+    }
+    next();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 // Middleware to check if the user is the resource owner
 const isResourceOwner = async (req, res, next) => {
   try {
@@ -106,5 +120,6 @@ module.exports = {
   isAdmin,
   isUser,
   checkAdmin,
+  checkNotAdmin,
   isResourceOwner,
 };
