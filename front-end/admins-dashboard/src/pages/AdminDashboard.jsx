@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
+import { useAuth } from "@/context/AuthContext";
 
 const menuItems = [
   { name: "Home", icon: "🏠" },
@@ -24,11 +25,17 @@ const dashboardItems = [
 ];
 
 const AdminDashboard = () => {
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleItemClick = (item) => {
     navigate(`/admin/${item.toLowerCase().replace(" ", "-")}`);
   };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/");
+  }
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -54,13 +61,17 @@ const AdminDashboard = () => {
       <div className="flex-1 p-8">
         <div className="flex justify-between items-center mb-8">
           <Input className="w-64" placeholder="Search..." />
-          <Avatar>
-            <AvatarImage
-              src="src/assets/images/edwin-andrade-6liebVeAfrY-unsplash.jpg"
-              alt="Admin"
-            />
-            <AvatarFallback>AD</AvatarFallback>
-          </Avatar>
+          <div className="flex">
+            <Avatar>
+              <AvatarImage
+                src="src/assets/images/edwin-andrade-6liebVeAfrY-unsplash.jpg"
+                alt="Admin"
+              />
+              <AvatarFallback>AD</AvatarFallback>
+            </Avatar>
+            <Button className="ml-10" onClick={handleLogout}>Logout</Button>
+
+          </div>
         </div>
 
         <div className="grid grid-cols-3 gap-6">

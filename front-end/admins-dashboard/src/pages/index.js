@@ -6,6 +6,7 @@ import AdminResourcePage from "./resource";
 import NotFoundPage from "./404page";
 import EventRsvpResponses from "./eventRsvpResponses";
 import AdminUniversityPage from "./university";
+import LoginPage from "./login";
 
 const Pages = {
   AdminEventsPage,
@@ -16,6 +17,7 @@ const Pages = {
   AdminResourcePage,
   EventRsvpResponses,
   AdminUniversityPage,
+  LoginPage
 };
 
 export default Pages;
